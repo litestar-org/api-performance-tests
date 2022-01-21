@@ -8,15 +8,17 @@ run_uvicorn () {
 }
 
 execute_autocannon () {
-    npx autocannon http://0.0.0.0:8001/square-sync
-    npx autocannon http://0.0.0.0:8001/square-async
-    npx autocannon http://0.0.0.0:8001/json
-    npx autocannon http://0.0.0.0:8001/plaintext
+    [ ! -d "./results" ]  && mkdir -p results
+    for i in {1..10}; do
+        for ENDPOINT in square-sync square-async json plaintext; do
+            npx autocannon -j "http://0.0.0.0:8001/$ENDPOINT" >> "./results/${TARGET}-${ENDPOINT}-${i}.json"
+        done
+    done
 }
 
 run_uvicorn &
-echo "waiting for 5 seconds before executing tests"
+printf "waiting for 5 seconds before executing tests\n\n"
 sleep 5
 execute_autocannon
 kill $!
-echo "finished"
+printf "\n\ntest sequence finished"
