@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "fastapi-stress-test"
+version = "0.1.0"
+description = ""
+authors = ["Na'aman Hirschfeld <nhirschfeld@gmail.com>"]
+license = "None"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+fastapi = "*"
+gunicorn = "*"
+orjson = "*"
+uvicorn = "*"
+starlette = "*"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
