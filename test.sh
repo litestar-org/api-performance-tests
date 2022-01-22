@@ -9,10 +9,8 @@ run_uvicorn () {
 
 execute_autocannon () {
     [ ! -d "./results" ]  && mkdir -p results
-    for i in {1..10}; do
-        for ENDPOINT in square-sync square-async json plaintext; do
-            npx autocannon -j "http://0.0.0.0:8001/$ENDPOINT" >> "./results/${TARGET}-${ENDPOINT}-${i}.json"
-        done
+    for ENDPOINT in square-sync square-async json plaintext; do
+        npx autocannon -d 10 -c 60 -w 4 -j "http://0.0.0.0:8001/$ENDPOINT" >> "./results/${TARGET}-${ENDPOINT}.json"
     done
 }
 
