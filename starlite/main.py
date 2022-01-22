@@ -23,12 +23,12 @@ async def calculate_square_async() -> dict[str, str]:
 
 
 @get(path="/json")
-async def json_serialization() -> dict[str, str]:
+def json_serialization() -> dict[str, str]:
     return {"message": "Hello, world!"}
 
 
 @get(path="/plaintext", media_type=MediaType.TEXT)
-async def plaintext() -> bytes:
+def plaintext() -> bytes:
     return b"Hello, world!"
 
 

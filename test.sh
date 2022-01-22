@@ -1,22 +1,25 @@
 #!/bin/bash
 
-TARGET=$1
+[ -d "./results" ] && rm -rf results
+mkdir -p results
 
-run_uvicorn () {
-    cd $TARGET
-    poetry run gunicorn main:app -k uvicorn.workers.UvicornWorker -c gunicorn.py
-}
+[ ! -d "./.vent" ] && python -m venv .venv
+pip3 install -r requirements.txt
 
-execute_autocannon () {
-    [ ! -d "./results" ]  && mkdir -p results
-    for ENDPOINT in square-sync square-async json plaintext; do
-        npx autocannon -d 10 -c 60 -w 4 -j "http://0.0.0.0:8001/$ENDPOINT" >> "./results/${TARGET}-${ENDPOINT}.json"
+for TARGET in starlite fastapi; do
+    (cd $TARGET && gunicorn main:app -k uvicorn.workers.UvicornWorker -c gunicorn.py) &
+    SUBSHELL_PID=$!
+    printf "waiting for 5 seconds before executing tests\n\n"
+    sleep 5
+    for i in {1..4}; do
+        for ENDPOINT in square-sync square-async json plaintext; do
+            npx autocannon -c 25 -w 4 -j "http://0.0.0.0:8001/$ENDPOINT" >> "./results/${TARGET}-${ENDPOINT}-${i}.json"
+        done
     done
-}
+    kill $SUBSHELL_PID
+    printf "\n\ntest sequence finished"
+done
 
-run_uvicorn &
-printf "waiting for 5 seconds before executing tests\n\n"
-sleep 5
-execute_autocannon
-kill $!
-printf "\n\ntest sequence finished"
+[ -f "./result.png" ] && rm ./result.png
+python analysis/analyzer.py
+printf "\n\ngenerated ./result.png\nTests Finished"

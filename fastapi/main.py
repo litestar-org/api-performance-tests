@@ -26,10 +26,10 @@ async def calculate_square_async():
 
 
 @app.get("/json")
-async def json_serialization():
+def json_serialization():
     return ORJSONResponse({"message": "Hello, world!"})
 
 
 @app.get("/plaintext")
-async def plaintext():
+def plaintext():
     return PlainTextResponse(b"Hello, world!")

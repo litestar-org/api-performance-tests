@@ -1,16 +1,36 @@
 # api-performance-tests
 
+This is an API performance test comparing Starlite and FastAPI using autocannon.
+
+Setup is identical for both frameworks -
+
+1. a sync endpoint returing a json object with some square root calculations
+2. a async endpoint returing a json object with some square root calculations
+3. a json endpoint returning {"hello": "world"}
+4. a plaintext endpoint returning "hello world"
+
+Both frameworks use orjson for serialization of the responses and identical uvicorn + gunicorn settings (max workers)
+
+Autocannon settings: 4 repetitions for each endpoint, using 4 workers and 25 connections for 10 seconds.
+
+Last run results:
+
+![Result](result.png)
+
+You can view the result json files under `/results`
+
+The plotting is done using pandas - script is under `/analysis`
+
+## Executing Tests Locally
+
 To execute the tests:
 
-1. make sure you have python 3.10+ installed and [poetry](https://python-poetry.org/).
-2. you must first install the dependencies for both `starlite` and `fastAPI` by going into their respective directories and executing `poetry install`.
-3. install autocannon by executing `npm install` in the root folder.
+1. clone the repo
+2. run ./test.sh
 
-Once these are all done, you can execute the tests by running `./test.sh starlite` and `./test.sh fastapi` respectively. The tests are setup to output the data as json files saved under the `results folder`.
+The test.sh script will install the dependencies for you.
 
-## Updating dependencies
-
-To update dependencies simply run `poetry update` in both the `starlite` and `fastapi folders`
+note: the repository is setup to use python 3.10+
 
 ## Contributing
 
