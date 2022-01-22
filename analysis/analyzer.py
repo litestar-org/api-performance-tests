@@ -24,3 +24,5 @@ final_df = merged_df[
     ["url", "requests_processed_fastapi", "requests_processed_starlite"]
 ].set_index("url")
 ax = final_df.plot.bar(rot=0)
+plt.show()
+print("done")
