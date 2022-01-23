@@ -1,42 +1,35 @@
-import math
+from asyncio import sleep
 
 from starlite import MediaType, Starlite, get
 
 
-def calculate_square() -> dict:
-    result = {}
-    i = 1
-    while i < 1000:
-        result[str(i)] = str(math.pow(i, 2))
-        i += 1
-    return result
-
-
-@get("/square-sync")
-def calculate_square_sync() -> dict[str, str]:
-    return {"data": calculate_square()}
-
-
-@get("/square-async")
-async def calculate_square_async() -> dict[str, str]:
-    return {"data": calculate_square()}
-
-
-@get(path="/json")
-def json_serialization() -> dict[str, str]:
+@get(path="/json-async")
+async def json_async() -> dict[str, str]:
+    await sleep(0.0001)
     return {"message": "Hello, world!"}
 
 
-@get(path="/plaintext", media_type=MediaType.TEXT)
-def plaintext() -> bytes:
-    return b"Hello, world!"
+@get(path="/json-sync")
+def json_sync() -> dict[str, str]:
+    return {"message": "Hello, world!"}
+
+
+@get(path="/{path_param:int}", media_type=MediaType.TEXT)
+def path_param(path_param: int) -> str:
+    return str(path_param)
+
+
+@get(path="/query-param", media_type=MediaType.TEXT)
+def query_param(value: int) -> str:
+    return str(value)
 
 
 app = Starlite(
     route_handlers=[
-        calculate_square_sync,
-        calculate_square_async,
-        json_serialization,
-        plaintext,
+        json_async,
+        json_sync,
+        path_param,
+        query_param,
     ],
+    openapi_config=None,
 )

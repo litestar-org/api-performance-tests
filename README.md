@@ -4,14 +4,16 @@ This is an API performance test comparing Starlite and FastAPI using autocannon.
 
 Setup is identical for both frameworks -
 
-1. a sync endpoint returing a json object with some square root calculations
-2. a async endpoint returing a json object with some square root calculations
-3. a json endpoint returning {"hello": "world"}
-4. a plaintext endpoint returning "hello world"
+1. a sync endpoint returning JSON
+2. a async endpoint returning JSON
+3. a plaintext endpoint receiving a path parameter
+4. a plaintext endpoint receiving a query parameter
 
-Both frameworks use orjson for serialization of the responses and identical uvicorn + gunicorn settings (max workers)
+All frameworks use orjson for serialization of the responses and identical uvicorn + gunicorn settings (max workers).
+This is meant to ensure that the serialization speed of orjson is not considered in the benchmarks.
+It should be noted though that only `starlite` uses orjson by default.
 
-Autocannon settings: 4 repetitions for each endpoint, using 4 workers and 25 connections for 10 seconds.
+Autocannon settings: 4 repetitions for each endpoint, using 4 workers and 30 connections for 10 seconds.
 
 Last run results:
 

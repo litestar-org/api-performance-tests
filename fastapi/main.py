@@ -1,35 +1,27 @@
-import math
+from asyncio import sleep
 
 from fastapi import FastAPI
-from fastapi.responses import ORJSONResponse, PlainTextResponse
+from fastapi.responses import ORJSONResponse
 
 app = FastAPI()
 
 
-def calculate_square() -> dict:
-    result = {}
-    i = 1
-    while i < 1000:
-        result[str(i)] = str(math.pow(i, 2))
-        i += 1
-    return result
-
-
-@app.get("/square-sync")
-def calculate_square_sync():
-    return ORJSONResponse(content={"data": calculate_square()})
-
-
-@app.get("/square-async")
-async def calculate_square_async():
-    return ORJSONResponse(content={"data": calculate_square()})
-
-
-@app.get("/json")
-def json_serialization():
+@app.get("/json-async")
+async def json_async() -> ORJSONResponse:
+    await sleep(0.0001)
     return ORJSONResponse({"message": "Hello, world!"})
 
 
-@app.get("/plaintext")
-def plaintext():
-    return PlainTextResponse(b"Hello, world!")
+@app.get("/json-sync")
+def json_sync() -> ORJSONResponse:
+    return ORJSONResponse({"message": "Hello, world!"})
+
+
+@app.get("/{path_param:int}")
+def path_param(path_param: int) -> str:
+    return str(path_param)
+
+
+@app.get("/query-param")
+def query_param(value: int) -> str:
+    return str(value)
