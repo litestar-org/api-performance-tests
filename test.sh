@@ -4,7 +4,7 @@ set -e
 [ -d "./results" ] && rm -rf results
 mkdir -p results
 
-[ ! -d "./.vent" ] && python -m venv .venv
+[ ! -d "./.venv" ] && python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip && pip install -r requirements.txt
 
