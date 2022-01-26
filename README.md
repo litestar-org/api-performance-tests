@@ -5,11 +5,11 @@ the [autocannon](https://github.com/mcollina/autocannon) stress testing tool.
 
 ## Last Run Results
 
-ֿֿֿֿֿֿֿ### JSON Results
+### JSON Results
 
 ![JSON Results](result-json.png)
 
-ֿֿֿֿֿֿֿ### Plain-Text Results
+### Plain-Text Results
 
 ![Plain Text Results](result-plaintext.png)
 
