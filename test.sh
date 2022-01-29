@@ -1,18 +1,19 @@
 #!/bin/bash
 
 set -e
+[ -d "./node_modules" ] && npm install
 [ -d "./results" ] && rm -rf results
 mkdir -p results
 
-[ ! -d "./.venv" ] && python3 -m venv .venv
+[ ! -d "./.venv" ] && python -m venv .venv
 source .venv/bin/activate
 pip install --upgrade pip && pip install -r requirements.txt
 
 for TYPE in json plaintext; do
   for TARGET in starlite starlette fastapi; do
-    (cd $TARGET && gunicorn main:app -k uvicorn.workers.UvicornWorker -c gunicorn.config.py) &
-    printf "\n\nwaiting for 10 seconds before initiating test sequence\n\n"
-    sleep 10
+    (cd "$TARGET" && gunicorn main:app -k uvicorn.workers.UvicornWorker -c gunicorn.config.py) &
+    printf "\n\nwaiting for 5 seconds before initiating test sequence\n\n"
+    sleep 5
     endpoints=(
       "async-${TYPE}-no-params"
       "sync-${TYPE}-no-params"
@@ -30,10 +31,10 @@ for TYPE in json plaintext; do
       done
     done
     printf "\n\ntest sequence finished\n\nterminating all running python instances\n\n"
-    killall python3
+    pkill python
   done
 done
 [ -f "./result-json.png" ] && rm "./result-json.png"
 [ -f "./result-plaintext.png" ] && rm "./result-plaintext.png"
-python3 analysis/analyzer.py
+python analysis/analyzer.py
 printf "\n\nTests Finished Successfully!"

@@ -56,7 +56,7 @@ orjson is not considered in the benchmarks. It should be noted though that only 
 
 Uvicorn/Gunicorn Settings:
 The applications are launched using gunicorn with uvicorn workers - their number depends on the available threads in the
-machine. The settings are identical for all applications, you can see it in the `gunicorn.py` in each application
+machine. The settings are identical for all applications, you can see it in the `gunicorn.config.py` in each application
 folder.
 
 ## Executing Tests Locally
