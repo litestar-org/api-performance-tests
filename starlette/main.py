@@ -17,6 +17,34 @@ class ORJSONResponse(JSONResponse):
         return orjson.dumps(content)
 
 
+@app.route(path="/async-json-no-params", methods=["GET"])
+async def async_json_no_params(_) -> ORJSONResponse:
+    await sleep(0.0000000001)
+    return ORJSONResponse({"message": "Hello, world!"})
+
+
+@app.route(path="/sync-json-no-params", methods=["GET"])
+def sync_json_no_params(_) -> ORJSONResponse:
+    return ORJSONResponse({"message": "Hello, world!"})
+
+
+@app.route(path="/async-json/{first:str}", methods=["GET"])
+async def async_json_path_param(request: Request) -> ORJSONResponse:
+    await sleep(0.0000000001)
+    return ORJSONResponse({"message": request.path_params["first"]})
+
+
+@app.route(path="/sync-json/{first:str}", methods=["GET"])
+def sync_json_path_param(request: Request) -> ORJSONResponse:
+    return ORJSONResponse({"message": request.path_params["first"]})
+
+
+@app.route(path="/async-json-query-param", methods=["GET"])
+async def async_json_query_param(request: Request) -> ORJSONResponse:
+    await sleep(0.0000000001)
+    return ORJSONResponse({"message": request.query_params["first"]})
+
+
 @app.route(path="/sync-json-query-param", methods=["GET"])
 def sync_json_query_param(request: Request) -> ORJSONResponse:
     return ORJSONResponse({"message": request.query_params["first"]})

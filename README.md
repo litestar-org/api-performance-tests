@@ -1,7 +1,13 @@
 # api-performance-tests
 
-This is an API performance test comparing [Starlite](https://github.com/starlite-api/starlite), [Starlette](https://github.com/encode/starlette) and [FastAPI](https://github.com/tiangolo/fastapi) using
-the [autocannon](https://github.com/mcollina/autocannon) stress testing tool.
+This is an API performance test comparing:
+
+1. [Starlite](https://github.com/starlite-api/starlite)
+2. [Starlette](https://github.com/encode/starlette)
+3. [FastAPI](https://github.com/tiangolo/fastapi)
+4. [Sanic](https://github.com/sanic-org/sanic)
+
+Using the [autocannon](https://github.com/mcollina/autocannon) stress testing tool.
 
 ## Last Run Results
 

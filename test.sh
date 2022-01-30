@@ -10,7 +10,7 @@ source .venv/bin/activate
 pip install --upgrade pip && pip install -r requirements.txt
 
 for TYPE in json plaintext; do
-  for TARGET in starlite starlette fastapi; do
+  for TARGET in starlite starlette fastapi sanic; do
     (cd "$TARGET" && gunicorn main:app -k uvicorn.workers.UvicornWorker -c gunicorn.config.py) &
     printf "\n\nwaiting for 5 seconds before initiating test sequence\n\n"
     sleep 5
@@ -26,7 +26,7 @@ for TYPE in json plaintext; do
     )
     for i in {1..4}; do
       for ENDPOINT in "${endpoints[@]}"; do
-        name=$(echo "${TYPE}-${TARGET}-${ENDPOINT}-${i}.json" | sed 's/^\///;s/\//-/g')
+        name=$(echo "${TARGET}-${ENDPOINT}-${i}.json" | sed 's/^\///;s/\//-/g')
         npx -y autocannon -d 5 -c 25 -w 4 -j "http://0.0.0.0:8001/$ENDPOINT" >>"./results/$name"
       done
     done

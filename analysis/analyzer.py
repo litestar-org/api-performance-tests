@@ -14,8 +14,10 @@ for test_type in ["json", "plaintext"]:
                 source = "fastapi"
             elif "starlite" in file.name:
                 source = "starlite"
-            else:
+            elif "starlette" in file.name:
                 source = "starlette"
+            else:
+                source = "sanic"
             loaded = pd.read_json(file)
             loaded = loaded.assign(source=source)
             df = df.append(loaded)
@@ -27,6 +29,8 @@ for test_type in ["json", "plaintext"]:
     starlite_results = t[t["source"] == "starlite"]
     fast_api_results = t[t["source"] == "fastapi"]
     starlette_results = t[t["source"] == "starlette"]
+    sanic_results = t[t["source"] == "sanic"]
+
     starlite_results.rename(
         columns={"2xx": "requests_processed_starlite"}, inplace=True
     )
@@ -34,10 +38,11 @@ for test_type in ["json", "plaintext"]:
     starlette_results.rename(
         columns={"2xx": "requests_processed_starlette"}, inplace=True
     )
+    sanic_results.rename(columns={"2xx": "requests_processed_sanic"}, inplace=True)
 
     merged_df = reduce(
         lambda left, right: pd.merge(left, right, on="url"),
-        [starlite_results, fast_api_results, starlette_results],
+        [starlite_results, fast_api_results, starlette_results, sanic_results],
     )
     merged_df["url"] = merged_df["url"].apply(
         lambda x: x.replace("http://0.0.0.0:8001", "")
@@ -58,7 +63,8 @@ for test_type in ["json", "plaintext"]:
             "requests_processed_starlite",
             "requests_processed_fastapi",
             "requests_processed_starlette",
+            "requests_processed_sanic",
         ]
     ].set_index("url")
-    ax = final_df.plot.bar(rot=0)
+    ax = final_df.plot.bar(rot=0, color=["#70B8F6", "#357ED4", "#EF7721", "#FED65E"])
     plt.savefig(str(root_dir.absolute()) + f"/result-{test_type}.png")

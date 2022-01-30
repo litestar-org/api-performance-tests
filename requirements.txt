@@ -6,3 +6,4 @@ pandas==1.3.5
 starlette==0.17.1
 starlite==1.0.0
 uvicorn==0.17.1
+sanic==21.12.1
