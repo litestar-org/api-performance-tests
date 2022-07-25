@@ -6,8 +6,10 @@ import pandas as pd
 
 root_dir = Path(__file__).parent.parent
 results_dir = root_dir / "results"
+
 for test_type in ["json", "plaintext"]:
     df = pd.DataFrame()
+
     for file in results_dir.iterdir():
         if f"-{test_type}-" in file.name:
             if "fastapi" in file.name:
@@ -20,6 +22,7 @@ for test_type in ["json", "plaintext"]:
                 source = "sanic"
             else:
                 source = "blacksheep"
+
             loaded = pd.read_json(file)
             loaded = loaded.assign(source=source)
             df = df.append(loaded)
@@ -73,5 +76,6 @@ for test_type in ["json", "plaintext"]:
             "requests_processed_blacksheep",
         ]
     ].set_index("url")
-    ax = final_df.plot.bar(rot=0, color=["#001427", "#708D81", "#F4D58D", "#F4D58D", "#8D0801"])
+
+    ax = final_df.plot.bar(rot=0, color=["#E8C547", "#30323D", "#4D5061", "#5C80BC", "#CDD1C4"])
     plt.savefig(str(root_dir.absolute()) + f"/result-{test_type}.png")

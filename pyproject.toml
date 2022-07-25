@@ -16,6 +16,8 @@ pydantic = "*"
 blacksheep = "*"
 uvicorn = "*"
 gunicorn = "*"
+matplotlib = "*"
+pandas = "*"
 
 [tool.poetry.dev-dependencies]
 
