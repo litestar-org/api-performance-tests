@@ -6,10 +6,14 @@ This is an API performance test comparing:
 2. [Starlette](https://github.com/encode/starlette)
 3. [FastAPI](https://github.com/tiangolo/fastapi)
 4. [Sanic](https://github.com/sanic-org/sanic)
+5. [BlackSheep](https://github.com/Neoteroi/BlackSheep)
 
 Using the [autocannon](https://github.com/mcollina/autocannon) stress testing tool.
 
 ## Last Run Results
+
+You can few the last run results under the `/results` folder - it contains json files with the output.
+The plotting is done using pandas - script is under `/analysis`. PRs improving it are welcome.
 
 ### JSON Results
 
@@ -19,15 +23,12 @@ Using the [autocannon](https://github.com/mcollina/autocannon) stress testing to
 
 ![Plain Text Results](result-plaintext.png)
 
-You can view the result json files under `/results`
-The plotting is done using pandas - script is under `/analysis`
-
 ## Test Setup
 
 Setup is identical for all frameworks.
 
-- The applications are in the folders with their names - `/starlite`, `/starlette` and `/fastapi`.
-- There are no DB querying tests because all three frameworks are DB agnostic and as such this has no value in itself.
+- The applications are in the folders with their names - `/starlite`, `/starlette`, `/fastapi`, `/scanic`, `/blacksheep`.
+- There are no DB querying tests because all frameworks are DB agnostic and as such this has no value in itself.
 
 ### Endpoints
 
@@ -70,11 +71,19 @@ folder.
 To execute the tests:
 
 1. clone the repo
-2. run `./test.sh`
+2. make sure to install `curl`
+3. run `./test.sh`
 
-The test.sh script will create a virtual environment and install the dependencies for you.
+The test.sh script will create a virtual environment and install the dependencies for you using poetry.
 
-note: the repository is set to use python 3.10+ so make sure to have it available in your environment.
+**Notes**:
+
+- the repository is set to use python 3.10+ so make sure to have it available in your environment.
+- if poetry is not installed on your system, it will be installed by the script.
+
+## Updating Dependencies
+
+To update the dependencies simply run `poetry update` - this command is run as part of the test script as well.
 
 ## Contributing
 

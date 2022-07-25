@@ -16,8 +16,10 @@ for test_type in ["json", "plaintext"]:
                 source = "starlite"
             elif "starlette" in file.name:
                 source = "starlette"
-            else:
+            elif "sanic" in file.name:
                 source = "sanic"
+            else:
+                source = "blacksheep"
             loaded = pd.read_json(file)
             loaded = loaded.assign(source=source)
             df = df.append(loaded)
@@ -30,19 +32,23 @@ for test_type in ["json", "plaintext"]:
     fast_api_results = t[t["source"] == "fastapi"]
     starlette_results = t[t["source"] == "starlette"]
     sanic_results = t[t["source"] == "sanic"]
+    blacksheep_results = t[t["source"] == "blacksheep"]
 
-    starlite_results.rename(
-        columns={"2xx": "requests_processed_starlite"}, inplace=True
-    )
+    starlite_results.rename(columns={"2xx": "requests_processed_starlite"}, inplace=True)
     fast_api_results.rename(columns={"2xx": "requests_processed_fastapi"}, inplace=True)
-    starlette_results.rename(
-        columns={"2xx": "requests_processed_starlette"}, inplace=True
-    )
+    starlette_results.rename(columns={"2xx": "requests_processed_starlette"}, inplace=True)
     sanic_results.rename(columns={"2xx": "requests_processed_sanic"}, inplace=True)
+    blacksheep_results.rename(columns={"2xx": "requests_processed_blacksheep"}, inplace=True)
 
     merged_df = reduce(
         lambda left, right: pd.merge(left, right, on="url"),
-        [starlite_results, fast_api_results, starlette_results, sanic_results],
+        [
+            starlite_results,
+            fast_api_results,
+            starlette_results,
+            sanic_results,
+            blacksheep_results,
+        ],
     )
     merged_df["url"] = merged_df["url"].apply(
         lambda x: x.replace("http://0.0.0.0:8001", "")
@@ -64,7 +70,8 @@ for test_type in ["json", "plaintext"]:
             "requests_processed_fastapi",
             "requests_processed_starlette",
             "requests_processed_sanic",
+            "requests_processed_blacksheep",
         ]
     ].set_index("url")
-    ax = final_df.plot.bar(rot=0, color=["#70B8F6", "#357ED4", "#EF7721", "#FED65E"])
+    ax = final_df.plot.bar(rot=0, color=["#001427", "#708D81", "#F4D58D", "#F4D58D", "#8D0801"])
     plt.savefig(str(root_dir.absolute()) + f"/result-{test_type}.png")

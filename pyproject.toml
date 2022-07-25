@@ -1,0 +1,36 @@
+[tool.poetry]
+name = "api-performance-tests"
+version = "0.1.0"
+description = "Benchmarks for Python ASGI frameworks"
+authors = ["Na'aman Hirschfeld <nhirschfeld@gmail.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+cython = "*"
+starlite = "*"
+starlette = "*"
+fastapi = "*"
+orjson = "*"
+sanic = "*"
+uvloop = "*"
+pydantic = "*"
+blacksheep = "*"
+uvicorn = "*"
+gunicorn = "*"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.pycln]
+all = true

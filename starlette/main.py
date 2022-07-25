@@ -53,16 +53,12 @@ def sync_json_query_param(request: Request) -> ORJSONResponse:
 @app.route(path="/async-json-mixed-params/{second:str}", methods=["GET"])
 async def async_json_mixed_params(request: Request) -> ORJSONResponse:
     await sleep(0.0000000001)
-    return ORJSONResponse(
-        {"message": request.query_params["first"] + request.path_params["second"]}
-    )
+    return ORJSONResponse({"message": request.query_params["first"] + request.path_params["second"]})
 
 
 @app.route(path="/sync-json-mixed-params/{second:str}", methods=["GET"])
 def sync_json_mixed_params(request: Request) -> ORJSONResponse:
-    return ORJSONResponse(
-        {"message": request.query_params["first"] + request.path_params["second"]}
-    )
+    return ORJSONResponse({"message": request.query_params["first"] + request.path_params["second"]})
 
 
 # plain text
@@ -104,13 +100,9 @@ def sync_plaintext_query_param(request: Request) -> str:
 @app.route(path="/async-plaintext-mixed-params/{second:str}", methods=["GET"])
 async def async_plaintext_mixed_params(request: Request) -> str:
     await sleep(0.0000000001)
-    return PlainTextResponse(
-        request.query_params["first"] + request.path_params["second"]
-    )
+    return PlainTextResponse(request.query_params["first"] + request.path_params["second"])
 
 
 @app.route(path="/sync-plaintext-mixed-params/{second:str}", methods=["GET"])
 def sync_plaintext_mixed_params(request: Request) -> str:
-    return PlainTextResponse(
-        request.query_params["first"] + request.path_params["second"]
-    )
+    return PlainTextResponse(request.query_params["first"] + request.path_params["second"])
