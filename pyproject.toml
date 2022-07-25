@@ -6,7 +6,6 @@ authors = ["Na'aman Hirschfeld <nhirschfeld@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-cython = "*"
 starlite = "*"
 starlette = "*"
 fastapi = "*"

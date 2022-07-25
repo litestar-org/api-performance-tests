@@ -1,15 +1,27 @@
 #!/bin/bash
 
 set -e
-[ -d "./node_modules" ] && npm install
+
 [ -d "./results" ] && rm -rf results
 mkdir -p results
 
-(poetry --version || (curl -sSL https://install.python-poetry.org | python3 -)) && poetry update && poetry install
+npm install
+
+poetry --version || (curl -sSL https://install.python-poetry.org | python3 -)
+poetry update
+
+[ ! -d "./venv" ] &&
+  python -m venv .venv &&
+  source .venv/bin/activate &&
+  pip install --upgrade pip &&
+  pip install cython &&
+  pip install wheel &&
+  poetry export -f requirements.txt --output requirements.txt &&
+  pip install -r requirements.txt && rm requirements.txt;
 
 for TYPE in json plaintext; do
   for TARGET in starlite starlette fastapi sanic blacksheep; do
-    (cd "$TARGET" && poetry run gunicorn main:app -k uvicorn.workers.UvicornWorker -c gunicorn.config.py) &
+    (cd "$TARGET" && gunicorn main:app -k uvicorn.workers.UvicornWorker -c gunicorn.config.py) &
     printf "\n\nwaiting for service to become available\n\n"
     sleep 5
     printf "\n\ninitializing test sequence for $TARGET-$TYPE\n\n"
@@ -37,3 +49,4 @@ done
 [ -f "./result-plaintext.png" ] && rm "./result-plaintext.png"
 python analysis/analyzer.py
 printf "\n\nTests Finished Successfully!"
+deactivate
