@@ -6,7 +6,7 @@ authors = ["Na'aman Hirschfeld <nhirschfeld@gmail.com>"]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-starlite = "*"
+starlite = { git = "https://github.com/starlite-api/starlite.git", branch = "main" }
 starlette = "*"
 fastapi = "*"
 orjson = "*"
