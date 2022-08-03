@@ -16,7 +16,7 @@ poetry update
   pip install --upgrade pip &&
   pip install cython &&
   pip install wheel &&
-  poetry export -f requirements.txt --output requirements.txt &&
+  poetry export --without-hashes --format requirements.txt --output requirements.txt &&
   pip install -r requirements.txt && rm requirements.txt;
 
 for TYPE in json plaintext; do
