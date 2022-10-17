@@ -1,81 +1,70 @@
-from functools import reduce
+import json
 from pathlib import Path
 
 import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
 
+# collect benchmark data
 root_dir = Path(__file__).parent.parent
 results_dir = root_dir / "results"
 
+_test_data = []
+for file in results_dir.glob("*.json"):
+    _framework, _sync_async, _test_type, *_ = file.name.split("-")
+
+    with open(file) as f:
+        raw_test_data = json.load(f)
+        _url, _num_requests = raw_test_data["url"], raw_test_data["2xx"]
+
+    _benchmark_code = "/a-" if _sync_async == "async" else "/s-"
+    if "/abc" in _url:
+        _benchmark_code += "pp"
+    elif "query-param" in _url:
+        _benchmark_code += "qp"
+    elif "mixed-params" in _url:
+        _benchmark_code += "mp"
+    else:
+        _benchmark_code += "np"
+
+    _test_data.append(
+        {
+            "framework": _framework,
+            "sync_async": _sync_async,
+            "test_type": _test_type,
+            "url": _url,
+            "benchmark_code": _benchmark_code,
+            "num_requests": _num_requests,
+        }
+    )
+
+df_test_data = pd.DataFrame(_test_data)
+
+
+# draw data
 for test_type in ["json", "plaintext"]:
-    df = pd.DataFrame()
+    _df_test_data = df_test_data[df_test_data["test_type"] == test_type]
+    frameworks = df_test_data["framework"].unique()
+    benchmark_codes = sorted(df_test_data["benchmark_code"].unique())
 
-    for file in results_dir.iterdir():
-        if f"-{test_type}-" in file.name:
-            if "fastapi" in file.name:
-                source = "fastapi"
-            elif "starlite" in file.name:
-                source = "starlite"
-            elif "starlette" in file.name:
-                source = "starlette"
-            elif "sanic" in file.name:
-                source = "sanic"
-            else:
-                source = "blacksheep"
+    fig, ax = plt.subplots(figsize=(8.2, 4.8))
 
-            loaded = pd.read_json(file)
-            loaded = loaded.assign(source=source)
-            df = df.append(loaded)
-
-    df_2 = df[["url", "source", "2xx"]]
-    grouped_src_url = df_2.groupby(by=["source", "url"]).agg(sum)
-    t = grouped_src_url.reset_index()
-
-    starlite_results = t[t["source"] == "starlite"]
-    fast_api_results = t[t["source"] == "fastapi"]
-    starlette_results = t[t["source"] == "starlette"]
-    sanic_results = t[t["source"] == "sanic"]
-    blacksheep_results = t[t["source"] == "blacksheep"]
-
-    starlite_results.rename(columns={"2xx": "requests_processed_starlite"}, inplace=True)
-    fast_api_results.rename(columns={"2xx": "requests_processed_fastapi"}, inplace=True)
-    starlette_results.rename(columns={"2xx": "requests_processed_starlette"}, inplace=True)
-    sanic_results.rename(columns={"2xx": "requests_processed_sanic"}, inplace=True)
-    blacksheep_results.rename(columns={"2xx": "requests_processed_blacksheep"}, inplace=True)
-
-    merged_df = reduce(
-        lambda left, right: pd.merge(left, right, on="url"),
-        [
-            starlite_results,
-            fast_api_results,
-            starlette_results,
-            sanic_results,
-            blacksheep_results,
-        ],
+    sns.barplot(
+        data=_df_test_data,
+        x="benchmark_code",
+        y="num_requests",
+        hue="framework",
+        hue_order=frameworks,
+        order=benchmark_codes,
+        palette=["#30323D", "#42577a", "#5C80BC", "#f5d23d", "#c8c9c5"],
+        edgecolor="#FFFFFF",
+        errorbar=None,
+        width=0.7,
+        ax=ax,
+    ).set(
+        title=f"Requests Processed - {test_type} (higher is better)",
     )
-    merged_df["url"] = merged_df["url"].apply(
-        lambda x: x.replace("http://0.0.0.0:8001", "")
-        .replace("?first=abc", "")
-        .replace("/def", "")
-        .replace("/abc", "pp")
-        .replace("async", "a-")
-        .replace("sync", "s-")
-        .replace("json", "")
-        .replace("plaintext", "")
-        .replace("no-params", "np")
-        .replace("query-param", "qp")
-        .replace("mixed-params", "mp")
-    )
-    final_df = merged_df[
-        [
-            "url",
-            "requests_processed_starlite",
-            "requests_processed_fastapi",
-            "requests_processed_starlette",
-            "requests_processed_sanic",
-            "requests_processed_blacksheep",
-        ]
-    ].set_index("url")
-
-    ax = final_df.plot.bar(rot=0, color=["#E8C547", "#30323D", "#4D5061", "#5C80BC", "#CDD1C4"])
-    plt.savefig(str(root_dir.absolute()) + f"/result-{test_type}.png")
+    ax.yaxis.set_major_formatter(lambda i, pos: str(int(i / 1000)) + "k")
+    ax.legend(bbox_to_anchor=(1.02, 1), borderaxespad=0)
+    fig.tight_layout()
+    fig.savefig(root_dir / f"result-{test_type}.png")
