@@ -17,6 +17,7 @@ blacksheep = "*"
 uvicorn = "*"
 gunicorn = "*"
 matplotlib = "*"
+seaborn = "*"
 pandas = "*"
 
 [tool.poetry.dev-dependencies]
