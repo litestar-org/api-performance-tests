@@ -53,15 +53,8 @@ folder.
 To execute the tests:
 
 1. clone the repo
-2. run `./test.sh`
+2. run `./run.sh`
 
-The test.sh script will create a virtual environment and install the dependencies for you using poetry.
-
-### Notes:
-
-- the script requires python 3.11, node 18+ and curl to be installed on the system.
-- if poetry is not installed on your system, it will be installed by the script.
-- if pnpm is not installed on your system, it will be installed by the script.
 
 ## Updating Dependencies
 

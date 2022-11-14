@@ -1,3 +1,6 @@
 #!/bin/bash
 
-docker run -it -v "$PWD/results:/results" starlite-api-benchmarks "$@"
+rm -rf results
+mkdir results
+docker build . -t starlite-api-benchmarks
+docker run -v "$PWD/results:/results" starlite-api-benchmarks
