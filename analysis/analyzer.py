@@ -10,7 +10,7 @@ results_dir = root_dir / "results"
 
 _test_data = []
 for file in results_dir.glob("*.json"):
-    _framework, _sync_async, _test_type, *_ = file.name.split("-")
+    _branch, _sync_async, _test_type, *_ = file.name.split("-")
 
     with open(file) as f:
         raw_test_data = json.load(f)
@@ -28,7 +28,7 @@ for file in results_dir.glob("*.json"):
 
     _test_data.append(
         {
-            "framework": _framework,
+            "branch": _branch,
             "sync_async": _sync_async,
             "test_type": _test_type,
             "url": _url,
@@ -41,7 +41,7 @@ df_test_data = pd.DataFrame(_test_data)
 
 
 _df_test_data = df_test_data[df_test_data["test_type"] == "plaintext"]
-frameworks = df_test_data["framework"].unique()
+branches = df_test_data["branch"].unique()
 benchmark_codes = sorted(df_test_data["benchmark_code"].unique())
 
 fig, ax = plt.subplots(figsize=(8.2, 4.8))
@@ -50,10 +50,10 @@ sns.barplot(
     data=_df_test_data,
     x="benchmark_code",
     y="num_requests",
-    hue="framework",
-    hue_order=frameworks,
+    hue="branch",
+    hue_order=branches,
     order=benchmark_codes,
-    palette=["#30323D", "#42577a", "#5C80BC", "#f5d23d", "#c8c9c5"],
+    palette=["#30323D", "#5C80BC", "#c8c9c5"],
     edgecolor="#FFFFFF",
     errorbar=None,
     width=0.7,
