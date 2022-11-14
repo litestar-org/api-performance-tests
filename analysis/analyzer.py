@@ -14,7 +14,9 @@ for file in results_dir.glob("*.json"):
 
     with open(file) as f:
         raw_test_data = json.load(f)
-        _url, _num_requests = raw_test_data["url"], raw_test_data["2xx"]
+        # _url, _num_requests = raw_test_data["url"], raw_test_data["2xx"]
+        # _url, _num_requests = raw_test_data["spec"]["url"], raw_test_data["result"]["req2xx"]
+        _url, _num_requests = raw_test_data["spec"]["url"], raw_test_data["result"]["rps"]["percentiles"]["95"]
 
     _benchmark_code = "/a-" if _sync_async == "async" else "/s-"
     if "/128" in _url:
@@ -33,7 +35,7 @@ for file in results_dir.glob("*.json"):
             "test_type": _test_type,
             "url": _url,
             "benchmark_code": _benchmark_code,
-            "num_requests": _num_requests,
+            "rps": _num_requests,
         }
     )
 
@@ -49,7 +51,7 @@ fig, ax = plt.subplots(figsize=(8.2, 4.8))
 sns.barplot(
     data=_df_test_data,
     x="benchmark_code",
-    y="num_requests",
+    y="rps",
     hue="branch",
     hue_order=branches,
     order=benchmark_codes,
@@ -64,4 +66,5 @@ sns.barplot(
 ax.yaxis.set_major_formatter(lambda i, pos: str(int(i / 1000)) + "k")
 ax.legend(bbox_to_anchor=(1.02, 1), borderaxespad=0)
 fig.tight_layout()
-fig.savefig(root_dir / "result.png")
+fig.savefig(results_dir / "result.png")
+
