@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y curl git gcc procps && \
 
 FROM build
 
-COPY main.py test.sh gunicorn.config.py /
+COPY main.py test.sh /
 COPY analysis/ /analysis/
 
 CMD ["./test.sh"]
