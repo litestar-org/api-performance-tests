@@ -5,14 +5,12 @@ description = "Benchmarks for Python ASGI frameworks"
 authors = ["Na'aman Hirschfeld <nhirschfeld@gmail.com>"]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.11"
 starlite = { git = "https://github.com/starlite-api/starlite.git", branch = "main" }
 starlette = "*"
 fastapi = "*"
-orjson = "*"
 sanic = "*"
 uvloop = "*"
-pydantic = "*"
 blacksheep = "*"
 uvicorn = "*"
 gunicorn = "*"
@@ -20,7 +18,8 @@ matplotlib = "*"
 seaborn = "*"
 pandas = "*"
 
-[tool.poetry.dev-dependencies]
+[tool.poetry.group.dev.dependencies]
+black = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

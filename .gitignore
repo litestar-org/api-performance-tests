@@ -1,8 +1,8 @@
 __pycache__/
-node_modules/
-.venv/
-.mypy_cache/
 .idea/
+.mypy_cache/
+.venv/
 .vscode/
 *.iml
+node_modules/
 requirements.txt

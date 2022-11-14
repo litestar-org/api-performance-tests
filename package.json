@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/Goldziher/api-performance-tests#readme",
   "dependencies": {
-    "autocannon": "^7.9.0"
+    "autocannon": "^7.10.0"
   }
 }

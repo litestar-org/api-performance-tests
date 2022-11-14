@@ -12,16 +12,12 @@ Using the [autocannon](https://github.com/mcollina/autocannon) stress testing to
 
 ## Last Run Results
 
-You can few the last run results under the `/results` folder - it contains json files with the output.
-The plotting is done using pandas - script is under `/analysis`. PRs improving it are welcome.
+![Plain Text Results](result.png)
 
-### JSON Results
+You can view the last run results under the `/results` folder - it contains json files with the output.
+The plotting is done using pandas - script is under `/analysis`.
 
-![JSON Results](result-json.png)
-
-### Plain-Text Results
-
-![Plain Text Results](result-plaintext.png)
+Note: PRs improving the analysis script are welcome.
 
 ## Test Setup
 
@@ -29,21 +25,9 @@ Setup is identical for all frameworks.
 
 - The applications are in the folders with their names - `/starlite`, `/starlette`, `/fastapi`, `/scanic`, `/blacksheep`.
 - There are no DB querying tests because all frameworks are DB agnostic and as such this has no value in itself.
+- All frameworks are testing using plaintext responses, thus not factoring in any 3rd party json libraries etc.
 
 ### Endpoints
-
-There are 8 JSON endpoints:
-
-1. sync endpoint without query or path parameters returning JSON (s-np)
-2. async endpoint without query or path parameters returning JSON (a-np)
-3. sync endpoint with a query parameter returning JSON (s-qp)
-4. async endpoint with a query parameter returning JSON (a-qp)
-5. sync endpoint with a path parameter returning JSON (s-pp)
-6. async endpoint with a path parameter returning JSON (a-pp)
-7. sync endpoint with mixed parameters returning JSON (s-mp)
-8. async endpoint with mixed parameters returning JSON (a-mp)
-
-And 8 plain text endpoints:
 
 1. sync endpoint without query or path parameters returning text (s-np)
 2. async endpoint without query or path parameters returning text (a-np)
@@ -54,38 +38,39 @@ And 8 plain text endpoints:
 7. sync endpoint with mixed parameters returning text (s-mp)
 8. async endpoint with mixed parameters returning text (a-mp)
 
-Autocannon Settings:
-Each endpoint is tested 4x time for 5 seconds each time. Each test run uses 4 workers and 25 connections per worker.
+#### Autocannon Settings:
 
-JSON Serialization:
-All frameworks use orjson for serialization of the responses. This is meant to ensure that the serialization speed of
-orjson is not considered in the benchmarks. It should be noted though that only `starlite` uses orjson by default.
+Each endpoint for each framework is stress using the `autocannon` default settings x2 times.
 
-Uvicorn/Gunicorn Settings:
+#### Uvicorn/Gunicorn Settings:
+
 The applications are launched using gunicorn with uvicorn workers - their number depends on the available threads in the
 machine. The settings are identical for all applications, you can see it in the `gunicorn.config.py` in each application
 folder.
 
-## Executing Tests Locally
+## Executing the Tests
 
 To execute the tests:
 
 1. clone the repo
-2. make sure to install `curl`
-3. run `./test.sh`
+2. run `./test.sh`
 
 The test.sh script will create a virtual environment and install the dependencies for you using poetry.
 
-**Notes**:
+### Notes:
 
-- the repository is set to use python 3.10+ so make sure to have it available in your environment.
+- the script requires python 3.11, node 18+ and curl to be installed on the system.
 - if poetry is not installed on your system, it will be installed by the script.
+- if pnpm is not installed on your system, it will be installed by the script.
 
 ## Updating Dependencies
 
-To update the dependencies simply run `poetry update` - this command is run as part of the test script as well.
+To update the dependencies simply run `poetry update` and `pnpm up` respectively. These commands are executed as part
+of the test script, ensuring dependencies are always up to date.
 
 ## Contributing
+
+PRs are welcome.
 
 Please make sure to install [pre-commit](https://pre-commit.com/) on your system, and then execute `pre-commit install`
 in the repository root - this will ensure the pre-commit hooks are in place.
