@@ -17,7 +17,6 @@ RUN apt-get update && apt-get install -y curl git gcc procps && \
 
 FROM build
 
-COPY main.py test.sh /
-COPY analysis/ /analysis/
+COPY main.py analyze.py test.sh /
 
 CMD ["./test.sh"]
