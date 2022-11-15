@@ -12,6 +12,30 @@ root_path = Path()
 Percentile = Literal["50", "75", "90", "95", "99"]
 Metric = Literal["rps", "latency"]
 
+COLOR_PALETTE = [
+    "#5C80BC",
+    "#30323D",
+    "#c8c9c5",
+    "#2dd4bf",
+    "#a78bfa",
+    "#fb7185",
+    "#c084fc",
+    "#a78bfa",
+    "#818cf8",
+    "#60a5fa",
+    "#38bdf8",
+    "#22d3ee",
+    "#2dd4bf",
+    "#34d399",
+    "#a3e635",
+    "#facc15",
+    "#fbbf24",
+    "#fb923c",
+    "#f87171",
+    "#a8a29e",
+    "#a1a1aa",
+]
+
 Percentiles = TypedDict("Percentiles", {"50": int, "75": int, "90": int, "95": int, "99": int})
 
 
@@ -44,7 +68,7 @@ def collect_results(results_dir: Path) -> Generator[TestResult, None, None]:
             is_async = sync_async == "async"
             url = raw_test_data["spec"]["url"]
             if raw_test_data["result"]["req4xx"] or raw_test_data["result"]["req5xx"]:
-                print(f"Result set {file} contains error responses")
+                print(f"Result set {file} contains error responses")  # noqa: T201
 
             if "/128" in url:
                 benchmark_code = "path params"
@@ -74,7 +98,6 @@ def build_df(results: Iterable[TestResult], percentile: Percentile) -> pd.DataFr
             "test_type": result["test_type"],
             "url": result["url"],
             "benchmark_code": result["benchmark_code"],
-            "benchmark_result_mean": result["rps"]["mean"],
             "benchmark_result": result["rps"]["percentiles"][percentile],
             "stddev": result["rps"]["stddev"],
         }
@@ -85,13 +108,26 @@ def build_df(results: Iterable[TestResult], percentile: Percentile) -> pd.DataFr
     return df
 
 
-def draw_plot(
-    df: pd.DataFrame,
-    output_dir: Path,
-    percentile: Percentile,
-    metric: Metric,
-) -> None:
-    _df_test_data = df[df["test_type"] == "plaintext"]
+def build_latency_df(results: Iterable[TestResult]) -> pd.DataFrame:
+    data = [
+        {
+            "target": result["target"],
+            "sync_async": result["is_async"],
+            "test_type": result["test_type"],
+            "url": result["url"],
+            "benchmark_code": result["benchmark_code"],
+            "benchmark_result": result["latency"]["mean"],
+            "stddev": result["latency"]["stddev"],
+        }
+        for result in results
+    ]
+    data = sorted(data, key=lambda r: r["target"])
+    df = pd.DataFrame(data)
+    return df
+
+
+def _configure_plot(df: pd.DataFrame, title: str, test_type: str = "plaintext") -> tuple:
+    _df_test_data = df[df["test_type"] == test_type]
     targets = df["target"].unique()
     benchmark_codes = sorted(df["benchmark_code"].unique())
 
@@ -104,29 +140,7 @@ def draw_plot(
         hue="target",
         hue_order=targets,
         order=benchmark_codes,
-        palette=[
-            "#5C80BC",
-            "#30323D",
-            "#c8c9c5",
-            "#2dd4bf",
-            "#a78bfa",
-            "#fb7185",
-            "#c084fc",
-            "#a78bfa",
-            "#818cf8",
-            "#60a5fa",
-            "#38bdf8",
-            "#22d3ee",
-            "#2dd4bf",
-            "#34d399",
-            "#a3e635",
-            "#facc15",
-            "#fbbf24",
-            "#fb923c",
-            "#f87171",
-            "#a8a29e",
-            "#a1a1aa",
-        ],
+        palette=COLOR_PALETTE,
         edgecolor="#FFFFFF",
         errorbar=None,
         width=0.7,
@@ -135,13 +149,26 @@ def draw_plot(
     ax.set(xlabel="benchmark type", ylabel=None)
     plt.legend()
 
-    if metric == "load":
-        ax.yaxis.set_major_formatter(lambda i, pos: str(int(i / 1000)) + "k")
-        plot.set(
-            title=f"Requests per second - {percentile}th percentile  (higher is better)",
-        )
-    else:
-        plot.set(title=f"Latency - {percentile}th percentile (lower is better)")
+    plot.set(title=title)
+
+    plt.xticks(rotation=60, horizontalalignment="right")
+    plt.tight_layout()
+    return fig, ax
+
+
+def draw_plot(
+    df: pd.DataFrame,
+    output_dir: Path,
+    percentile: Percentile,
+    test_type: str,
+) -> None:
+    fig, ax = _configure_plot(
+        df,
+        test_type=test_type,
+        title=f"Requests per second - {percentile}th percentile  (higher is better)",
+    )
+
+    ax.yaxis.set_major_formatter(lambda i, pos: str(int(i / 1000)) + "k")
 
     x_coords = [p.get_x() + 0.5 * p.get_width() for p in ax.patches]
     y_coords = [p.get_height() for p in ax.patches]
@@ -149,10 +176,15 @@ def draw_plot(
     plt.xticks(rotation=60, horizontalalignment="right")
     plt.tight_layout()
 
-    fig.savefig(output_dir / f"{output_dir.stem}_{percentile}.png")
+    fig.savefig(output_dir / f"{output_dir.stem}_rps_{percentile}.png")
 
 
-def make_plot(percentile: Percentile | Literal["all"] = "95") -> None:
+def draw_latency_plot(df: pd.DataFrame, output_dir: Path, test_type: str) -> None:
+    fig, ax = _configure_plot(df, test_type=test_type, title="Latency - (lower is better)")
+    fig.savefig(output_dir / f"{output_dir.stem}_latency.png")
+
+
+def make_rps_plot(percentile: Percentile | Literal["all"] = "95", test_type: str = "plaintext") -> None:
     results_dir = root_path / "results"
     results = list(collect_results(results_dir))
     percentiles: list[Percentile]
@@ -162,8 +194,10 @@ def make_plot(percentile: Percentile | Literal["all"] = "95") -> None:
         percentiles = [percentile]
     for p in percentiles:
         df = build_df(results, percentile=p)
-        draw_plot(df, results_dir, percentile=p, metric="load")
+        draw_plot(df, results_dir, percentile=p, test_type=test_type)
 
 
-if __name__ == "__main__":
-    make_plot()
+def make_latency_plot(test_type: str = "plaintext") -> None:
+    results_dir = root_path / "results"
+    df = build_latency_df(collect_results(results_dir))
+    draw_latency_plot(df, results_dir)

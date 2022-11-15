@@ -15,7 +15,14 @@ ENDPOINTS = [
     "plaintext-no-params",
     "plaintext-query-param?first=128",
     "plaintext/128",
+    "json-mixed-params/256?first=128",
+    "json-no-params",
+    "json-query-param?first=128",
+    "json/128",
 ]
+
+FRAMEWORKS = ["starlite", "starlette", "fastapi", "sanic", "blacksheep"]
+
 
 SERVER_PORT = 8081
 EndpointType = Literal["sync", "async"]
@@ -166,9 +173,6 @@ def cli() -> None:
     pass
 
 
-FRAMEWORKS = ["starlite", "starlette", "fastapi", "sanic", "blacksheep"]
-
-
 @cli.command("bench-frameworks")
 @click.option("-f", "--frameworks", type=click.Choice([*FRAMEWORKS, "all"]), multiple=True)
 @click.option("-d", "--duration", default=15)
@@ -233,8 +237,13 @@ def bench_branches(
 
 @cli.command("analyze")
 @click.option("-p", "--percentile", type=click.Choice(["50", "75", "90", "95", "99", "all"]), default="95")
-def analyze_command(percentile: analyze.Percentile | Literal["all"]) -> None:
-    analyze.make_plot(percentile=percentile)
+@click.option("-m", "--metric", default="load")
+@click.option("-t", "--type", type=click.Choice(["plaintext"]), default="plaintext")
+def analyze_command(percentile: analyze.Percentile | Literal["all"], metric: str, type: str) -> None:
+    if metric == "load":
+        analyze.make_rps_plot(percentile, test_type=type)
+    else:
+        analyze.make_latency_plot(test_type=type)
 
 
 if __name__ == "__main__":
