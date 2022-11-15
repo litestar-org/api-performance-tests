@@ -43,6 +43,8 @@ def collect_results(results_dir: Path) -> Generator[TestResult, None, None]:
             raw_test_data = json.loads(file.read_text())
             is_async = sync_async == "async"
             url = raw_test_data["spec"]["url"]
+            if raw_test_data["result"]["req4xx"] or raw_test_data["result"]["req5xx"]:
+                print(f"Result set {file} contains error responses")
 
             if "/128" in url:
                 benchmark_code = "path params"
