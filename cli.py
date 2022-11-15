@@ -126,14 +126,14 @@ def _display_suite_config(config: SuiteConfig) -> None:
     console.print(f"Mode: {config.mode}")
 
 
-def run_framework_benchmarks(frameworks: tuple[str], config: SuiteConfig) -> None:
+def run_framework_benchmarks(frameworks: tuple[str, ...], config: SuiteConfig) -> None:
     _display_suite_config(config)
     for framework in frameworks:
         console.print(f"[blue]Selecting benchmark {framework!r}")
         run_target(framework, config=config)
 
 
-def run_branch_benchmarks(branches: tuple[str], config: SuiteConfig) -> None:
+def run_branch_benchmarks(branches: tuple[str, ...], config: SuiteConfig) -> None:
     _display_suite_config(config)
     for branch in branches:
         console.print(f"[blue]Selecting benchmark {branch!r}")
@@ -146,10 +146,13 @@ def cli() -> None:
     pass
 
 
+FRAMEWORKS = ["starlite", "starlette", "fastapi", "sanic", "blacksheep"]
+
+
 @cli.command("bench-frameworks")
-@click.argument("frameworks", nargs=-1)
+@click.option("-f", "--frameworks", type=click.Choice([*FRAMEWORKS, "all"]), multiple=True)
 @click.option("-d", "--duration", default=15)
-@click.option("-w", "--warmup-duration", default=5)
+@click.option("-w", "--warmup", default=5)
 @click.option("-m", "--mode", type=click.Choice(["load", "latency"]), default="load")
 @click.option(
     "-e",
@@ -159,17 +162,19 @@ def cli() -> None:
     default=("sync", "async"),
 )
 def bench_frameworks(
-    frameworks: tuple[str],
+    frameworks: tuple[str, ...],
     duration: int,
-    warmup_duration: int,
+    warmup: int,
     endpoints: list[EndpointType],
     mode: BenchmarkMode,
 ) -> None:
+    if frameworks == ("all",):
+        frameworks = FRAMEWORKS
     run_framework_benchmarks(
         frameworks,
         config=SuiteConfig(
             duration=duration,
-            warmup_duration=warmup_duration,
+            warmup_duration=warmup,
             endpoint_types=endpoints,
             mode=mode,
         ),
