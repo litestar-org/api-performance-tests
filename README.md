@@ -43,8 +43,7 @@ Setup is identical for all frameworks.
 To execute the tests:
 
 1. clone the repo
-2. build the docker image with `./build.sh`
-3. run the desired benchmarks with `./run.sh`
+2. execute `./run-simple.sh`
 
 ### Benchmarks
 

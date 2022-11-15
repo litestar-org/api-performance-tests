@@ -37,30 +37,31 @@ class TestResult(TypedDict):
 
 
 def collect_results(results_dir: Path) -> Generator[TestResult, None, None]:
-    for file in results_dir.glob("*.json"):
-        sync_async, test_type, *_ = file.name.split("-")
-        raw_test_data = json.loads(file.read_text())
-        is_async = sync_async == "async"
-        url = raw_test_data["spec"]["url"]
+    for target_dir in results_dir.iterdir():
+        for file in target_dir.glob("*.json"):
+            sync_async, test_type, *_ = file.name.split("-")
+            raw_test_data = json.loads(file.read_text())
+            is_async = sync_async == "async"
+            url = raw_test_data["spec"]["url"]
 
-        if "/128" in url:
-            benchmark_code = "path params"
-        elif "query-param" in url:
-            benchmark_code = "query params"
-        elif "mixed-params" in url:
-            benchmark_code = "mixed params"
-        else:
-            benchmark_code = "no params"
-        benchmark_code += " (a)" if is_async else "( s)"
+            if "/128" in url:
+                benchmark_code = "path params"
+            elif "query-param" in url:
+                benchmark_code = "query params"
+            elif "mixed-params" in url:
+                benchmark_code = "mixed params"
+            else:
+                benchmark_code = "no params"
+            benchmark_code += " (a)" if is_async else "( s)"
 
-        yield TestResult(
-            target=file.parent.name,
-            benchmark_code=benchmark_code,
-            is_async=is_async,
-            test_type=test_type,
-            url=url,
-            **raw_test_data["result"],
-        )
+            yield TestResult(
+                target=target_dir.name,
+                benchmark_code=benchmark_code,
+                is_async=is_async,
+                test_type=test_type,
+                url=url,
+                **raw_test_data["result"],
+            )
 
 
 def build_df(results: Iterable[TestResult], percentile: Percentile) -> pd.DataFrame:
@@ -146,22 +147,20 @@ def draw_plot(
     plt.xticks(rotation=60, horizontalalignment="right")
     plt.tight_layout()
 
-    fig.savefig(output_dir.parent / f"result_{output_dir.stem}_{percentile}.png")
+    fig.savefig(output_dir / f"{output_dir.stem}_{percentile}.png")
 
 
 def make_plot(percentile: Percentile | Literal["all"] = "95") -> None:
     results_dir = root_path / "results"
-    for dir_ in results_dir.iterdir():
-        if dir_.is_dir():
-            results = list(collect_results(dir_))
-            percentiles: list[Percentile]
-            if percentile == "all":
-                percentiles = ["50", "75", "90", "95", "99"]
-            else:
-                percentiles = [percentile]
-            for p in percentiles:
-                df = build_df(results, percentile=p)
-                draw_plot(df, dir_, percentile=p, metric="load")
+    results = list(collect_results(results_dir))
+    percentiles: list[Percentile]
+    if percentile == "all":
+        percentiles = ["50", "75", "90", "95", "99"]
+    else:
+        percentiles = [percentile]
+    for p in percentiles:
+        df = build_df(results, percentile=p)
+        draw_plot(df, results_dir, percentile=p, metric="load")
 
 
 if __name__ == "__main__":

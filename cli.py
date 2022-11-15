@@ -93,10 +93,10 @@ def run_benchmarks(target: str, config: SuiteConfig) -> None:
             console.print(f"    [green]{config.duration} second benchmark {endpoint!r} complete")
 
 
-def run_target(framework: str, config: SuiteConfig) -> None:
+def run_target(target: str, config: SuiteConfig) -> None:
     root_path = Path()
     frameworks_path = root_path / "frameworks"
-    app_file = frameworks_path / f"{framework}_app.py"
+    app_file = frameworks_path / f"{target}_app.py"
     process = subprocess.Popen(
         [
             "uvicorn",
@@ -114,7 +114,7 @@ def run_target(framework: str, config: SuiteConfig) -> None:
     with console.status("  [yellow]Waiting for application server to come online"):
         wait_for_online()
     console.print("  [green]Server online")
-    run_benchmarks(framework, config=config)
+    run_benchmarks(target, config=config)
 
     console.print("  [yellow]Stopping server process")
     process.kill()
@@ -128,7 +128,17 @@ def _display_suite_config(config: SuiteConfig) -> None:
     console.print(f"Mode: {config.mode}")
 
 
+def _cleanup_results() -> None:
+    root_path = Path()
+    for target in (root_path / "results").iterdir():
+        if target.is_dir():
+            shutil.rmtree(target)
+        else:
+            target.unlink(missing_ok=True)
+
+
 def run_framework_benchmarks(frameworks: tuple[str, ...], config: SuiteConfig) -> None:
+    _cleanup_results()
     _display_suite_config(config)
     for framework in frameworks:
         console.print(f"[blue]Selecting benchmark {framework!r}")
@@ -136,11 +146,12 @@ def run_framework_benchmarks(frameworks: tuple[str, ...], config: SuiteConfig) -
 
 
 def run_branch_benchmarks(branches: tuple[str, ...], config: SuiteConfig) -> None:
+    _cleanup_results()
     _display_suite_config(config)
     for branch in branches:
         console.print(f"[blue]Selecting benchmark {branch!r}")
         install_target_starlite(branch)
-        run_target("starlite", config=config)
+        run_target(f"starlite_{branch.replace('.', '-')}", config=config)
 
 
 @click.group()
