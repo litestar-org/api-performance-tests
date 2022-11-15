@@ -1,3 +1,4 @@
+import shutil
 import subprocess
 from pathlib import Path
 from typing import Literal, NamedTuple
@@ -34,27 +35,28 @@ def install_target_starlite(version: str) -> None:
     with console.status(f"  [yellow]Installing Starlite {version}"):
         proc = subprocess.run(
             ["pip", "install", f"git+https://github.com/starlite-api/starlite.git@{version}"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
+            capture_output=True,
         )
     proc.check_returncode()
     console.print(f"  [green]Installed Starlite {version!r}")
 
 
 def wait_for_online() -> bool:
-    while True:
+    for _ in range(5):
         try:
-            res = httpx.get(f"http://127.0.0.1:{SERVER_PORT}/ping", timeout=0.1)
+            res = httpx.get(f"http://127.0.0.1:{SERVER_PORT}/ping", timeout=1)
             if res.status_code == 200:
                 return True
-        except httpx.ConnectError:
-            continue
+        except httpx.HTTPError:
+            pass
 
 
 def run_benchmarks(target: str, config: SuiteConfig) -> None:
     root_path = Path()
     results_path = root_path / "results" / target
-    results_path.mkdir(parents=True, exist_ok=True)
+    if results_path.exists():
+        shutil.rmtree(results_path)
+    results_path.mkdir(parents=True)
 
     bench_config = [f"--duration={config.duration}s"]
     if config.mode == "latency":
@@ -119,7 +121,7 @@ def run_target(framework: str, config: SuiteConfig) -> None:
 
 
 def _display_suite_config(config: SuiteConfig) -> None:
-    console.print(f"[blue]Starting suite..")
+    console.print("[blue]Starting suite..")
     console.print(f"Endpoint types: {', '.join(config.endpoint_types)}")
     console.print(f"Warmup duration: {config.warmup_duration}")
     console.print(f"Benchmark duration: {config.duration}")
