@@ -53,7 +53,8 @@ folder.
 To execute the tests:
 
 1. clone the repo
-2. run `./run.sh`
+2. build the docker image with `./build.sh`
+3. run the desired benchmarks with `./run.sh`
 
 
 ## Updating Dependencies
