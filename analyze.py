@@ -25,7 +25,7 @@ class RPSResults(ResultStats):
 
 
 class TestResult(TypedDict):
-    name: str
+    target: str
     benchmark_code: str
     test_type: str
     is_async: bool
@@ -42,18 +42,18 @@ def collect_results(results_dir: Path) -> Generator[TestResult, None, None]:
         is_async = sync_async == "async"
         url = raw_test_data["spec"]["url"]
 
-        benchmark_code = "/a-" if is_async else "/s-"
         if "/128" in url:
-            benchmark_code += "pp"
+            benchmark_code = "path params"
         elif "query-param" in url:
-            benchmark_code += "qp"
+            benchmark_code = "query params"
         elif "mixed-params" in url:
-            benchmark_code += "mp"
+            benchmark_code = "mixed params"
         else:
-            benchmark_code += "np"
+            benchmark_code = "no params"
+        benchmark_code += " (a)" if is_async else "( s)"
 
         yield TestResult(
-            name=file.parent.name,
+            target=file.parent.name,
             benchmark_code=benchmark_code,
             is_async=is_async,
             test_type=test_type,
@@ -65,7 +65,7 @@ def collect_results(results_dir: Path) -> Generator[TestResult, None, None]:
 def build_df(results: Iterable[TestResult], percentile: Percentile) -> pd.DataFrame:
     data = [
         {
-            "branch": result["name"],
+            "target": result["target"],
             "sync_async": result["is_async"],
             "test_type": result["test_type"],
             "url": result["url"],
@@ -76,7 +76,7 @@ def build_df(results: Iterable[TestResult], percentile: Percentile) -> pd.DataFr
         }
         for result in results
     ]
-    data = sorted(data, key=lambda r: r["branch"])
+    data = sorted(data, key=lambda r: r["target"])
     df = pd.DataFrame(data)
     return df
 
@@ -88,7 +88,7 @@ def draw_plot(
     metric: Metric,
 ) -> None:
     _df_test_data = df[df["test_type"] == "plaintext"]
-    branches = df["branch"].unique()
+    targets = df["target"].unique()
     benchmark_codes = sorted(df["benchmark_code"].unique())
 
     fig, ax = plt.subplots(figsize=(8.2, 4.8))
@@ -97,12 +97,12 @@ def draw_plot(
         data=_df_test_data,
         x="benchmark_code",
         y="benchmark_result",
-        hue="branch",
-        hue_order=branches,
+        hue="target",
+        hue_order=targets,
         order=benchmark_codes,
         palette=[
-            "#30323D",
             "#5C80BC",
+            "#30323D",
             "#c8c9c5",
             "#2dd4bf",
             "#a78bfa",
@@ -128,18 +128,22 @@ def draw_plot(
         width=0.7,
         ax=ax,
     )
+    ax.set(xlabel="benchmark type", ylabel=None)
+    plt.legend()
 
     if metric == "load":
         ax.yaxis.set_major_formatter(lambda i, pos: str(int(i / 1000)) + "k")
         plot.set(
-            title="Requests Processed - (higher is better)",
+            title=f"Requests per second - {percentile}th percentile  (higher is better)",
         )
     else:
-        plot.set(title="Latency - (lower is better)")
+        plot.set(title=f"Latency - {percentile}th percentile (lower is better)")
 
     x_coords = [p.get_x() + 0.5 * p.get_width() for p in ax.patches]
     y_coords = [p.get_height() for p in ax.patches]
     plt.errorbar(x=x_coords, y=y_coords, yerr=df["stddev"], fmt="none", c="k", capsize=4)
+    plt.xticks(rotation=60, horizontalalignment="right")
+    plt.tight_layout()
 
     fig.savefig(output_dir.parent / f"result_{output_dir.stem}_{percentile}.png")
 

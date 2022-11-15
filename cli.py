@@ -184,7 +184,7 @@ def bench_frameworks(
 @cli.command("bench-branches")
 @click.argument("branches", nargs=-1)
 @click.option("-d", "--duration", default=15)
-@click.option("-w", "--warmup-duration", default=5)
+@click.option("-w", "--warmup", default=5)
 @click.option(
     "-e",
     "--endpoints",
@@ -196,7 +196,7 @@ def bench_frameworks(
 def bench_branches(
     branches: tuple[str],
     duration: int,
-    warmup_duration: int,
+    warmup: int,
     endpoints: list[EndpointType],
     mode: BenchmarkMode,
 ) -> None:
@@ -204,7 +204,7 @@ def bench_branches(
         branches,
         config=SuiteConfig(
             duration=duration,
-            warmup_duration=warmup_duration,
+            warmup_duration=warmup,
             endpoint_types=endpoints,
             mode=mode,
         ),
