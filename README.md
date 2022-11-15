@@ -38,15 +38,6 @@ Setup is identical for all frameworks.
 7. sync endpoint with mixed parameters returning text (s-mp)
 8. async endpoint with mixed parameters returning text (a-mp)
 
-#### Autocannon Settings:
-
-Each endpoint for each framework is stress using the `autocannon` default settings x2 times.
-
-#### Uvicorn/Gunicorn Settings:
-
-The applications are launched using gunicorn with uvicorn workers - their number depends on the available threads in the
-machine. The settings are identical for all applications, you can see it in the `gunicorn.config.py` in each application
-folder.
 
 ## Executing the Tests
 
@@ -55,6 +46,41 @@ To execute the tests:
 1. clone the repo
 2. build the docker image with `./build.sh`
 3. run the desired benchmarks with `./run.sh`
+
+### Benchmarks
+#### Comparing against other frameworks
+
+- `./run.sh bench-frameworks -f all` will run tests comparing Starlite, Starlette, Sanic, FastAPI and blacksheep
+- `./run.sh bench-frameworks -f starlite -f sanic` will run tests comparing Starlite and Sanic
+
+#### Comparing different Starlite versions
+
+`./run.sh bench-branches v1.20.0 v1.39.0 performance_updates` will run tests comparing Starlite releases `v1.20.0`, `v1.39.0`
+and the `performance_updates` branch
+
+#### Settings
+
+|                                     |                                                      |
+|-------------------------------------|------------------------------------------------------|
+| -d, --duration                      | duration of the test          (default: 15s)         |
+| -w, --warmup                        | duration of the warmup period (default: 5s)          |
+| -e, --endpoints [sync&#124;async]   | endpoint types to select      (default: sync, async) |
+| -m, --mode      [load&#124;latency] | benchmarking mode (sustained load or burst latency)  |
+
+
+### Analyzing the results
+
+- `./run.sh analyze` will create plots of the test results and store them in the `results` folder
+- `./run.sh analyze -p 75` will create plots of the test results using measurements in the 75th percentile
+and store them in the `results` folder
+
+#### Running the analysis locally
+
+The above commands run the analysis within the docker image. This is not necessary, and you can set up your environment
+to run it locally as well:
+
+- Install dependencies with `poetry install`
+- Run analysis with `python cli.py analysis`
 
 
 ## Updating Dependencies
