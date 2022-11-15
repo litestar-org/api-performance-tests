@@ -1,6 +1,7 @@
 import json
+from collections.abc import Generator, Iterable
 from pathlib import Path
-from typing import Generator, Iterable, Literal, TypedDict
+from typing import Literal, TypedDict
 
 import matplotlib.pyplot as plt
 import pandas as pd

@@ -38,7 +38,6 @@ Setup is identical for all frameworks.
 7. sync endpoint with mixed parameters returning text (s-mp)
 8. async endpoint with mixed parameters returning text (a-mp)
 
-
 ## Executing the Tests
 
 To execute the tests:
@@ -48,6 +47,7 @@ To execute the tests:
 3. run the desired benchmarks with `./run.sh`
 
 ### Benchmarks
+
 #### Comparing against other frameworks
 
 - `./run.sh bench-frameworks -f all` will run tests comparing Starlite, Starlette, Sanic, FastAPI and blacksheep
@@ -60,19 +60,18 @@ and the `performance_updates` branch
 
 #### Settings
 
-|                                     |                                                      |
-|-------------------------------------|------------------------------------------------------|
-| -d, --duration                      | duration of the test          (default: 15s)         |
-| -w, --warmup                        | duration of the warmup period (default: 5s)          |
-| -e, --endpoints [sync&#124;async]   | endpoint types to select      (default: sync, async) |
-| -m, --mode      [load&#124;latency] | benchmarking mode (sustained load or burst latency)  |
-
+|                                   |                                                     |
+| --------------------------------- | --------------------------------------------------- |
+| -d, --duration                    | duration of the test (default: 15s)                 |
+| -w, --warmup                      | duration of the warmup period (default: 5s)         |
+| -e, --endpoints [sync&#124;async] | endpoint types to select (default: sync, async)     |
+| -m, --mode [load&#124;latency]    | benchmarking mode (sustained load or burst latency) |
 
 ### Analyzing the results
 
 - `./run.sh analyze` will create plots of the test results and store them in the `results` folder
 - `./run.sh analyze -p 75` will create plots of the test results using measurements in the 75th percentile
-and store them in the `results` folder
+  and store them in the `results` folder
 
 #### Running the analysis locally
 
@@ -81,7 +80,6 @@ to run it locally as well:
 
 - Install dependencies with `poetry install`
 - Run analysis with `python cli.py analysis`
-
 
 ## Updating Dependencies
 

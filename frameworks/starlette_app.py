@@ -2,7 +2,6 @@ from asyncio import sleep
 from typing import Any
 
 import orjson
-
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import JSONResponse, PlainTextResponse

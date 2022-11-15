@@ -1,7 +1,6 @@
 from asyncio import sleep
 
 from orjson import dumps
-
 from sanic import Sanic
 from sanic.response import json, text
 
