@@ -1,49 +1,43 @@
 import json
 from pathlib import Path
-from typing import Generator, NamedTuple
+from typing import Generator, Iterable, Literal, TypedDict
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 
 root_path = Path()
-results_dir = root_path / "results"
+
+Percentile = Literal["50", "75", "90", "95", "99"]
+Metric = Literal["rps", "latency"]
+
+Percentiles = TypedDict("Percentiles", {"50": int, "75": int, "90": int, "95": int, "99": int})
 
 
-class Percentiles(NamedTuple):
-    p_50: int
-    p_75: int
-    p_90: int
-    p_95: int
-    p_99: int
-
-
-class ResultStats(NamedTuple):
+class ResultStats(TypedDict):
     mean: int
     max: int
-    std_dev: int
+    stddev: int
 
 
-class TestResult(NamedTuple):
+class RPSResults(ResultStats):
+    percentiles: Percentiles
+
+
+class TestResult(TypedDict):
     name: str
     benchmark_code: str
     test_type: str
     is_async: bool
     url: str
     method: str
-    req_1xx: int
-    req_2xx: int
-    req_3xx: int
-    req_4xx: int
-    req_5xx: int
     latency: ResultStats
-    rps: ResultStats
-    rps_percentiles: Percentiles
+    rps: RPSResults
 
 
-def collect_results() -> Generator[TestResult, None, None]:
+def collect_results(results_dir: Path) -> Generator[TestResult, None, None]:
     for file in results_dir.glob("*.json"):
-        target, sync_async, test_type, *_ = file.name.split("-")
+        sync_async, test_type, *_ = file.name.split("-")
         raw_test_data = json.loads(file.read_text())
         is_async = sync_async == "async"
         url = raw_test_data["spec"]["url"]
@@ -59,48 +53,26 @@ def collect_results() -> Generator[TestResult, None, None]:
             benchmark_code += "np"
 
         yield TestResult(
-            name=target,
+            name=file.parent.name,
             benchmark_code=benchmark_code,
             is_async=is_async,
             test_type=test_type,
             url=url,
-            method=raw_test_data["spec"]["method"],
-            req_1xx=raw_test_data["result"]["req1xx"],
-            req_2xx=raw_test_data["result"]["req2xx"],
-            req_3xx=raw_test_data["result"]["req3xx"],
-            req_4xx=raw_test_data["result"]["req4xx"],
-            req_5xx=raw_test_data["result"]["req5xx"],
-            latency=ResultStats(
-                mean=raw_test_data["result"]["latency"]["mean"],
-                max=raw_test_data["result"]["latency"]["max"],
-                std_dev=raw_test_data["result"]["latency"]["stddev"],
-            ),
-            rps=ResultStats(
-                mean=raw_test_data["result"]["rps"]["mean"],
-                max=raw_test_data["result"]["rps"]["max"],
-                std_dev=raw_test_data["result"]["rps"]["stddev"],
-            ),
-            rps_percentiles=Percentiles(
-                p_50=raw_test_data["result"]["rps"]["percentiles"]["50"],
-                p_75=raw_test_data["result"]["rps"]["percentiles"]["75"],
-                p_90=raw_test_data["result"]["rps"]["percentiles"]["90"],
-                p_95=raw_test_data["result"]["rps"]["percentiles"]["95"],
-                p_99=raw_test_data["result"]["rps"]["percentiles"]["99"],
-            ),
+            **raw_test_data["result"],
         )
 
 
-def build_df(results: Generator[TestResult, None, None]) -> pd.DataFrame:
+def build_df(results: Iterable[TestResult], percentile: Percentile) -> pd.DataFrame:
     data = [
         {
-            "branch": result.name,
-            "sync_async": result.is_async,
-            "test_type": result.test_type,
-            "url": result.url,
-            "benchmark_code": result.benchmark_code,
-            "benchmark_result": result.rps_percentiles.p_95,
-            "benchmark_result_mean": result.rps.mean,
-            "stddev": result.rps.std_dev,
+            "branch": result["name"],
+            "sync_async": result["is_async"],
+            "test_type": result["test_type"],
+            "url": result["url"],
+            "benchmark_code": result["benchmark_code"],
+            "benchmark_result_mean": result["rps"]["mean"],
+            "benchmark_result": result["rps"]["percentiles"][percentile],
+            "stddev": result["rps"]["stddev"],
         }
         for result in results
     ]
@@ -109,14 +81,19 @@ def build_df(results: Generator[TestResult, None, None]) -> pd.DataFrame:
     return df
 
 
-def draw_plot(df: pd.DataFrame) -> None:
+def draw_plot(
+    df: pd.DataFrame,
+    output_dir: Path,
+    percentile: Percentile,
+    metric: Metric,
+) -> None:
     _df_test_data = df[df["test_type"] == "plaintext"]
     branches = df["branch"].unique()
     benchmark_codes = sorted(df["benchmark_code"].unique())
 
     fig, ax = plt.subplots(figsize=(8.2, 4.8))
 
-    sns.barplot(
+    plot = sns.barplot(
         data=_df_test_data,
         x="benchmark_code",
         y="benchmark_result",
@@ -150,23 +127,37 @@ def draw_plot(df: pd.DataFrame) -> None:
         errorbar=None,
         width=0.7,
         ax=ax,
-    ).set(
-        title="Requests Processed - (higher is better)",
     )
-    ax.yaxis.set_major_formatter(lambda i, pos: str(int(i / 1000)) + "k")
+
+    if metric == "load":
+        ax.yaxis.set_major_formatter(lambda i, pos: str(int(i / 1000)) + "k")
+        plot.set(
+            title="Requests Processed - (higher is better)",
+        )
+    else:
+        plot.set(title="Latency - (lower is better)")
 
     x_coords = [p.get_x() + 0.5 * p.get_width() for p in ax.patches]
     y_coords = [p.get_height() for p in ax.patches]
     plt.errorbar(x=x_coords, y=y_coords, yerr=df["stddev"], fmt="none", c="k", capsize=4)
 
-    fig.savefig(results_dir / "result.png")
+    fig.savefig(output_dir.parent / f"result_{output_dir.stem}_{percentile}.png")
 
 
-def main() -> None:
-    results = collect_results()
-    df = build_df(results)
-    draw_plot(df)
+def make_plot(percentile: Percentile | Literal["all"] = "95") -> None:
+    results_dir = root_path / "results"
+    for dir_ in results_dir.iterdir():
+        if dir_.is_dir():
+            results = list(collect_results(dir_))
+            percentiles: list[Percentile]
+            if percentile == "all":
+                percentiles = ["50", "75", "90", "95", "99"]
+            else:
+                percentiles = [percentile]
+            for p in percentiles:
+                df = build_df(results, percentile=p)
+                draw_plot(df, dir_, percentile=p, metric="load")
 
 
 if __name__ == "__main__":
-    main()
+    make_plot()
