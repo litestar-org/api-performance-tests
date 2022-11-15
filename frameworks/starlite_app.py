@@ -47,14 +47,8 @@ def sync_plaintext_mixed_params(first: int, second: int) -> str:
     return f"The number is {first + second}"
 
 
-@get("/ping")
-def ping() -> str:
-    return "pong"
-
-
 app = Starlite(
     route_handlers=[
-        ping,
         async_plaintext_no_params,
         sync_plaintext_no_params,
         async_plaintext_path_param,

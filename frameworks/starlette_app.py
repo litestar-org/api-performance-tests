@@ -105,8 +105,3 @@ async def async_plaintext_mixed_params(request: Request) -> str:
 @app.route(path="/sync-plaintext-mixed-params/{second:str}", methods=["GET"])
 def sync_plaintext_mixed_params(request: Request) -> str:
     return PlainTextResponse(request.query_params["first"] + request.path_params["second"])
-
-
-@app.route("/ping")
-def ping() -> str:
-    return "pong"

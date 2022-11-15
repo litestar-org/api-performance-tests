@@ -45,7 +45,7 @@ def install_target_starlite(version: str) -> None:
 def wait_for_online() -> bool:
     for _ in range(5):
         try:
-            res = httpx.get(f"http://127.0.0.1:{SERVER_PORT}/ping", timeout=1)
+            res = httpx.get(f"http://127.0.0.1:{SERVER_PORT}/sync-plaintext-no-params", timeout=1)
             if res.status_code == 200:
                 return True
         except httpx.HTTPError:
@@ -134,7 +134,10 @@ def _display_suite_config(config: SuiteConfig) -> None:
 
 def _cleanup_results() -> None:
     root_path = Path()
-    for target in (root_path / "results").iterdir():
+    results_dir = root_path / "results"
+    if not results_dir.exists():
+        return
+    for target in results_dir.iterdir():
         if target.is_dir():
             shutil.rmtree(target)
         else:

@@ -98,8 +98,3 @@ async def async_plaintext_mixed_params(first: str, second: str) -> str:
 @app.get("/sync-plaintext-mixed-params/{second:str}")
 def sync_plaintext_mixed_params(first: str, second: str) -> str:
     return first + second
-
-
-@app.route("/ping")
-def ping() -> str:
-    return "pong"
