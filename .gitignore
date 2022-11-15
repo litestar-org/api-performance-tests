@@ -6,3 +6,4 @@ __pycache__/
 *.iml
 node_modules/
 requirements.txt
+/.python-version
