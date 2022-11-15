@@ -1,5 +1,6 @@
 import shutil
 import subprocess
+import time
 from pathlib import Path
 from typing import Literal, NamedTuple
 
@@ -48,7 +49,8 @@ def wait_for_online() -> bool:
             if res.status_code == 200:
                 return True
         except httpx.HTTPError:
-            pass
+            time.sleep(1)
+    return False
 
 
 def run_benchmarks(target: str, config: SuiteConfig) -> None:
@@ -93,7 +95,8 @@ def run_benchmarks(target: str, config: SuiteConfig) -> None:
             console.print(f"    [green]{config.duration} second benchmark {endpoint!r} complete")
 
 
-def run_target(target: str, config: SuiteConfig) -> None:
+def run_target(target: str, config: SuiteConfig, name: str = "") -> None:
+    name = name or target
     root_path = Path()
     frameworks_path = root_path / "frameworks"
     app_file = frameworks_path / f"{target}_app.py"
@@ -112,9 +115,10 @@ def run_target(target: str, config: SuiteConfig) -> None:
         stderr=subprocess.PIPE,
     )
     with console.status("  [yellow]Waiting for application server to come online"):
-        wait_for_online()
+        if not wait_for_online():
+            raise RuntimeError("server not available")
     console.print("  [green]Server online")
-    run_benchmarks(target, config=config)
+    run_benchmarks(name, config=config)
 
     console.print("  [yellow]Stopping server process")
     process.kill()
@@ -151,7 +155,7 @@ def run_branch_benchmarks(branches: tuple[str, ...], config: SuiteConfig) -> Non
     for branch in branches:
         console.print(f"[blue]Selecting benchmark {branch!r}")
         install_target_starlite(branch)
-        run_target(f"starlite_{branch.replace('.', '-')}", config=config)
+        run_target("starlite", config=config, name=f"starlite_{branch.replace('.', '-')}")
 
 
 @click.group()
