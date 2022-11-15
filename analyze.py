@@ -200,4 +200,4 @@ def make_rps_plot(percentile: Percentile | Literal["all"] = "95", test_type: str
 def make_latency_plot(test_type: str = "plaintext") -> None:
     results_dir = root_path / "results"
     df = build_latency_df(collect_results(results_dir))
-    draw_latency_plot(df, results_dir)
+    draw_latency_plot(df, results_dir, test_type=test_type)
