@@ -53,7 +53,7 @@ sns.barplot(
     hue="framework",
     hue_order=frameworks,
     order=benchmark_codes,
-    palette=["#30323D", "#42577a", "#5C80BC", "#f5d23d", "#c8c9c5"],
+    palette=["#c084fc", "#22c55e", "#facc15", "#dc2626", "#60a5fa"],
     edgecolor="#FFFFFF",
     errorbar=None,
     width=0.7,
