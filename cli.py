@@ -100,7 +100,7 @@ def run_benchmarks(target: str, config: SuiteConfig) -> None:
                     ]
                 )
                 time.sleep(1)
-            with console.status(f"  [cyan]Running {config.mode} benchmark {endpoint!r}"), open(
+            with console.status(f"  [cyan]{config.mode.title()} benchmark running: {endpoint!r}"), open(
                 results_file, "w"
             ) as out:
                 subprocess.run(
@@ -113,7 +113,7 @@ def run_benchmarks(target: str, config: SuiteConfig) -> None:
                     ],
                     stdout=out,
                 )
-            console.print(f"  [blue]{config.mode.title()} benchmark of {endpoint!r} complete")
+            console.print(f"  [green]{config.mode.title()} benchmark completed: {endpoint!r}")
 
 
 def run_target(target: str, config: SuiteConfig, name: str = "") -> None:
@@ -154,9 +154,9 @@ def _display_suite_config(config: SuiteConfig) -> None:
     if config.duration:
         console.print(f"Benchmark duration:     {config.duration}")
     if config.request_limit:
-        console.print(f"Requests:                   {config.request_limit}")
+        console.print(f"Requests:               {config.request_limit}")
     if config.rate_limit:
-        console.print(f"Rate limit:                     {config.rate_limit}")
+        console.print(f"Rate limit:             {config.rate_limit}")
 
 
 def _cleanup_results() -> None:
