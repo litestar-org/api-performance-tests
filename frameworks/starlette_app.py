@@ -18,7 +18,7 @@ class ORJSONResponse(JSONResponse):
 
 @app.route(path="/async-json-no-params", methods=["GET"])
 async def async_json_no_params(_) -> ORJSONResponse:
-    await sleep(0.0000000001)
+    await sleep(0)
     return ORJSONResponse({"message": "Hello, world!"})
 
 
@@ -29,7 +29,7 @@ def sync_json_no_params(_) -> ORJSONResponse:
 
 @app.route(path="/async-json/{first:str}", methods=["GET"])
 async def async_json_path_param(request: Request) -> ORJSONResponse:
-    await sleep(0.0000000001)
+    await sleep(0)
     return ORJSONResponse({"message": request.path_params["first"]})
 
 
@@ -40,7 +40,7 @@ def sync_json_path_param(request: Request) -> ORJSONResponse:
 
 @app.route(path="/async-json-query-param", methods=["GET"])
 async def async_json_query_param(request: Request) -> ORJSONResponse:
-    await sleep(0.0000000001)
+    await sleep(0)
     return ORJSONResponse({"message": request.query_params["first"]})
 
 
@@ -51,7 +51,7 @@ def sync_json_query_param(request: Request) -> ORJSONResponse:
 
 @app.route(path="/async-json-mixed-params/{second:str}", methods=["GET"])
 async def async_json_mixed_params(request: Request) -> ORJSONResponse:
-    await sleep(0.0000000001)
+    await sleep(0)
     return ORJSONResponse({"message": request.query_params["first"] + request.path_params["second"]})
 
 
@@ -65,7 +65,7 @@ def sync_json_mixed_params(request: Request) -> ORJSONResponse:
 
 @app.route(path="/async-plaintext-no-params", methods=["GET"])
 async def async_plaintext_no_params(_) -> str:
-    await sleep(0.0000000001)
+    await sleep(0)
     return PlainTextResponse("Hello, world!")
 
 
@@ -76,7 +76,7 @@ def sync_plaintext_no_params(_) -> str:
 
 @app.route(path="/async-plaintext/{first:str}", methods=["GET"])
 async def async_plaintext_path_param(request: Request) -> str:
-    await sleep(0.0000000001)
+    await sleep(0)
     return PlainTextResponse(request.path_params["first"])
 
 
@@ -87,7 +87,7 @@ def sync_plaintext_path_param(request: Request) -> str:
 
 @app.route(path="/async-plaintext-query-param", methods=["GET"])
 async def async_plaintext_query_param(request: Request) -> str:
-    await sleep(0.0000000001)
+    await sleep()
     return PlainTextResponse(request.query_params["first"])
 
 
@@ -98,7 +98,7 @@ def sync_plaintext_query_param(request: Request) -> str:
 
 @app.route(path="/async-plaintext-mixed-params/{second:str}", methods=["GET"])
 async def async_plaintext_mixed_params(request: Request) -> str:
-    await sleep(0.0000000001)
+    await sleep(0)
     return PlainTextResponse(request.query_params["first"] + request.path_params["second"])
 
 
