@@ -3,6 +3,7 @@ import subprocess
 import time
 from pathlib import Path
 from typing import Literal, NamedTuple
+from dataclasses import dataclass
 
 import click
 import httpx
@@ -26,14 +27,19 @@ FRAMEWORKS = ["starlite", "starlette", "fastapi", "sanic", "blacksheep"]
 
 SERVER_PORT = 8081
 EndpointType = Literal["sync", "async"]
+TestType = Literal["json", "plaintext"]
 BenchmarkMode = Literal["load", "latency"]
 
 
-class SuiteConfig(NamedTuple):
-    duration: int
+@dataclass(frozen=True)
+class SuiteConfig:
     warmup_duration: int
     endpoint_types: list[EndpointType]
     mode: BenchmarkMode
+    test_types: tuple[TestType, ...]
+    request_limit: int | None = None
+    rate_limit: int | None = None
+    duration: int | None = None
 
 
 console = rich.console.Console()
@@ -67,28 +73,36 @@ def run_benchmarks(target: str, config: SuiteConfig) -> None:
         shutil.rmtree(results_path)
     results_path.mkdir(parents=True)
 
-    bench_config = [f"--duration={config.duration}s"]
-    if config.mode == "latency":
-        bench_config.extend(["--rate=100"])
+    bench_config = []
+    if config.duration:
+        bench_config.append(f"--duration={config.duration}")
+    if config.rate_limit:
+        bench_config.append(f"--rate={config.rate_limit}")
+    if config.request_limit:
+        bench_config.append(f"--requests={config.request_limit}")
 
-    for endpoint_suffix in ENDPOINTS:
+    if not bench_config:
+        raise ValueError("Invalid configuration")
+
+    for endpoint_suffix in [e for e in ENDPOINTS if e.startswith(config.test_types)]:
         for endpoint_type in config.endpoint_types:
             endpoint = f"{endpoint_type}-{endpoint_suffix}"
             results_file = (results_path / endpoint.replace("/", "-")).with_suffix(".json")
 
-            console.print(f"  [cyan]Benchmarking: {endpoint} ")
-            with console.status("    [yellow]Warming up endpoint"):
+            with console.status("  [yellow]Warming up endpoint"):
                 subprocess.run(
                     [
                         "./bombardier",
                         f"http://127.0.0.1:{SERVER_PORT}/{endpoint}",
+                        "--latencies",
                         f"--duration={config.warmup_duration}s",
                         "--no-print",
                     ]
                 )
-            with console.status(
-                f"    [yellow]Running {config.duration} second {config.mode} benchmark {endpoint!r}"
-            ), open(results_file, "w") as out:
+                time.sleep(1)
+            with console.status(f"  [yellow]Running {config.mode} benchmark {endpoint!r}"), open(
+                results_file, "w"
+            ) as out:
                 subprocess.run(
                     [
                         "./bombardier",
@@ -99,7 +113,7 @@ def run_benchmarks(target: str, config: SuiteConfig) -> None:
                     ],
                     stdout=out,
                 )
-            console.print(f"    [green]{config.duration} second benchmark {endpoint!r} complete")
+            console.print(f"  [green]{config.mode} benchmark of {endpoint!r} complete")
 
 
 def run_target(target: str, config: SuiteConfig, name: str = "") -> None:
@@ -133,10 +147,16 @@ def run_target(target: str, config: SuiteConfig, name: str = "") -> None:
 
 def _display_suite_config(config: SuiteConfig) -> None:
     console.print("[blue]Starting suite..")
-    console.print(f"Endpoint types: {', '.join(config.endpoint_types)}")
-    console.print(f"Warmup duration: {config.warmup_duration}")
-    console.print(f"Benchmark duration: {config.duration}")
-    console.print(f"Mode: {config.mode}")
+    console.print(f"Mode: {config.mode}", justify="right")
+    console.print(f"Endpoint types: {', '.join(config.endpoint_types)}", justify="right")
+    console.print(f"Test types: {', '.join(config.test_types)}", justify="right")
+    console.print(f"Warmup duration: {config.warmup_duration}", justify="right")
+    if config.duration:
+        console.print(f"Benchmark duration: {config.duration}", justify="right")
+    if config.request_limit:
+        console.print(f"Requests: {config.request_limit}", justify="right")
+    if config.rate_limit:
+        console.print(f"Rate limit: {config.rate_limit}", justify="right")
 
 
 def _cleanup_results() -> None:
@@ -177,7 +197,6 @@ def cli() -> None:
 @click.option("-f", "--frameworks", type=click.Choice([*FRAMEWORKS, "all"]), multiple=True)
 @click.option("-d", "--duration", default=15)
 @click.option("-w", "--warmup", default=5)
-@click.option("-m", "--mode", type=click.Choice(["load", "latency"]), default="load")
 @click.option(
     "-e",
     "--endpoints",
@@ -185,11 +204,14 @@ def cli() -> None:
     multiple=True,
     default=("sync", "async"),
 )
+@click.option("-m", "--mode", type=click.Choice(["load", "latency"]), default="load")
+@click.option("-t", "--type", type=click.Choice(["plaintext"]), default="plaintext", multiple=True)
 def bench_frameworks(
     frameworks: tuple[str, ...],
     duration: int,
     warmup: int,
     endpoints: list[EndpointType],
+    type: tuple[TestType, ...],
     mode: BenchmarkMode,
 ) -> None:
     if frameworks == ("all",):
@@ -201,6 +223,7 @@ def bench_frameworks(
             warmup_duration=warmup,
             endpoint_types=endpoints,
             mode=mode,
+            test_types=type,
         ),
     )
 
@@ -217,12 +240,14 @@ def bench_frameworks(
     default=("sync", "async"),
 )
 @click.option("-m", "--mode", type=click.Choice(["load", "latency"]), default="load")
+@click.option("-t", "--type", type=click.Choice(["plaintext"]), default="plaintext", multiple=True)
 def bench_branches(
     branches: tuple[str],
     duration: int,
     warmup: int,
     endpoints: list[EndpointType],
     mode: BenchmarkMode,
+    type: tuple[TestType, ...],
 ) -> None:
     run_branch_benchmarks(
         branches,
@@ -231,15 +256,16 @@ def bench_branches(
             warmup_duration=warmup,
             endpoint_types=endpoints,
             mode=mode,
+            test_types=type,
         ),
     )
 
 
 @cli.command("analyze")
 @click.option("-p", "--percentile", type=click.Choice(["50", "75", "90", "95", "99", "all"]), default="95")
-@click.option("-m", "--metric", default="load")
-@click.option("-t", "--type", type=click.Choice(["plaintext"]), default="plaintext")
-def analyze_command(percentile: analyze.Percentile | Literal["all"], metric: str, type: str) -> None:
+@click.option("-m", "--metric", default="load", type=click.Choice(["load", "latency"]))
+@click.option("-t", "--type", type=click.Choice(["plaintext", "json"]), default="plaintext")
+def analyze_command(percentile: analyze.Percentile | Literal["all"], metric: str, type: TestType) -> None:
     if metric == "load":
         analyze.make_rps_plot(percentile, test_type=type)
     else:
