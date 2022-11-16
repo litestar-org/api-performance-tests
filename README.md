@@ -49,22 +49,38 @@ To execute the tests:
 
 #### Comparing against other frameworks
 
-- `./run.sh bench-frameworks -f all` will run tests comparing Starlite, Starlette, Sanic, FastAPI and blacksheep
-- `./run.sh bench-frameworks -f starlite -f sanic` will run tests comparing Starlite and Sanic
+- `./run.sh bench rps -f all` will run tests comparing requests per second of Starlite, Starlette, Sanic, FastAPI and blacksheep
+- `./run.sh bench rps -f starlite -f sanic` will run tests comparing requests per second of Starlite and Sanic
+- `./run.sh bench latency -f all` will run tests comparing requests per second of Starlite, Starlette, Sanic, FastAPI and blacksheep
+- `./run.sh bench latency -f starlite -f sanic` will run tests comparing requests per second of Starlite and Sanic
 
 #### Comparing different Starlite versions
 
-`./run.sh bench-branches v1.20.0 v1.39.0 performance_updates` will run tests comparing Starlite releases `v1.20.0`, `v1.39.0`
+`./run.sh bench rps -b v1.20.0 v1.39.0 performance_updates` will run rps tests, comparing Starlite releases `v1.20.0`, `v1.39.0`
 and the `performance_updates` branch
 
-#### Settings
+#### Test Settings
 
-|                                   |                                                     |
-| --------------------------------- | --------------------------------------------------- |
-| -d, --duration                    | duration of the test (default: 15s)                 |
-| -w, --warmup                      | duration of the warmup period (default: 5s)         |
-| -e, --endpoints [sync&#124;async] | endpoint types to select (default: sync, async)     |
-| -m, --mode [load&#124;latency]    | benchmarking mode (sustained load or burst latency) |
+|                                   |                                                 |
+| --------------------------------- | ----------------------------------------------- |
+| -w, --warmup                      | duration of the warmup period (default: 5s)     |
+| -e, --endpoints [sync&#124;async] | endpoint types to select (default: sync, async) |
+| -t, --type [plaintext&#124;json]  | test types to select (default: plaintext, json) |
+| -f, --frameworks                  | frameworks to tests                             |
+| -b, --branches                    | starlite branches to tests                      |
+
+#### RPS settings
+
+|                |                                              |
+| -------------- | -------------------------------------------- |
+| -d, --duration | duration of the testing period (default: 5s) |
+
+#### Latency Settings
+
+|                |                                    |
+| -------------- | ---------------------------------- |
+| -l, --limit    | rate limit for requests per second |
+| -r, --requests | total number of requests           |
 
 ### Analyzing the results
 
