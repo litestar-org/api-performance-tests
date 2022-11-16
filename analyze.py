@@ -1,11 +1,14 @@
 import json
 from collections.abc import Generator, Iterable
 from pathlib import Path
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, TYPE_CHECKING
 
 import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
+
+if TYPE_CHECKING:
+    from cli import TestType
 
 root_path = Path()
 
@@ -180,11 +183,16 @@ def draw_plot(
 
 
 def draw_latency_plot(df: pd.DataFrame, output_dir: Path, test_type: str) -> None:
-    fig, ax = _configure_plot(df, test_type=test_type, title="Latency - (lower is better)")
+    fig, ax = _configure_plot(df, test_type=test_type, title="Mean latency (lower is better)")
+
+    # ax.yaxis.set_major_formatter(lambda i, pos: str(int(i / 1000)) + "ms")
+    ax.yaxis.set_major_formatter(lambda i, pos: f"{i / 1000}ms")
+
+    plt.tight_layout()
     fig.savefig(output_dir / f"{output_dir.stem}_latency.png")
 
 
-def make_rps_plot(percentile: Percentile | Literal["all"] = "95", test_type: str = "plaintext") -> None:
+def make_rps_plot(percentile: Percentile | Literal["all"] = "95", test_type: TestType = "plaintext") -> None:
     results_dir = root_path / "results"
     results = list(collect_results(results_dir))
     percentiles: list[Percentile]
