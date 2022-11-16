@@ -1,9 +1,9 @@
 import shutil
 import subprocess
 import time
-from pathlib import Path
-from typing import Literal, NamedTuple
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Literal, TypedDict
 
 import click
 import httpx
@@ -28,7 +28,7 @@ FRAMEWORKS = ["starlite", "starlette", "fastapi", "sanic", "blacksheep"]
 SERVER_PORT = 8081
 EndpointType = Literal["sync", "async"]
 TestType = Literal["json", "plaintext"]
-BenchmarkMode = Literal["load", "latency"]
+BenchmarkMode = Literal["rps", "latency"]
 
 
 @dataclass(frozen=True)
@@ -75,7 +75,7 @@ def run_benchmarks(target: str, config: SuiteConfig) -> None:
 
     bench_config = []
     if config.duration:
-        bench_config.append(f"--duration={config.duration}")
+        bench_config.append(f"--duration={config.duration}s")
     if config.rate_limit:
         bench_config.append(f"--rate={config.rate_limit}")
     if config.request_limit:
@@ -100,7 +100,7 @@ def run_benchmarks(target: str, config: SuiteConfig) -> None:
                     ]
                 )
                 time.sleep(1)
-            with console.status(f"  [yellow]Running {config.mode} benchmark {endpoint!r}"), open(
+            with console.status(f"  [cyan]Running {config.mode} benchmark {endpoint!r}"), open(
                 results_file, "w"
             ) as out:
                 subprocess.run(
@@ -113,7 +113,7 @@ def run_benchmarks(target: str, config: SuiteConfig) -> None:
                     ],
                     stdout=out,
                 )
-            console.print(f"  [green]{config.mode} benchmark of {endpoint!r} complete")
+            console.print(f"  [blue]{config.mode.title()} benchmark of {endpoint!r} complete")
 
 
 def run_target(target: str, config: SuiteConfig, name: str = "") -> None:
@@ -147,16 +147,16 @@ def run_target(target: str, config: SuiteConfig, name: str = "") -> None:
 
 def _display_suite_config(config: SuiteConfig) -> None:
     console.print("[blue]Starting suite..")
-    console.print(f"Mode: {config.mode}", justify="right")
-    console.print(f"Endpoint types: {', '.join(config.endpoint_types)}", justify="right")
-    console.print(f"Test types: {', '.join(config.test_types)}", justify="right")
-    console.print(f"Warmup duration: {config.warmup_duration}", justify="right")
+    console.print(f"Mode:                   {config.mode}")
+    console.print(f"Endpoint types:         {', '.join(config.endpoint_types)}")
+    console.print(f"Test types:             {', '.join(config.test_types)}")
+    console.print(f"Warmup duration:        {config.warmup_duration}")
     if config.duration:
-        console.print(f"Benchmark duration: {config.duration}", justify="right")
+        console.print(f"Benchmark duration:     {config.duration}")
     if config.request_limit:
-        console.print(f"Requests: {config.request_limit}", justify="right")
+        console.print(f"Requests:                   {config.request_limit}")
     if config.rate_limit:
-        console.print(f"Rate limit: {config.rate_limit}", justify="right")
+        console.print(f"Rate limit:                     {config.rate_limit}")
 
 
 def _cleanup_results() -> None:
@@ -188,14 +188,42 @@ def run_branch_benchmarks(branches: tuple[str, ...], config: SuiteConfig) -> Non
         run_target("starlite", config=config, name=f"starlite_{branch.replace('.', '-')}")
 
 
+class BenchCtx(TypedDict):
+    warmup: int
+    endpoints: list[EndpointType]
+    types: tuple[TestType, ...]
+
+
+def _run_bench_from_cmd(
+    ctx: click.Context,
+    frameworks: bool,
+    branches: bool,
+    targets: tuple[str, ...],
+    config: SuiteConfig,
+) -> None:
+    if frameworks == branches:
+        console.print("[red]--framework and --branches are mutually exclusive")
+        console.print(ctx.get_help())
+        ctx.abort()
+
+    if frameworks:
+        if targets == ("all",):
+            targets = FRAMEWORKS
+        diff = set(targets) - set(FRAMEWORKS)
+        if diff:
+            console.print(f"[red]Unsupported frameworks: {', '.join(diff)}")
+            ctx.abort()
+        run_framework_benchmarks(targets, config)
+    if branches:
+        run_branch_benchmarks(targets, config)
+
+
 @click.group()
 def cli() -> None:
     pass
 
 
-@cli.command("bench-frameworks")
-@click.option("-f", "--frameworks", type=click.Choice([*FRAMEWORKS, "all"]), multiple=True)
-@click.option("-d", "--duration", default=15)
+@cli.group()
 @click.option("-w", "--warmup", default=5)
 @click.option(
     "-e",
@@ -204,69 +232,72 @@ def cli() -> None:
     multiple=True,
     default=("sync", "async"),
 )
-@click.option("-m", "--mode", type=click.Choice(["load", "latency"]), default="load")
-@click.option("-t", "--type", type=click.Choice(["plaintext"]), default="plaintext", multiple=True)
-def bench_frameworks(
-    frameworks: tuple[str, ...],
-    duration: int,
+@click.option("-t", "--type", type=click.Choice(["plaintext", "json"]), default=("plaintext",), multiple=True)
+@click.pass_context
+def bench(
+    ctx: click.Context,
     warmup: int,
     endpoints: list[EndpointType],
     type: tuple[TestType, ...],
-    mode: BenchmarkMode,
 ) -> None:
-    if frameworks == ("all",):
-        frameworks = FRAMEWORKS
-    run_framework_benchmarks(
-        frameworks,
-        config=SuiteConfig(
-            duration=duration,
-            warmup_duration=warmup,
-            endpoint_types=endpoints,
-            mode=mode,
-            test_types=type,
-        ),
-    )
+    ctx.ensure_object(dict)
+    ctx.obj["warmup"] = warmup
+    ctx.obj["endpoints"] = endpoints
+    ctx.obj["types"] = type
 
 
-@cli.command("bench-branches")
-@click.argument("branches", nargs=-1)
-@click.option("-d", "--duration", default=15)
-@click.option("-w", "--warmup", default=5)
-@click.option(
-    "-e",
-    "--endpoints",
-    type=click.Choice(["sync", "async"], case_sensitive=False),
-    multiple=True,
-    default=("sync", "async"),
-)
-@click.option("-m", "--mode", type=click.Choice(["load", "latency"]), default="load")
-@click.option("-t", "--type", type=click.Choice(["plaintext"]), default="plaintext", multiple=True)
-def bench_branches(
-    branches: tuple[str],
+@bench.command("rps")
+@click.option("-f", "--frameworks", is_flag=True, default=False)
+@click.option("-b", "--branches", is_flag=True, default=False)
+@click.option("-d", "--duration", default=15, show_default=True)
+@click.argument("targets", nargs=-1)
+@click.pass_context
+def rps_command(
+    ctx: click.Context,
+    frameworks: bool,
+    branches: bool,
+    targets: tuple[str, ...],
     duration: int,
-    warmup: int,
-    endpoints: list[EndpointType],
-    mode: BenchmarkMode,
-    type: tuple[TestType, ...],
 ) -> None:
-    run_branch_benchmarks(
-        branches,
-        config=SuiteConfig(
-            duration=duration,
-            warmup_duration=warmup,
-            endpoint_types=endpoints,
-            mode=mode,
-            test_types=type,
-        ),
+    ctx_data: BenchCtx = ctx.obj
+    config = SuiteConfig(
+        test_types=ctx_data["types"],
+        endpoint_types=ctx_data["endpoints"],
+        warmup_duration=ctx_data["warmup"],
+        mode="rps",
+        duration=duration,
     )
+    _run_bench_from_cmd(ctx=ctx, frameworks=frameworks, branches=branches, targets=targets, config=config)
+
+
+@bench.command("latency")
+@click.option("-f", "--frameworks", is_flag=True, default=False)
+@click.option("-b", "--branches", is_flag=True, default=False)
+@click.option("-l", "--limit", default=20, help="max requests per second", show_default=True)
+@click.option("-r", "--requests", default=1000, help="total number of requests", show_default=True)
+@click.argument("targets", nargs=-1)
+@click.pass_context
+def latency_cmd(
+    ctx: click.Context, frameworks: bool, branches: bool, targets: tuple[str, ...], limit: int, requests: int
+) -> None:
+    ctx_data: BenchCtx = ctx.obj
+    config = SuiteConfig(
+        test_types=ctx_data["types"],
+        endpoint_types=ctx_data["endpoints"],
+        warmup_duration=ctx_data["warmup"],
+        mode="latency",
+        rate_limit=limit,
+        request_limit=requests,
+    )
+    _run_bench_from_cmd(ctx=ctx, frameworks=frameworks, branches=branches, targets=targets, config=config)
 
 
 @cli.command("analyze")
 @click.option("-p", "--percentile", type=click.Choice(["50", "75", "90", "95", "99", "all"]), default="95")
-@click.option("-m", "--metric", default="load", type=click.Choice(["load", "latency"]))
+@click.option("-m", "--metric", default="rps", type=click.Choice(["rps", "latency"]))
 @click.option("-t", "--type", type=click.Choice(["plaintext", "json"]), default="plaintext")
 def analyze_command(percentile: analyze.Percentile | Literal["all"], metric: str, type: TestType) -> None:
-    if metric == "load":
+    if metric == "rps":
         analyze.make_rps_plot(percentile, test_type=type)
     else:
         analyze.make_latency_plot(test_type=type)

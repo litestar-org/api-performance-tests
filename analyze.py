@@ -1,7 +1,9 @@
+from __future__ import annotations
+
 import json
 from collections.abc import Generator, Iterable
 from pathlib import Path
-from typing import Literal, TypedDict, TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal, TypedDict
 
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -61,6 +63,7 @@ class TestResult(TypedDict):
     method: str
     latency: ResultStats
     rps: RPSResults
+    spec: dict
 
 
 def collect_results(results_dir: Path) -> Generator[TestResult, None, None]:
@@ -83,12 +86,17 @@ def collect_results(results_dir: Path) -> Generator[TestResult, None, None]:
                 benchmark_code = "no params"
             benchmark_code += " (a)" if is_async else "( s)"
 
+            name = target_dir.name
+            if name.startswith("starlite") and "v" in name:
+                name = name.replace("_", " ").replace("-", ".")
+
             yield TestResult(
-                target=target_dir.name,
+                target=name,
                 benchmark_code=benchmark_code,
                 is_async=is_async,
                 test_type=test_type,
                 url=url,
+                spec=raw_test_data["spec"],
                 **raw_test_data["result"],
             )
 
@@ -159,7 +167,7 @@ def _configure_plot(df: pd.DataFrame, title: str, test_type: str = "plaintext") 
     return fig, ax
 
 
-def draw_plot(
+def draw_rps_plot(
     df: pd.DataFrame,
     output_dir: Path,
     percentile: Percentile,
@@ -182,10 +190,16 @@ def draw_plot(
     fig.savefig(output_dir / f"{output_dir.stem}_rps_{percentile}.png")
 
 
-def draw_latency_plot(df: pd.DataFrame, output_dir: Path, test_type: str) -> None:
-    fig, ax = _configure_plot(df, test_type=test_type, title="Mean latency (lower is better)")
+def draw_latency_plot(results: list[TestResult], df: pd.DataFrame, output_dir: Path, test_type: str) -> None:
+    spec = results[0]["spec"]
+    requests = spec["numberOfRequests"]
+    rps = spec["rate"]
+    fig, ax = _configure_plot(
+        df,
+        test_type=test_type,
+        title=f"Mean latency across {requests} requests at {rps}rps (lower is better)",
+    )
 
-    # ax.yaxis.set_major_formatter(lambda i, pos: str(int(i / 1000)) + "ms")
     ax.yaxis.set_major_formatter(lambda i, pos: f"{i / 1000}ms")
 
     plt.tight_layout()
@@ -202,10 +216,11 @@ def make_rps_plot(percentile: Percentile | Literal["all"] = "95", test_type: Tes
         percentiles = [percentile]
     for p in percentiles:
         df = build_df(results, percentile=p)
-        draw_plot(df, results_dir, percentile=p, test_type=test_type)
+        draw_rps_plot(df, results_dir, percentile=p, test_type=test_type)
 
 
 def make_latency_plot(test_type: str = "plaintext") -> None:
     results_dir = root_path / "results"
-    df = build_latency_df(collect_results(results_dir))
-    draw_latency_plot(df, results_dir, test_type=test_type)
+    results = list(collect_results(results_dir))
+    df = build_latency_df(results)
+    draw_latency_plot(results, df, results_dir, test_type=test_type)

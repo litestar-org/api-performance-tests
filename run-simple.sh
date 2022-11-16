@@ -1,5 +1,5 @@
 #!/bin/bash
 
 ./build.sh
-./run.sh bench-frameworks --frameworks all
+./run.sh bench -e async -t plaintext rps --frameworks all
 ./run.sh analyze
