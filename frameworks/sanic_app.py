@@ -11,7 +11,7 @@ app = Sanic("MyApp")
 
 @app.get("/async-json-no-params")
 async def async_json_no_params(_) -> dict:
-    await sleep(0.0000000001)
+    await sleep(0)
     return json({"message": "Hello, world!"}, dumps=dumps)
 
 
@@ -22,7 +22,7 @@ def sync_json_no_params(_) -> dict:
 
 @app.get("/async-json/<first:str>")
 async def async_json_path_param(_, first: str) -> dict:
-    await sleep(0.0000000001)
+    await sleep(0)
     return json({"message": first}, dumps=dumps)
 
 
@@ -33,7 +33,7 @@ def sync_json_path_param(_, first: str) -> dict:
 
 @app.get("/async-json-query-param")
 async def async_json_query_param(request) -> dict:
-    await sleep(0.0000000001)
+    await sleep(0)
     return json({"message": request.args.get("first")}, dumps=dumps)
 
 
@@ -44,7 +44,7 @@ def sync_json_query_param(request) -> dict:
 
 @app.get("/async-json-mixed-params/<second:str>")
 async def async_json_mixed_params(request, second: str) -> dict:
-    await sleep(0.0000000001)
+    await sleep(0)
     return json({"message": request.args.get("first") + second}, dumps=dumps)
 
 
@@ -58,7 +58,7 @@ def sync_json_mixed_params(request, second: str) -> dict:
 
 @app.get("/async-plaintext-no-params")
 async def async_plaintext_no_params(_) -> str:
-    await sleep(0.0000000001)
+    await sleep(0)
     return text("Hello, world!")
 
 
@@ -69,7 +69,7 @@ def sync_plaintext_no_params(_) -> str:
 
 @app.get("/async-plaintext/<first:str>")
 async def async_plaintext_path_param(_, first: str) -> str:
-    await sleep(0.0000000001)
+    await sleep(0)
     return text(first)
 
 
@@ -80,7 +80,7 @@ def sync_plaintext_path_param(_, first: str) -> str:
 
 @app.get("/async-plaintext-query-param")
 async def async_plaintext_query_param(request) -> str:
-    await sleep(0.0000000001)
+    await sleep(0)
     return text(request.args.get("first"))
 
 
@@ -91,7 +91,7 @@ def sync_plaintext_query_param(request) -> str:
 
 @app.get("/async-plaintext-mixed-params/<second:str>")
 async def async_plaintext_mixed_params(request, second: str) -> str:
-    await sleep(0.0000000001)
+    await sleep(0)
     return text(request.args.get("first") + second)
 
 
