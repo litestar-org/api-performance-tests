@@ -14,6 +14,7 @@ class ResultSpec(TypedDict):
 
 class RequestSpec(TypedDict, total=False):
     headers: dict[str, str]
+    params: dict[str, str]
     cookies: dict[str, str]
 
 
@@ -50,8 +51,14 @@ ENDPOINT_SPEC: dict[str, EndpointSpec] = {
     # params
     "no-params": {"result": {"status_code": HTTP_204_NO_CONTENT, "content": None}, "request": {}},
     "path-params/42": {"result": {"status_code": HTTP_204_NO_CONTENT, "content": None}, "request": {}},
-    "query-param?first=42": {"result": {"status_code": HTTP_204_NO_CONTENT, "content": None}, "request": {}},
-    "mixed-params/11?first=42": {"result": {"status_code": HTTP_204_NO_CONTENT, "content": None}, "request": {}},
+    "query-param": {
+        "result": {"status_code": HTTP_204_NO_CONTENT, "content": None},
+        "request": {"params": {"first": "42"}},
+    },
+    "mixed-params/11": {
+        "result": {"status_code": HTTP_204_NO_CONTENT, "content": None},
+        "request": {"params": {"first": "42"}},
+    },
     # headers
     "request-headers": {
         "result": {"status_code": HTTP_204_NO_CONTENT, "content": None},
