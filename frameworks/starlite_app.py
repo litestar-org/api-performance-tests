@@ -1,9 +1,10 @@
-from starlite import Cookie, File, MediaType, Request, ResponseHeader, Starlite, get
+from starlite import Cookie, File, MediaType, Request, ResponseHeader, Starlite, TestClient, get
 from starlite.status_codes import HTTP_204_NO_CONTENT
 
 from . import data
+from .test import EndpointSpec
 
-response_headers = {name: ResponseHeader(name=name, value=value) for name, value in data.RESPONSE_HEADERS.items()}
+response_headers = {name: ResponseHeader(value=value) for name, value in data.RESPONSE_HEADERS.items()}
 response_cookies = [Cookie(key=key, value=value) for key, value in data.RESPONSE_COOKIES.items()]
 
 
@@ -55,12 +56,12 @@ def sync_json_10k() -> dict:
 
 @get("/async-json-450k", media_type=MediaType.JSON)
 async def async_json_450k() -> dict:
-    return data.JSON_10K
+    return data.JSON_450K
 
 
 @get("/sync-json-450k", media_type=MediaType.JSON)
 def sync_json_450k() -> dict:
-    return data.JSON_10K
+    return data.JSON_450K
 
 
 # params
@@ -72,65 +73,65 @@ async def async_no_params() -> None:
 
 
 @get("/sync-no-params", status_code=HTTP_204_NO_CONTENT)
-def sync_no_params() -> str:
+def sync_no_params() -> None:
     pass
 
 
-@get("/async/{first:str}", status_code=HTTP_204_NO_CONTENT)
-async def async_path_param(first: int) -> str:
+@get("/async-path-params/{first:int}", status_code=HTTP_204_NO_CONTENT)
+async def async_path_param(first: int) -> None:
     pass
 
 
-@get("/sync/{first:str}", status_code=HTTP_204_NO_CONTENT)
-def sync_path_param(first: int) -> str:
+@get("/sync-path-params/{first:int}", status_code=HTTP_204_NO_CONTENT)
+def sync_path_param(first: int) -> None:
     pass
 
 
 @get("/async-query-param", status_code=HTTP_204_NO_CONTENT)
-async def async_query_param(first: int) -> str:
+async def async_query_param(first: int) -> None:
     pass
 
 
 @get("/sync-query-param", status_code=HTTP_204_NO_CONTENT)
-def sync_query_param(first: int) -> str:
+def sync_query_param(first: int) -> None:
     pass
 
 
-@get("/async-mixed-params/{second:str}", status_code=HTTP_204_NO_CONTENT)
-async def async_mixed_params(first: int, second: int) -> str:
+@get("/async-mixed-params/{second:int}", status_code=HTTP_204_NO_CONTENT)
+async def async_mixed_params(first: int, second: int) -> None:
     pass
 
 
-@get("/sync-mixed-params/{second:str}", status_code=HTTP_204_NO_CONTENT)
-def sync_mixed_params(first: int, second: int) -> str:
+@get("/sync-mixed-params/{second:int}", status_code=HTTP_204_NO_CONTENT)
+def sync_mixed_params(first: int, second: int) -> None:
     pass
 
 
 # headers
 
 
-@get("/async-request-headers")
+@get("/async-request-headers", status_code=HTTP_204_NO_CONTENT)
 async def async_request_headers(request: Request) -> None:
     header_dict = {}
-    for header_name, header_value in request.headers:
+    for header_name, header_value in request.headers.items():
         header_dict[header_name] = header_value
-    request.headers.getlist("header_1")
+    request.headers.getall("header_1")
 
 
-@get("/sync-request-headers")
+@get("/sync-request-headers", status_code=HTTP_204_NO_CONTENT)
 def sync_request_headers(request: Request) -> None:
     header_dict = {}
-    for header_name, header_value in request.headers:
+    for header_name, header_value in request.headers.items():
         header_dict[header_name] = header_value
-    request.headers.getlist("header_1")
+    request.headers.getall("header_1")
 
 
-@get("/async-response-headers", response_headers=response_headers)
+@get("/async-response-headers", response_headers=response_headers, status_code=HTTP_204_NO_CONTENT)
 async def async_response_headers() -> None:
     pass
 
 
-@get("/sync-response-headers", response_headers=response_headers)
+@get("/sync-response-headers", response_headers=response_headers, status_code=HTTP_204_NO_CONTENT)
 def sync_response_headers() -> None:
     pass
 
@@ -138,28 +139,59 @@ def sync_response_headers() -> None:
 # cookies
 
 
-@get("/async-request-cookies")
+@get("/async-request-cookies", status_code=HTTP_204_NO_CONTENT)
 async def async_request_cookies(request: Request) -> None:
     cookie_dict = {}
-    for cookie_name, cookie_value in request.cookies:
+    for cookie_name, cookie_value in request.cookies.items():
         cookie_dict[cookie_name] = cookie_value
 
 
-@get("/sync-request-cookies")
+@get("/sync-request-cookies", status_code=HTTP_204_NO_CONTENT)
 def sync_request_cookies(request: Request) -> None:
     cookie_dict = {}
-    for cookie_name, cookie_value in request.cookies:
+    for cookie_name, cookie_value in request.cookies.items():
         cookie_dict[cookie_name] = cookie_value
 
 
-@get("/async-response-cookies", response_cookies=response_cookies)
+@get("/async-response-cookies", response_cookies=response_cookies, status_code=HTTP_204_NO_CONTENT)
 async def async_response_cookies() -> None:
     pass
 
 
-@get("/sync-response-cookies", response_cookies=response_cookies)
+@get("/sync-response-cookies", response_cookies=response_cookies, status_code=HTTP_204_NO_CONTENT)
 def sync_response_cookies() -> None:
     pass
+
+
+# url
+
+
+@get("/async-url-access", status_code=HTTP_204_NO_CONTENT)
+async def async_url_access(request: Request) -> None:
+    scheme = request.url.scheme
+    netloc = request.url.netloc
+    path = request.url.path
+    fragment = request.url.fragment
+    query = request.url.query
+    username = request.url.username
+    password = request.url.password
+    port = request.url.port
+    hostname = request.url.hostname
+    query_params = request.url.query_params
+
+
+@get("/sync-url-access", status_code=HTTP_204_NO_CONTENT)
+def sync_url_access(request: Request) -> None:
+    scheme = request.url.scheme
+    netloc = request.url.netloc
+    path = request.url.path
+    fragment = request.url.fragment
+    query = request.url.query
+    username = request.url.username
+    password = request.url.password
+    port = request.url.port
+    hostname = request.url.hostname
+    query_params = request.url.query_params
 
 
 # files
@@ -211,11 +243,14 @@ app = Starlite(
         sync_plaintext_6k,
         async_plaintext_70k,
         sync_plaintext_70k,
+        #
         async_json_2k,
         sync_json_2k,
         async_json_10k,
+        sync_json_10k,
         async_json_450k,
         sync_json_450k,
+        #
         async_no_params,
         sync_no_params,
         async_path_param,
@@ -224,14 +259,20 @@ app = Starlite(
         sync_query_param,
         async_mixed_params,
         sync_mixed_params,
+        #
         async_request_headers,
         sync_request_headers,
         async_response_headers,
         sync_response_headers,
+        #
         async_request_cookies,
         sync_request_cookies,
         async_response_cookies,
         sync_response_cookies,
+        #
+        async_url_access,
+        sync_url_access,
+        #
         async_file_response_100b,
         sync_file_response_100b,
         async_file_response_1k,
@@ -243,3 +284,15 @@ app = Starlite(
     ],
     openapi_config=None,
 )
+
+
+def run_spec_test(url: str, spec: EndpointSpec) -> None:
+    with TestClient(app=app) as client:
+        res = client.get(url, **spec.get("request", {}))
+        assert res.status_code == spec["result"]["status_code"]
+        if expect_bytes := spec["result"].get("bytes"):
+            assert expect_bytes == res.content
+        if expect_text := spec["result"].get("text"):
+            assert expect_text == res.text
+        if expect_json := spec["result"].get("json"):
+            assert res.json() == expect_json
