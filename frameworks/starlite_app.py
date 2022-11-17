@@ -78,22 +78,22 @@ def sync_no_params() -> None:
 
 
 @get("/async-path-params/{first:int}", status_code=HTTP_204_NO_CONTENT)
-async def async_path_param(first: int) -> None:
+async def async_path_params(first: int) -> None:
     pass
 
 
 @get("/sync-path-params/{first:int}", status_code=HTTP_204_NO_CONTENT)
-def sync_path_param(first: int) -> None:
+def sync_path_params(first: int) -> None:
     pass
 
 
 @get("/async-query-param", status_code=HTTP_204_NO_CONTENT)
-async def async_query_param(first: int) -> None:
+async def async_query_params(first: int) -> None:
     pass
 
 
 @get("/sync-query-param", status_code=HTTP_204_NO_CONTENT)
-def sync_query_param(first: int) -> None:
+def sync_query_params(first: int) -> None:
     pass
 
 
@@ -177,7 +177,8 @@ async def async_url_access(request: Request) -> None:
     password = request.url.password
     port = request.url.port
     hostname = request.url.hostname
-    query_params = request.url.query_params
+    for key, value in request.query_params.items():
+        pass
 
 
 @get("/sync-url-access", status_code=HTTP_204_NO_CONTENT)
@@ -191,7 +192,8 @@ def sync_url_access(request: Request) -> None:
     password = request.url.password
     port = request.url.port
     hostname = request.url.hostname
-    query_params = request.url.query_params
+    for key, value in request.query_params.items():
+        pass
 
 
 # files
@@ -253,10 +255,10 @@ app = Starlite(
         #
         async_no_params,
         sync_no_params,
-        async_path_param,
-        sync_path_param,
-        async_query_param,
-        sync_query_param,
+        async_path_params,
+        sync_path_params,
+        async_query_params,
+        sync_query_params,
         async_mixed_params,
         sync_mixed_params,
         #
