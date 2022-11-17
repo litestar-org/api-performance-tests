@@ -183,31 +183,31 @@ def sync_response_cookies() -> Response:
 
 @app.route("/async-url-access")
 async def async_url_access(request: Request) -> None:
-    scheme = request.url.scheme
-    netloc = request.url.netloc
-    path = request.url.path
-    fragment = request.url.fragment
-    query = request.url.query
-    username = request.url.username
-    password = request.url.password
-    port = request.url.port
-    hostname = request.url.hostname
-    for param, value in request.query_params.items():
+    scheme = request.url.scheme  # noqa: F841
+    netloc = request.url.netloc  # noqa: F841
+    path = request.url.path  # noqa: F841
+    fragment = request.url.fragment  # noqa: F841
+    query = request.url.query  # noqa: F841
+    username = request.url.username  # noqa: F841
+    password = request.url.password  # noqa: F841
+    port = request.url.port  # noqa: F841
+    hostname = request.url.hostname  # noqa: F841
+    for param, value in request.query_params.items():  # noqa: B007
         pass
 
 
 @app.route("/sync-url-access")
 def sync_url_access(request: Request) -> None:
-    scheme = request.url.scheme
-    netloc = request.url.netloc
-    path = request.url.path
-    fragment = request.url.fragment
-    query = request.url.query
-    username = request.url.username
-    password = request.url.password
-    port = request.url.port
-    hostname = request.url.hostname
-    for param, value in request.query_params.items():
+    scheme = request.url.scheme  # noqa: F841
+    netloc = request.url.netloc  # noqa: F841
+    path = request.url.path  # noqa: F841
+    fragment = request.url.fragment  # noqa: F841
+    query = request.url.query  # noqa: F841
+    username = request.url.username  # noqa: F841
+    password = request.url.password  # noqa: F841
+    port = request.url.port  # noqa: F841
+    hostname = request.url.hostname  # noqa: F841
+    for param, value in request.query_params.items():  # noqa: B007
         pass
 
 

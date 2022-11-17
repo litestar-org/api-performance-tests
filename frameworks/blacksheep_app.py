@@ -2,7 +2,7 @@ import urllib.parse
 from typing import TYPE_CHECKING
 
 import anyio
-from blacksheep import Application, Request, Response, json, text, Cookie
+from blacksheep import Application, Cookie, Request, Response, json, text
 from blacksheep.server.responses import file, no_content
 from blacksheep.testing import TestClient
 
@@ -98,25 +98,25 @@ def sync_path_params(first: int) -> Response:
 
 @app.router.get("/async-query-param")
 async def async_query_params(request: Request) -> Response:
-    first = int(request.query.get("first")[0])
+    int(request.query.get("first")[0])
     return no_content()
 
 
 @app.router.get("/sync-query-param")
 def sync_query_params(request: Request) -> Response:
-    first = int(request.query.get("first")[0])
+    int(request.query.get("first")[0])
     return no_content()
 
 
 @app.router.get("/async-mixed-params/{second}")
 async def async_mixed_params(request: Request, second: int) -> Response:
-    first = int(request.query.get("first")[0])
+    int(request.query.get("first")[0])
     return no_content()
 
 
 @app.router.get("/sync-mixed-params/{second}")
 def sync_mixed_params(request: Request, second: int) -> Response:
-    first = int(request.query.get("first")[0])
+    int(request.query.get("first")[0])
     return no_content()
 
 
@@ -194,32 +194,32 @@ def sync_response_cookies() -> Response:
 @app.router.get("/async-url-access")
 async def async_url_access(request: Request) -> None:
     url = urllib.parse.urlsplit(request._url)
-    scheme = request.url.schema
-    netloc = url.netloc
-    path = request.url.path
-    fragment = request.url.fragment
-    query = request.url.query
-    username = url.username
-    password = url.password
-    port = request.url.port
-    hostname = url.hostname
-    for param, value in request.url.query.items():
+    scheme = request.url.schema  # noqa: F841
+    netloc = url.netloc  # noqa: F841
+    path = request.url.path  # noqa: F841
+    fragment = request.url.fragment  # noqa: F841
+    query = request.url.query  # noqa: F841
+    username = url.username  # noqa: F841
+    password = url.password  # noqa: F841
+    port = request.url.port  # noqa: F841
+    hostname = url.hostname  # noqa: F841
+    for param, value in request.url.query.items():  # noqa: B007
         pass
 
 
 @app.router.get("/sync-url-access")
 def sync_url_access(request: Request) -> None:
     url = urllib.parse.urlsplit(request._url)
-    scheme = request.url.schema
-    netloc = url.netloc
-    path = request.url.path
-    fragment = request.url.fragment
-    query = request.url.query
-    username = url.username
-    password = url.password
-    port = request.url.port
-    hostname = url.hostname
-    for param, value in request.url.query.items():
+    scheme = request.url.schema  # noqa: F841
+    netloc = url.netloc  # noqa: F841
+    path = request.url.path  # noqa: F841
+    fragment = request.url.fragment  # noqa: F841
+    query = request.url.query  # noqa: F841
+    username = url.username  # noqa: F841
+    password = url.password  # noqa: F841
+    port = request.url.port  # noqa: F841
+    hostname = url.hostname  # noqa: F841
+    for param, value in request.url.query.items():  # noqa: B007
         pass
 
 

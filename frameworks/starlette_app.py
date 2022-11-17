@@ -1,10 +1,8 @@
 from typing import TYPE_CHECKING
-from urllib.parse import parse_qsl
-
 
 from starlette.applications import Starlette
 from starlette.requests import Request
-from starlette.responses import FileResponse, Response, PlainTextResponse, JSONResponse
+from starlette.responses import FileResponse, JSONResponse, PlainTextResponse, Response
 from starlette.status import HTTP_204_NO_CONTENT
 from starlette.testclient import TestClient
 
@@ -86,39 +84,39 @@ def sync_no_params(request: Request) -> Response:
 
 @app.route("/async-path-params/{first:int}")
 async def async_path_params(request: Request) -> Response:
-    first = int(request.path_params["first"])
+    int(request.path_params["first"])
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 @app.route("/sync-path-params/{first:int}")
 def sync_path_params(request: Request) -> Response:
-    first = int(request.path_params["first"])
+    int(request.path_params["first"])
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 @app.route("/async-query-param")
 async def async_query_params(request: Request) -> Response:
-    first = int(request.query_params["first"])
+    int(request.query_params["first"])
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 @app.route("/sync-query-param")
 def sync_query_params(request: Request) -> Response:
-    first = int(request.query_params["first"])
+    int(request.query_params["first"])
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 @app.route("/async-mixed-params/{second:int}")
 async def async_mixed_params(request: Request) -> Response:
-    first = int(request.query_params["first"])
-    second = request.path_params["second"]
+    int(request.query_params["first"])
+    request.path_params["second"]
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 @app.route("/sync-mixed-params/{second:int}")
 def sync_mixed_params(request: Request) -> Response:
-    first = int(request.query_params["first"])
-    second = request.path_params["second"]
+    int(request.query_params["first"])
+    request.path_params["second"]
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
@@ -193,31 +191,31 @@ def sync_response_cookies(request: Request) -> Response:
 
 @app.route("/async-url-access")
 async def async_url_access(request: Request) -> None:
-    scheme = request.url.scheme
-    netloc = request.url.netloc
-    path = request.url.path
-    fragment = request.url.fragment
-    query = request.url.query
-    username = request.url.username
-    password = request.url.password
-    port = request.url.port
-    hostname = request.url.hostname
-    for param, value in request.query_params.items():
+    scheme = request.url.scheme  # noqa: F841
+    netloc = request.url.netloc  # noqa: F841
+    path = request.url.path  # noqa: F841
+    fragment = request.url.fragment  # noqa: F841
+    query = request.url.query  # noqa: F841
+    username = request.url.username  # noqa: F841
+    password = request.url.password  # noqa: F841
+    port = request.url.port  # noqa: F841
+    hostname = request.url.hostname  # noqa: F841
+    for param, value in request.query_params.items():  # noqa: B007
         pass
 
 
 @app.route("/sync-url-access")
 def sync_url_access(request: Request) -> None:
-    scheme = request.url.scheme
-    netloc = request.url.netloc
-    path = request.url.path
-    fragment = request.url.fragment
-    query = request.url.query
-    username = request.url.username
-    password = request.url.password
-    port = request.url.port
-    hostname = request.url.hostname
-    for param, value in request.query_params.items():
+    scheme = request.url.scheme  # noqa: F841
+    netloc = request.url.netloc  # noqa: F841
+    path = request.url.path  # noqa: F841
+    fragment = request.url.fragment  # noqa: F841
+    query = request.url.query  # noqa: F841
+    username = request.url.username  # noqa: F841
+    password = request.url.password  # noqa: F841
+    port = request.url.port  # noqa: F841
+    hostname = request.url.hostname  # noqa: F841
+    for param, value in request.query_params.items():  # noqa: B007
         pass
 
 

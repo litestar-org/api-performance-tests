@@ -125,25 +125,25 @@ def sync_path_params(request: Request, first: int) -> HTTPResponse:
 
 @app.route("/async-query-param")
 async def async_query_params(request: Request) -> HTTPResponse:
-    first = int(request.args.get("first"))
+    int(request.args.get("first"))
     return empty()
 
 
 @app.route("/sync-query-param")
 def sync_query_params(request: Request) -> HTTPResponse:
-    first = int(request.args.get("first"))
+    int(request.args.get("first"))
     return empty()
 
 
 @app.route("/async-mixed-params/<second:int>")
 async def async_mixed_params(request: Request, second: int) -> HTTPResponse:
-    first = int(request.args.get("first"))
+    int(request.args.get("first"))
     return empty()
 
 
 @app.route("/sync-mixed-params/<second:int>")
 def sync_mixed_params(request: Request, second: int) -> HTTPResponse:
-    first = int(request.args.get("first"))
+    int(request.args.get("first"))
     return empty()
 
 
@@ -219,32 +219,32 @@ def sync_response_cookies(request: Request) -> HTTPResponse:
 @app.route("/async-url-access")
 async def async_url_access(request: Request) -> None:
     url = urllib.parse.urlsplit(request.url)
-    scheme = url.scheme
-    netloc = url.netloc
-    path = url.path
-    fragment = url.fragment
-    query = url.query
-    username = url.username
-    password = url.password
-    port = url.port
-    hostname = url.hostname
-    for param, value in request.args.items():
+    scheme = url.scheme  # noqa: F841
+    netloc = url.netloc  # noqa: F841
+    path = url.path  # noqa: F841
+    fragment = url.fragment  # noqa: F841
+    query = url.query  # noqa: F841
+    username = url.username  # noqa: F841
+    password = url.password  # noqa: F841
+    port = url.port  # noqa: F841
+    hostname = url.hostname  # noqa: F841
+    for param, value in request.args.items():  # noqa: B007
         pass
 
 
 @app.route("/sync-url-access")
 def sync_url_access(request: Request) -> None:
     url = urllib.parse.urlsplit(request.url)
-    scheme = url.scheme
-    netloc = url.netloc
-    path = url.path
-    fragment = url.fragment
-    query = url.query
-    username = url.username
-    password = url.password
-    port = url.port
-    hostname = url.hostname
-    for param, value in request.args.items():
+    scheme = url.scheme  # noqa: F841
+    netloc = url.netloc  # noqa: F841
+    path = url.path  # noqa: F841
+    fragment = url.fragment  # noqa: F841
+    query = url.query  # noqa: F841
+    username = url.username  # noqa: F841
+    password = url.password  # noqa: F841
+    port = url.port  # noqa: F841
+    hostname = url.hostname  # noqa: F841
+    for param, value in request.args.items():  # noqa: B007
         pass
 
 
@@ -298,13 +298,10 @@ def sync_file_response_1m(request: Request) -> HTTPResponse:
 def run_spec_test(url: str, spec: "EndpointSpec") -> None:
     app.state.mode = Mode.PRODUCTION
     req, res = app.test_client.get(url, **spec.get("request", {}))
-    try:
-        assert res.status_code == spec["result"]["status_code"]
-        if expect_bytes := spec["result"].get("bytes"):
-            assert expect_bytes == res.content
-        if expect_text := spec["result"].get("text"):
-            assert expect_text == res.text
-        if expect_json := spec["result"].get("json"):
-            assert res.json == expect_json
-    except AssertionError:
-        breakpoint()
+    assert res.status_code == spec["result"]["status_code"]
+    if expect_bytes := spec["result"].get("bytes"):
+        assert expect_bytes == res.content
+    if expect_text := spec["result"].get("text"):
+        assert expect_text == res.text
+    if expect_json := spec["result"].get("json"):
+        assert res.json == expect_json
