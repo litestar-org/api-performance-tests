@@ -9,7 +9,7 @@ RESPONSE_FILE_50K = Path("test_data/50K").resolve()
 RESPONSE_FILE_1M = Path("test_data/1M").resolve()
 
 TEXT_6k = (data_path / "text_6k").read_text()
-TEXT_70k = (data_path / "test_70k").read_text()
+TEXT_70k = (data_path / "text_70k").read_text()
 
 JSON_SIMPLE = {f"key_{i}": "value" for i in range(10)}
 JSON_2K = json.loads((data_path / "random_2k.json").read_text())
