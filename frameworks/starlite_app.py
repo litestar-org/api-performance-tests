@@ -1,4 +1,13 @@
-from starlite import Cookie, File, MediaType, Request, ResponseHeader, Starlite, TestClient, get
+from starlite import (
+    Cookie,
+    File,
+    MediaType,
+    Request,
+    ResponseHeader,
+    Starlite,
+    TestClient,
+    get,
+)
 from starlite.status_codes import HTTP_204_NO_CONTENT
 
 from . import data
@@ -168,31 +177,31 @@ def sync_response_cookies() -> None:
 
 @get("/async-url-access", status_code=HTTP_204_NO_CONTENT)
 async def async_url_access(request: Request) -> None:
-    scheme = request.url.scheme
-    netloc = request.url.netloc
-    path = request.url.path
-    fragment = request.url.fragment
-    query = request.url.query
-    username = request.url.username
-    password = request.url.password
-    port = request.url.port
-    hostname = request.url.hostname
-    for key, value in request.query_params.items():
+    scheme = request.url.scheme  # noqa: F841
+    netloc = request.url.netloc  # noqa: F841
+    path = request.url.path  # noqa: F841
+    fragment = request.url.fragment  # noqa: F841
+    query = request.url.query  # noqa: F841
+    username = request.url.username  # noqa: F841
+    password = request.url.password  # noqa: F841
+    port = request.url.port  # noqa: F841
+    hostname = request.url.hostname  # noqa: F841
+    for param, value in request.query_params.items():  # noqa: B007
         pass
 
 
 @get("/sync-url-access", status_code=HTTP_204_NO_CONTENT)
 def sync_url_access(request: Request) -> None:
-    scheme = request.url.scheme
-    netloc = request.url.netloc
-    path = request.url.path
-    fragment = request.url.fragment
-    query = request.url.query
-    username = request.url.username
-    password = request.url.password
-    port = request.url.port
-    hostname = request.url.hostname
-    for key, value in request.query_params.items():
+    scheme = request.url.scheme  # noqa: F841
+    netloc = request.url.netloc  # noqa: F841
+    path = request.url.path  # noqa: F841
+    fragment = request.url.fragment  # noqa: F841
+    query = request.url.query  # noqa: F841
+    username = request.url.username  # noqa: F841
+    password = request.url.password  # noqa: F841
+    port = request.url.port  # noqa: F841
+    hostname = request.url.hostname  # noqa: F841
+    for param, value in request.query_params.items():  # noqa: B007
         pass
 
 

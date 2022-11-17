@@ -75,7 +75,13 @@ ENDPOINT_SPEC: dict[str, EndpointSpec] = {
 
 
 def test_all_frameworks() -> None:
-    from frameworks import starlite_app, starlette_app, fastapi_app, sanic_app, blacksheep_app
+    from frameworks import (
+        blacksheep_app,
+        fastapi_app,
+        sanic_app,
+        starlette_app,
+        starlite_app,
+    )
 
     for framework in [starlite_app, starlette_app, fastapi_app, sanic_app, blacksheep_app]:
         for endpoint_type in ["sync", "async"]:
@@ -84,4 +90,4 @@ def test_all_frameworks() -> None:
                 try:
                     framework.run_spec_test(url, spec)
                 except AssertionError:
-                    print(f"Validation error for: {framework!r} - {url!r}")
+                    print(f"Validation error for: {framework.__name__!r} - {url!r}")  # noqa: T201
