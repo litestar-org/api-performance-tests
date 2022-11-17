@@ -2,7 +2,7 @@ FROM python:3.11-slim-bullseye as build
 
 COPY pyproject.toml poetry.lock /
 
-RUN apt-get update && apt-get install -y curl git gcc procps && \
+RUN apt-get update && apt-get install -y curl git gcc clang procps && \
     curl -sSL https://install.python-poetry.org | POETRY_HOME=/opt/poetry python3 - && \
     curl -sSL https://github.com/codesenberg/bombardier/releases/download/v1.2.5/bombardier-linux-amd64 -o bombardier && \
     chmod +x bombardier && \

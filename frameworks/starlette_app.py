@@ -15,9 +15,6 @@ if TYPE_CHECKING:
 
 app = Starlette()
 
-# json
-
-
 # plaintext response
 
 
