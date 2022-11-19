@@ -2,7 +2,6 @@ from typing import TYPE_CHECKING
 
 from fastapi import FastAPI, Request, Response
 from fastapi.responses import FileResponse, PlainTextResponse
-from fastapi.testclient import TestClient
 from starlette.status import HTTP_204_NO_CONTENT
 
 import test_data
@@ -194,6 +193,7 @@ async def async_url_access(request: Request) -> None:
     hostname = request.url.hostname  # noqa: F841
     for param, value in request.query_params.items():  # noqa: B007
         pass
+    return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 @app.route("/sync-url-access")
@@ -209,6 +209,7 @@ def sync_url_access(request: Request) -> None:
     hostname = request.url.hostname  # noqa: F841
     for param, value in request.query_params.items():  # noqa: B007
         pass
+    return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 # files
@@ -255,6 +256,8 @@ def sync_file_response_1m() -> FileResponse:
 
 
 def run_spec_test(url: str, spec: "EndpointSpec") -> None:
+    from fastapi.testclient import TestClient
+
     with TestClient(app=app) as client:
         res = client.get(url, **spec.get("request", {}))
         assert res.status_code == spec["result"]["status_code"]

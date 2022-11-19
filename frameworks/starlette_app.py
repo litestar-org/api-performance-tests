@@ -4,7 +4,6 @@ from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import FileResponse, JSONResponse, PlainTextResponse, Response
 from starlette.status import HTTP_204_NO_CONTENT
-from starlette.testclient import TestClient
 
 import test_data
 
@@ -191,7 +190,7 @@ def sync_response_cookies(request: Request) -> Response:
 
 
 @app.route("/async-url-access")
-async def async_url_access(request: Request) -> None:
+async def async_url_access(request: Request) -> Response:
     scheme = request.url.scheme  # noqa: F841
     netloc = request.url.netloc  # noqa: F841
     path = request.url.path  # noqa: F841
@@ -203,10 +202,11 @@ async def async_url_access(request: Request) -> None:
     hostname = request.url.hostname  # noqa: F841
     for param, value in request.query_params.items():  # noqa: B007
         pass
+    return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 @app.route("/sync-url-access")
-def sync_url_access(request: Request) -> None:
+def sync_url_access(request: Request) -> Response:
     scheme = request.url.scheme  # noqa: F841
     netloc = request.url.netloc  # noqa: F841
     path = request.url.path  # noqa: F841
@@ -218,6 +218,7 @@ def sync_url_access(request: Request) -> None:
     hostname = request.url.hostname  # noqa: F841
     for param, value in request.query_params.items():  # noqa: B007
         pass
+    return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 # files
@@ -264,6 +265,8 @@ def sync_file_response_1m(request: Request) -> FileResponse:
 
 
 def run_spec_test(url: str, spec: "EndpointSpec") -> None:
+    from starlette.testclient import TestClient
+
     with TestClient(app=app) as client:
         res = client.get(url, **spec.get("request", {}))
         assert res.status_code == spec["result"]["status_code"]

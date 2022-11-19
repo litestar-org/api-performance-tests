@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "starlite_api_bench"
+name = "asgi_bench"
 version = "0.1.0"
 description = "Benchmarks for Python ASGI frameworks"
 authors = ["Na'aman Hirschfeld <nhirschfeld@gmail.com>", "Janek Nouvertné <j.a.nouvertne@posteo.de>"]
@@ -12,7 +12,7 @@ pandas = "*"
 rich = "^12.6.0"
 click = "^8.1.3"
 docker = "^6.0.1"
-starlite = { git = "https://github.com/starlite-api/starlite.git", branch = "main" }
+starlite = { version = "*", optional = true}
 starlette = { version = "*", optional = true }
 fastapi = { version = "*", optional = true }
 blacksheep = { version = "*", optional = true }
@@ -24,7 +24,7 @@ pyyaml = "^6.0"
 test = ["starlite", "starlette", "fastapi", "blacksheep", "sanic", "sanic-testing"]
 
 [tool.poetry.scripts]
-bench = "starlite_api_bench.cli:cli"
+bench = "asgi_bench.cli:cli"
 
 [tool.poetry.group.dev.dependencies]
 mypy = "^0.991"

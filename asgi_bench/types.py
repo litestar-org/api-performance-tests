@@ -24,7 +24,7 @@ class TestSpec:
 
     @property
     def pretty_name(self) -> str:
-        return f"{self.name} ({self.endpoint_mode})"
+        return f"{self.benchmark_mode} - {self.name} ({self.endpoint_mode})"
 
 
 class EndpointDict(TypedDict, total=False):
@@ -83,3 +83,48 @@ class FrameworkSpec:
     @property
     def is_git_target(self) -> bool:
         return bool(self.version and self.version.startswith("git+"))
+
+    @property
+    def extra_requirements(self) -> list[str]:
+        path = self.path.parent / f"requirements-{self.name}.txt"
+        if path.exists():
+            return path.read_text().splitlines()
+        return []
+
+    @property
+    def pip_install_targets(self) -> str:
+        args = [self.pip_package, *self.extra_requirements]
+        return " ".join(args)
+
+
+TestResultPercentiles = TypedDict("TestResultPercentiles", {"50": int, "75": int, "90": int, "95": int, "99": int})
+
+
+class TestResultStats(TypedDict):
+    mean: int
+    max: int
+    stddev: int
+    percentiles: TestResultPercentiles
+
+
+class TestResult(TypedDict):
+    name: str
+    timeTakenSeconds: int
+    req1xx: int
+    req2xx: int
+    req3xx: int
+    req4xx: int
+    req5xx: int
+    others: int
+    latency: TestResultStats
+    rps: TestResultStats
+
+
+CategoryResults = dict[EndpointCategory, list[TestResult]]
+
+EndpointModeResults = TypedDict("EndpointModeResults", {"sync": CategoryResults, "async": CategoryResults})
+
+
+class SuiteResults(TypedDict):
+    rps: EndpointModeResults
+    latency: EndpointModeResults

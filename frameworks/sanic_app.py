@@ -221,7 +221,7 @@ def sync_response_cookies(request: Request) -> HTTPResponse:
 
 
 @app.route("/async-url-access")
-async def async_url_access(request: Request) -> None:
+async def async_url_access(request: Request) -> HTTPResponse:
     url = urllib.parse.urlsplit(request.url)
     scheme = url.scheme  # noqa: F841
     netloc = url.netloc  # noqa: F841
@@ -234,10 +234,11 @@ async def async_url_access(request: Request) -> None:
     hostname = url.hostname  # noqa: F841
     for param, value in request.args.items():  # noqa: B007
         pass
+    return empty()
 
 
 @app.route("/sync-url-access")
-def sync_url_access(request: Request) -> None:
+def sync_url_access(request: Request) -> HTTPResponse:
     url = urllib.parse.urlsplit(request.url)
     scheme = url.scheme  # noqa: F841
     netloc = url.netloc  # noqa: F841
@@ -250,6 +251,7 @@ def sync_url_access(request: Request) -> None:
     hostname = url.hostname  # noqa: F841
     for param, value in request.args.items():  # noqa: B007
         pass
+    return empty()
 
 
 # files

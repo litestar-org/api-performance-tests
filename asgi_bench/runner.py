@@ -17,6 +17,7 @@ from .types import (
     FrameworkSpec,
     TestSpec,
 )
+from .util import has_error_results
 
 SERVER_PORT = 8081
 
@@ -57,6 +58,7 @@ class Runner:
         frameworks: tuple[str, ...],
         endpoint_modes: tuple[EndpointMode, ...] | EndpointMode,
         categories: tuple[EndpointCategory, ...] | EndpointCategory,
+        warmup_time: int | None = None,
         time_limit: int | None = None,
         request_limit: int | None = None,
         rate_limit: int | None = None,
@@ -73,6 +75,7 @@ class Runner:
         self._request_limit = request_limit
         self._rate_limit = rate_limit
         self._time_limit = time_limit
+        self._warmup_time = warmup_time
 
         self.specs = make_spec(
             frameworks=frameworks,
@@ -82,6 +85,7 @@ class Runner:
             rate_limit=rate_limit,
             time_limit=time_limit,
             benchmark_modes=benchmark_modes,
+            warmup_time=warmup_time,
         )
         atexit.register(self._stop_all_containers)
 
@@ -92,6 +96,7 @@ class Runner:
         if "latency" in self._benchmark_modes:
             self.console.print(f"Latency benchmarks RPS limit: {self._rate_limit}")
             self.console.print(f"Latency benchmarks requests limit: {self._request_limit}")
+        self.console.print(f"Warmup time: [magenta]{self._warmup_time} seconds")
         self.console.print(f"Endpoint modes: [magenta]{', '.join(self._endpoint_modes)}")
         self.console.print(f"Endpoint categories: [magenta]{', '.join(self._categories)}")
         self.console.print(f"Frameworks: [magenta]{', '.join(f.version_name for f in self.specs)}")
@@ -112,7 +117,7 @@ class Runner:
         current_results[target][spec.benchmark_mode].setdefault(spec.endpoint_mode, {})
         current_results[target][spec.benchmark_mode][spec.endpoint_mode].setdefault(spec.category, [])
         current_results[target][spec.benchmark_mode][spec.endpoint_mode][spec.category].append(
-            {"name": spec.name, **results}
+            {"name": spec.name, **results["result"]}
         )
         self.results_file.write_text(json.dumps(current_results, indent=2))
 
@@ -140,10 +145,12 @@ class Runner:
         with self.console.status("  [yellow]Warming up endpoint"):
             self._run_bench_in_container(
                 f"http://127.0.0.1:{SERVER_PORT}{test_spec.path}",
-                f"--duration={test_spec.warmup}s",
                 "--no-print",
                 *_header_args_from_spec(test_spec),
+                f"--rate=10",
+                f"--duration={test_spec.warmup}s",
             )
+            time.sleep(2)
 
         with self.console.status(f"  [cyan]Running: {test_spec.pretty_name}"):
             res = self._run_bench_in_container(
@@ -153,8 +160,12 @@ class Runner:
                 "--print=result",
                 *_args_from_spec(test_spec),
             )
+        results = json.loads(res)
+        if has_error_results(results["result"]):
+            self.console.print(f"    [red]Completed {test_spec.pretty_name!r} with errors")
+        else:
             self.console.print(f"    [green]Completed: {test_spec.pretty_name}")
-            return json.loads(res)
+        return results
 
     def run_benchmarks(self, framework_spec: FrameworkSpec) -> None:
 

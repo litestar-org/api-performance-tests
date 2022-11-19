@@ -11,7 +11,7 @@ name = "anyio"
 version = "3.6.2"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.6.2"
 
 [package.dependencies]
@@ -148,7 +148,7 @@ name = "dnspython"
 version = "2.2.1"
 description = "DNS toolkit"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.6,<4.0"
 
 [package.extras]
@@ -182,7 +182,7 @@ name = "email-validator"
 version = "1.3.0"
 description = "A robust email address syntax and deliverability validation library."
 category = "main"
-optional = false
+optional = true
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*,>=2.7"
 
 [package.dependencies]
@@ -202,7 +202,7 @@ name = "faker"
 version = "15.3.2"
 description = "Faker is a Python package that generates fake data for you."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -261,24 +261,24 @@ jwt = ["PyJWT (>=2.3.0,<2.4.0)", "cryptography (>=35.0.0,<35.1.0)"]
 
 [[package]]
 name = "h11"
-version = "0.12.0"
+version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
 category = "main"
-optional = false
-python-versions = ">=3.6"
+optional = true
+python-versions = ">=3.7"
 
 [[package]]
 name = "httpcore"
-version = "0.15.0"
+version = "0.16.1"
 description = "A minimal low-level HTTP client."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
-anyio = ">=3.0.0,<4.0.0"
+anyio = ">=3.0,<5.0"
 certifi = "*"
-h11 = ">=0.11,<0.13"
+h11 = ">=0.13,<0.15"
 sniffio = ">=1.0.0,<2.0.0"
 
 [package.extras]
@@ -298,15 +298,15 @@ test = ["Cython (==0.29.22)"]
 
 [[package]]
 name = "httpx"
-version = "0.23.0"
+version = "0.23.1"
 description = "The next generation HTTP client."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
 certifi = "*"
-httpcore = ">=0.15.0,<0.16.0"
+httpcore = ">=0.15.0,<0.17.0"
 rfc3986 = {version = ">=1.3,<2", extras = ["idna2008"]}
 sniffio = "*"
 
@@ -379,7 +379,7 @@ name = "multidict"
 version = "6.0.2"
 description = "multidict implementation"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [[package]]
@@ -421,7 +421,7 @@ name = "orjson"
 version = "3.8.1"
 description = "Fast, correct Python JSON library supporting dataclasses, datetimes, and numpy"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [[package]]
@@ -488,7 +488,7 @@ name = "pydantic"
 version = "1.10.2"
 description = "Data validation and settings management using python type hints"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -503,7 +503,7 @@ name = "pydantic-factories"
 version = "1.15.0"
 description = "Mock data generation for pydantic based models and python dataclasses"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
@@ -516,7 +516,7 @@ name = "pydantic-openapi-schema"
 version = "1.3.0"
 description = "OpenAPI Schema using pydantic. Forked for Starlite-API from 'openapi-schema-pydantic'."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -603,7 +603,7 @@ name = "rfc3986"
 version = "1.5.0"
 description = "Validating URI References per RFC 3986"
 category = "main"
-optional = false
+optional = true
 python-versions = "*"
 
 [package.dependencies]
@@ -699,7 +699,7 @@ stats = ["scipy (>=1.3)", "statsmodels (>=0.10)"]
 
 [[package]]
 name = "setuptools"
-version = "65.5.1"
+version = "65.6.0"
 description = "Easily download, build, install, upgrade, and uninstall Python packages"
 category = "main"
 optional = false
@@ -741,7 +741,7 @@ name = "sniffio"
 version = "1.3.0"
 description = "Sniff out which async library your code is running under"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7"
 
 [[package]]
@@ -761,11 +761,10 @@ full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyam
 [[package]]
 name = "starlite"
 version = "1.39.0"
-description = "Performant, light and flexible ASGI API Framework"
+description = "Light-weight and flexible ASGI API Framework"
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.8,<4.0"
-develop = false
 
 [package.dependencies]
 anyio = ">=3"
@@ -784,23 +783,16 @@ brotli = ["brotli"]
 cryptography = ["cryptography"]
 full = ["brotli", "cryptography", "picologging", "structlog"]
 memcached = ["aiomcache"]
-opentelemtry = ["opentelemetry-instrumentation-asgi"]
 picologging = ["picologging"]
 redis = ["redis[hiredis]"]
 structlog = ["structlog"]
-
-[package.source]
-type = "git"
-url = "https://github.com/starlite-api/starlite.git"
-reference = "main"
-resolved_reference = "292b1673ba52bde6c6e48c1865d2b8d561609b0f"
 
 [[package]]
 name = "starlite-multipart"
 version = "1.2.0"
 description = "Toolkit for working with multipart/formdata messages."
 category = "main"
-optional = false
+optional = true
 python-versions = ">=3.7,<4.0"
 
 [package.dependencies]
@@ -883,7 +875,7 @@ test = ["starlite", "starlette", "fastapi", "blacksheep", "sanic", "sanic-testin
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11"
-content-hash = "788bf6f08fbc7b2f2cff25a1fbfb9a989b4b767d2229e984731a2ddb67700643"
+content-hash = "47afcd8d347e48114e912752787bfbc26dcd99f7ea33359189eccc2d74d46d90"
 
 [metadata.files]
 aiofiles = [
@@ -1075,12 +1067,12 @@ guardpost = [
     {file = "guardpost-0.0.9.tar.gz", hash = "sha256:4c309d6bb2975e55edb95f7ac5019b9cefeba43736ce71f6275156978aa75fc9"},
 ]
 h11 = [
-    {file = "h11-0.12.0-py3-none-any.whl", hash = "sha256:36a3cb8c0a032f56e2da7084577878a035d3b61d104230d4bd49c0c6b555a9c6"},
-    {file = "h11-0.12.0.tar.gz", hash = "sha256:47222cb6067e4a307d535814917cd98fd0a57b6788ce715755fa2b6c28b56042"},
+    {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
+    {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
 ]
 httpcore = [
-    {file = "httpcore-0.15.0-py3-none-any.whl", hash = "sha256:1105b8b73c025f23ff7c36468e4432226cbb959176eab66864b8e31c4ee27fa6"},
-    {file = "httpcore-0.15.0.tar.gz", hash = "sha256:18b68ab86a3ccf3e7dc0f43598eaddcf472b602aba29f9aa6ab85fe2ada3980b"},
+    {file = "httpcore-0.16.1-py3-none-any.whl", hash = "sha256:8d393db683cc8e35cc6ecb02577c5e1abfedde52b38316d038932a84b4875ecb"},
+    {file = "httpcore-0.16.1.tar.gz", hash = "sha256:3d3143ff5e1656a5740ea2f0c167e8e9d48c5a9bbd7f00ad1f8cff5711b08543"},
 ]
 httptools = [
     {file = "httptools-0.1.2-cp35-cp35m-macosx_10_14_x86_64.whl", hash = "sha256:1e35aa179b67086cc600a984924a88589b90793c9c1b260152ca4908786e09df"},
@@ -1100,8 +1092,8 @@ httptools = [
     {file = "httptools-0.1.2.tar.gz", hash = "sha256:07659649fe6b3948b6490825f89abe5eb1cec79ebfaaa0b4bf30f3f33f3c2ba8"},
 ]
 httpx = [
-    {file = "httpx-0.23.0-py3-none-any.whl", hash = "sha256:42974f577483e1e932c3cdc3cd2303e883cbfba17fe228b0f63589764d7b9c4b"},
-    {file = "httpx-0.23.0.tar.gz", hash = "sha256:f28eac771ec9eb4866d3fb4ab65abd42d38c424739e80c08d8d20570de60b0ef"},
+    {file = "httpx-0.23.1-py3-none-any.whl", hash = "sha256:0b9b1f0ee18b9978d637b0776bfd7f54e2ca278e063e3586d8f01cda89e042a8"},
+    {file = "httpx-0.23.1.tar.gz", hash = "sha256:202ae15319be24efe9a8bd4ed4360e68fde7b38bcc2ce87088d416f026667d19"},
 ]
 idna = [
     {file = "idna-3.4-py3-none-any.whl", hash = "sha256:90b77e79eaa3eba6de819a0c442c0b4ceefc341a7a2ab77d7562bf49f425c5c2"},
@@ -1694,8 +1686,8 @@ seaborn = [
     {file = "seaborn-0.12.1.tar.gz", hash = "sha256:bb1eb1d51d3097368c187c3ef089c0288ec1fe8aa1c69fb324c68aa1d02df4c1"},
 ]
 setuptools = [
-    {file = "setuptools-65.5.1-py3-none-any.whl", hash = "sha256:d0b9a8433464d5800cbe05094acf5c6d52a91bfac9b52bcfc4d41382be5d5d31"},
-    {file = "setuptools-65.5.1.tar.gz", hash = "sha256:e197a19aa8ec9722928f2206f8de752def0e4c9fc6953527360d1c36d94ddb2f"},
+    {file = "setuptools-65.6.0-py3-none-any.whl", hash = "sha256:6211d2f5eddad8757bd0484923ca7c0a6302ebc4ab32ea5e94357176e0ca0840"},
+    {file = "setuptools-65.6.0.tar.gz", hash = "sha256:d1eebf881c6114e51df1664bc2c9133d022f78d12d5f4f665b9191f084e2862d"},
 ]
 setuptools-scm = [
     {file = "setuptools_scm-7.0.5-py3-none-any.whl", hash = "sha256:7930f720905e03ccd1e1d821db521bff7ec2ac9cf0ceb6552dd73d24a45d3b02"},
@@ -1713,7 +1705,10 @@ starlette = [
     {file = "starlette-0.22.0-py3-none-any.whl", hash = "sha256:b5eda991ad5f0ee5d8ce4c4540202a573bb6691ecd0c712262d0bc85cf8f2c50"},
     {file = "starlette-0.22.0.tar.gz", hash = "sha256:b092cbc365bea34dd6840b42861bdabb2f507f8671e642e8272d2442e08ea4ff"},
 ]
-starlite = []
+starlite = [
+    {file = "starlite-1.39.0-py3-none-any.whl", hash = "sha256:ad37842ebe4ff72284a172ee2335245d39fde8354e98b6e7988522572a0e96db"},
+    {file = "starlite-1.39.0.tar.gz", hash = "sha256:927706916151629661c4e9242b1385fec3ee64e1216f07709092f5f1fe7825e2"},
+]
 starlite-multipart = [
     {file = "starlite-multipart-1.2.0.tar.gz", hash = "sha256:9ba2108cfd47de07240dc90e55397080ec9ca0c6992ec1097a02dd32ba4ca593"},
     {file = "starlite_multipart-1.2.0-py3-none-any.whl", hash = "sha256:ceb5667d6c58bcbc305d5922ead791f0b50f0b9f658747144577a3dccffc5335"},

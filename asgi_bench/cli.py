@@ -1,9 +1,10 @@
 import click
 
-from starlite_api_bench.build import build_docker_images
-from starlite_api_bench.runner import Runner
-from starlite_api_bench.spec import ENDPOINT_CATEGORIES
-from starlite_api_bench.types import BenchmarkMode, EndpointCategory, EndpointMode
+from asgi_bench import results
+from asgi_bench.build import build_docker_images
+from asgi_bench.runner import Runner
+from asgi_bench.spec import ENDPOINT_CATEGORIES
+from asgi_bench.types import BenchmarkMode, EndpointCategory, EndpointMode
 
 
 @click.group()
@@ -14,6 +15,7 @@ def cli() -> None:
 @cli.command()
 @click.argument("frameworks", nargs=-1)
 @click.option("--rebuild", is_flag=True, show_default=True, help="rebuild git-based images")
+@click.option("-w", "--warmup", default=5, show_default=True)
 @click.option("-R", "--rps", is_flag=True, help="run rps benchmarks")
 @click.option("-L", "--latency", is_flag=True, help="run latency benchmarks")
 @click.option("-l", "--limit", default=20, help="max requests per second for latency benchmarks", show_default=True)
@@ -41,6 +43,7 @@ def cli() -> None:
 def run(
     frameworks: tuple[str, ...],
     rebuild: bool,
+    warmup: int,
     rps: bool,
     latency: bool,
     limit: int,
@@ -63,6 +66,7 @@ def run(
         rate_limit=limit,
         time_limit=duration,
         benchmark_modes=benchmark_modes,
+        warmup_time=warmup,
     )
 
     runner.print_suite_config()
@@ -70,3 +74,46 @@ def run(
     build_docker_images(framework_specs=runner.specs, rebuild_git=rebuild)
 
     runner.run()
+
+
+@cli.command("results")
+@click.option("-r", "--run", "run_name", type=int, help="run to analyze (defaults to latest run)")
+@click.option(
+    "-f",
+    "--format",
+    type=click.Choice(["png", "svg", "html"]),
+    default=("png",),
+    show_default=True,
+    multiple=True,
+    help="format to save plots as",
+)
+@click.option(
+    "-p",
+    "--percentile",
+    type=click.Choice(["mean", "50", "75", "90", "95", "99"]),
+    default=("mean", "50", "75", "90", "95", "99"),
+    multiple=True,
+)
+@click.option(
+    "-E",
+    "--no-error-bars",
+    default=False,
+    is_flag=True,
+    help="include error bars",
+    show_default=True,
+)
+@click.option("-s", "--split-categories", is_flag=True, help="split categories into separate files")
+def results_command(
+    run_name: int | None,
+    format: tuple[str, ...],
+    percentile: tuple[str, ...] | None,
+    no_error_bars: bool,
+    split_categories: bool,
+) -> None:
+    results.make_plots(
+        formats=format,
+        percentiles=percentile,
+        run_number=run_name,
+        error_bars=not no_error_bars,
+        split_categories=split_categories,
+    )
