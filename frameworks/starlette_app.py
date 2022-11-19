@@ -9,7 +9,8 @@ from starlette.testclient import TestClient
 import test_data
 
 if TYPE_CHECKING:
-    from frameworks.test import EndpointSpec
+    from test_frameworks import EndpointSpec
+
 
 app = Starlette()
 

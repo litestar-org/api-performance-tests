@@ -4,17 +4,17 @@ from typing import Literal, TypedDict
 from urllib.parse import urlparse
 
 EndpointMode = Literal["sync", "async"]
-TestCategory = Literal["plaintext", "json", "params", "headers", "cookies", "url", "files"]
+EndpointCategory = Literal["plaintext", "json", "params", "headers", "cookies", "url", "files"]
 BenchmarkMode = Literal["rps", "latency"]
 
 
 @dataclass
 class TestSpec:
-    category: TestCategory
+    category: EndpointCategory
     name: str
     slug_name: str
     path: str
-    headers: list[str]
+    headers: list[tuple[str, str]]
     endpoint_mode: EndpointMode
     benchmark_mode: BenchmarkMode
     time_limit: int | None = None
@@ -28,11 +28,17 @@ class TestSpec:
 
 
 class EndpointDict(TypedDict, total=False):
-    headers: list[str] | None
+    headers: list[tuple[str, str]] | None
     name: str
 
 
-FRAMEWORK_REPOS = {"starlite": "https://github.com/starlite-api/starlite.git"}
+FRAMEWORK_REPOS = {
+    "starlite": "https://github.com/starlite-api/starlite.git",
+    "starlette": "https://github.com/encode/starlette.git",
+    "fastapi": "https://github.com/tiangolo/fastapi.git",
+    "sanic": "https://github.com/sanic-org/sanic.git",
+    "blacksheep": "https://github.com/Neoteroi/BlackSheep.git",
+}
 
 
 @dataclass
@@ -76,4 +82,4 @@ class FrameworkSpec:
 
     @property
     def is_git_target(self) -> bool:
-        return self.version and self.version.startswith("git+")
+        return bool(self.version and self.version.startswith("git+"))

@@ -1,30 +1,17 @@
 from pathlib import Path
-from typing import TypedDict
+
+from test_data import RESPONSE_COOKIES, RESPONSE_HEADERS
 
 from .types import (
     BenchmarkMode,
+    EndpointCategory,
     EndpointDict,
     EndpointMode,
     FrameworkSpec,
-    TestCategory,
     TestSpec,
 )
 
-RESPONSE_HEADERS = {f"header_{i}": "value" for i in range(10)}
-RESPONSE_COOKIES = {f"cookie_{i}": "value" for i in range(10)}
-
-
-class Endpoints(TypedDict):
-    plaintext: dict[str, EndpointDict]
-    json: dict[str, EndpointDict]
-    params: dict[str, EndpointDict]
-    headers: dict[str, EndpointDict]
-    cookies: dict[str, EndpointDict]
-    url: dict[str, EndpointDict]
-    files: dict[str, EndpointDict]
-
-
-ENDPOINTS: Endpoints = {
+ENDPOINTS: dict[EndpointCategory, dict[str, EndpointDict]] = {
     "plaintext": {
         "plaintext-6k": {"name": "plaintext 6kB"},
         "plaintext-70k": {"name": "plaintext 70kB"},
@@ -65,14 +52,14 @@ ENDPOINTS: Endpoints = {
     },
 }
 
-ENDPOINT_CATEGORIES = tuple(ENDPOINTS.keys())
+ENDPOINT_CATEGORIES: tuple[EndpointCategory, ...] = tuple(ENDPOINTS.keys())
 
 
 def make_spec(
     *,
     frameworks: tuple[str, ...],
     endpoint_modes: tuple[EndpointMode, ...] | EndpointMode,
-    categories: tuple[TestCategory, ...] | TestCategory,
+    categories: tuple[EndpointCategory, ...] | EndpointCategory,
     time_limit: int | None = None,
     request_limit: int | None = None,
     rate_limit: int | None = None,
@@ -107,8 +94,8 @@ def make_spec(
     framework_specs = []
     requested_frameworks = {}
     for framework in frameworks:
-        name, *version = framework.split("@", 1)
-        version = version[0] if version else None
+        name, *parts = framework.split("@", 1)
+        version = parts[0] if parts else None
         requested_frameworks[name] = version
 
     for path in (Path.cwd() / "frameworks").iterdir():

@@ -1,11 +1,9 @@
 import click
 
 from starlite_api_bench.build import build_docker_images
-from starlite_api_bench.run import run_benchmarks_on_targets
-from starlite_api_bench.spec import ENDPOINT_CATEGORIES, make_spec
-from starlite_api_bench.types import BenchmarkMode, EndpointMode
-
-from .context import Context
+from starlite_api_bench.runner import Runner
+from starlite_api_bench.spec import ENDPOINT_CATEGORIES
+from starlite_api_bench.types import BenchmarkMode, EndpointCategory, EndpointMode
 
 
 @click.group()
@@ -49,33 +47,26 @@ def run(
     requests: int,
     duration: int,
     endpoint_mode: tuple[EndpointMode, ...],
-    endpoint_category: tuple[str, ...],
+    endpoint_category: tuple[EndpointCategory, ...],
 ) -> None:
     benchmark_modes: tuple[BenchmarkMode, ...] = ()
     if rps:
         benchmark_modes = ("rps",)
     if latency:
         benchmark_modes = (*benchmark_modes, "latency")
-    specs = make_spec(
+
+    runner = Runner(
         frameworks=frameworks,
         endpoint_modes=endpoint_mode,
-        categories="params",
+        categories=endpoint_category,
         request_limit=requests,
         rate_limit=limit,
         time_limit=duration,
         benchmark_modes=benchmark_modes,
     )
-    context = Context(framework_specs=specs)
 
-    context.console.print(f"Benchmark modes: [magenta]{','.join(benchmark_modes)}")
-    if "rps" in benchmark_modes:
-        context.console.print(f"RPS benchmarks duration: {duration} seconds")
-    if "latency" in benchmark_modes:
-        context.console.print(f"Latency benchmarks RPS limit: {limit}")
-        context.console.print(f"Latency benchmarks requests limit: {requests}")
-    context.console.print(f"Endpoint modes: [magenta]{', '.join(endpoint_mode)}")
-    context.console.print(f"Endpoint categories: [magenta]{', '.join(endpoint_category)}")
-    context.console.print(f"Frameworks: [magenta]{', '.join(f.version_name for f in specs)}")
+    runner.print_suite_config()
 
-    build_docker_images(framework_specs=specs, rebuild_git=rebuild)
-    run_benchmarks_on_targets(specs, context.results_dir)
+    build_docker_images(framework_specs=runner.specs, rebuild_git=rebuild)
+
+    runner.run()

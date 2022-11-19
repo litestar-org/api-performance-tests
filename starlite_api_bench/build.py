@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from pathlib import Path
 from secrets import token_hex
 
-import docker
+import docker  # type: ignore
 from rich.console import Console
 
 from .types import FrameworkSpec
