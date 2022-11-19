@@ -42,7 +42,7 @@ ENDPOINTS: dict[EndpointCategory, dict[str, EndpointDict]] = {
         "response-cookies": {"name": "response cookies"},
     },
     "url": {
-        "url-access": {"name": "url access"},
+        "url-access?a=1&a=2&1=3&b=true&c=false&d=abc": {"name": "url access"},
     },
     "files": {
         "file-response-100B": {"name": "file response 100 bytes"},

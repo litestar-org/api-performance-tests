@@ -11,7 +11,7 @@ name = "anyio"
 version = "3.6.2"
 description = "High level compatibility layer for multiple asynchronous event loop implementations"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.6.2"
 
 [package.dependencies]
@@ -264,7 +264,7 @@ name = "h11"
 version = "0.14.0"
 description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 
 [[package]]
@@ -272,7 +272,7 @@ name = "httpcore"
 version = "0.16.1"
 description = "A minimal low-level HTTP client."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -301,7 +301,7 @@ name = "httpx"
 version = "0.23.1"
 description = "The next generation HTTP client."
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -603,7 +603,7 @@ name = "rfc3986"
 version = "1.5.0"
 description = "Validating URI References per RFC 3986"
 category = "main"
-optional = true
+optional = false
 python-versions = "*"
 
 [package.dependencies]
@@ -741,7 +741,7 @@ name = "sniffio"
 version = "1.3.0"
 description = "Sniff out which async library your code is running under"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 
 [[package]]
@@ -875,7 +875,7 @@ test = ["starlite", "starlette", "fastapi", "blacksheep", "sanic", "sanic-testin
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11"
-content-hash = "47afcd8d347e48114e912752787bfbc26dcd99f7ea33359189eccc2d74d46d90"
+content-hash = "ba3dfd4e8e459a73b6827189e677597c02acd9673107f0748e0b3d2cbd896dc0"
 
 [metadata.files]
 aiofiles = [

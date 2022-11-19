@@ -1,7 +1,18 @@
 from .types import TestResult
 
 
-def has_error_results(test_results: list[TestResult] | TestResult) -> bool:
-    if not isinstance(test_results, list):
-        test_results = [test_results]
-    return any(result["req4xx"] or result["req5xx"] or result["others"] for result in test_results)
+def get_error_response_count(test_result: TestResult) -> int:
+    return test_result["req4xx"] + test_result["req5xx"]
+
+
+def get_success_response_count(test_result: TestResult) -> int:
+    return test_result["req1xx"] + test_result["req2xx"] + test_result["req3xx"]
+
+
+def get_error_percentage(test_result: TestResult) -> float:
+    success_count = get_success_response_count(test_result)
+    error_count = get_error_response_count(test_result)
+    total_count = success_count + error_count
+    if not error_count:
+        return 0
+    return 100 * (error_count / total_count)

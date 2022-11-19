@@ -81,42 +81,42 @@ def sync_json_450k() -> dict:
 # params
 
 
-@get("/async-no-params", status_code=HTTP_204_NO_CONTENT)
+@get("/async-no-params", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 async def async_no_params() -> None:
     pass
 
 
-@get("/sync-no-params", status_code=HTTP_204_NO_CONTENT)
+@get("/sync-no-params", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 def sync_no_params() -> None:
     pass
 
 
-@get("/async-path-params/{first:int}", status_code=HTTP_204_NO_CONTENT)
+@get("/async-path-params/{first:int}", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 async def async_path_params(first: int) -> None:
     pass
 
 
-@get("/sync-path-params/{first:int}", status_code=HTTP_204_NO_CONTENT)
+@get("/sync-path-params/{first:int}", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 def sync_path_params(first: int) -> None:
     pass
 
 
-@get("/async-query-param", status_code=HTTP_204_NO_CONTENT)
+@get("/async-query-param", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 async def async_query_params(first: int) -> None:
     pass
 
 
-@get("/sync-query-param", status_code=HTTP_204_NO_CONTENT)
+@get("/sync-query-param", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 def sync_query_params(first: int) -> None:
     pass
 
 
-@get("/async-mixed-params/{second:int}", status_code=HTTP_204_NO_CONTENT)
+@get("/async-mixed-params/{second:int}", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 async def async_mixed_params(first: int, second: int) -> None:
     pass
 
 
-@get("/sync-mixed-params/{second:int}", status_code=HTTP_204_NO_CONTENT)
+@get("/sync-mixed-params/{second:int}", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 def sync_mixed_params(first: int, second: int) -> None:
     pass
 
@@ -124,7 +124,7 @@ def sync_mixed_params(first: int, second: int) -> None:
 # headers
 
 
-@get("/async-request-headers", status_code=HTTP_204_NO_CONTENT)
+@get("/async-request-headers", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 async def async_request_headers(request: Request) -> None:
     header_dict = {}
     for header_name, header_value in request.headers.items():
@@ -132,7 +132,7 @@ async def async_request_headers(request: Request) -> None:
     request.headers.getall("header_1")
 
 
-@get("/sync-request-headers", status_code=HTTP_204_NO_CONTENT)
+@get("/sync-request-headers", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 def sync_request_headers(request: Request) -> None:
     header_dict = {}
     for header_name, header_value in request.headers.items():
@@ -140,12 +140,22 @@ def sync_request_headers(request: Request) -> None:
     request.headers.getall("header_1")
 
 
-@get("/async-response-headers", response_headers=response_headers, status_code=HTTP_204_NO_CONTENT)
+@get(
+    "/async-response-headers",
+    response_headers=response_headers,
+    status_code=HTTP_204_NO_CONTENT,
+    media_type=MediaType.TEXT,
+)
 async def async_response_headers() -> None:
     pass
 
 
-@get("/sync-response-headers", response_headers=response_headers, status_code=HTTP_204_NO_CONTENT)
+@get(
+    "/sync-response-headers",
+    response_headers=response_headers,
+    status_code=HTTP_204_NO_CONTENT,
+    media_type=MediaType.TEXT,
+)
 def sync_response_headers() -> None:
     pass
 
@@ -153,26 +163,36 @@ def sync_response_headers() -> None:
 # cookies
 
 
-@get("/async-request-cookies", status_code=HTTP_204_NO_CONTENT)
+@get("/async-request-cookies", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 async def async_request_cookies(request: Request) -> None:
     cookie_dict = {}
     for cookie_name, cookie_value in request.cookies.items():
         cookie_dict[cookie_name] = cookie_value
 
 
-@get("/sync-request-cookies", status_code=HTTP_204_NO_CONTENT)
+@get("/sync-request-cookies", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 def sync_request_cookies(request: Request) -> None:
     cookie_dict = {}
     for cookie_name, cookie_value in request.cookies.items():
         cookie_dict[cookie_name] = cookie_value
 
 
-@get("/async-response-cookies", response_cookies=response_cookies, status_code=HTTP_204_NO_CONTENT)
+@get(
+    "/async-response-cookies",
+    response_cookies=response_cookies,
+    status_code=HTTP_204_NO_CONTENT,
+    media_type=MediaType.TEXT,
+)
 async def async_response_cookies() -> None:
     pass
 
 
-@get("/sync-response-cookies", response_cookies=response_cookies, status_code=HTTP_204_NO_CONTENT)
+@get(
+    "/sync-response-cookies",
+    response_cookies=response_cookies,
+    status_code=HTTP_204_NO_CONTENT,
+    media_type=MediaType.TEXT,
+)
 def sync_response_cookies() -> None:
     pass
 
@@ -180,7 +200,7 @@ def sync_response_cookies() -> None:
 # url
 
 
-@get("/async-url-access", status_code=HTTP_204_NO_CONTENT)
+@get("/async-url-access", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 async def async_url_access(request: Request) -> None:
     scheme = request.url.scheme  # noqa: F841
     netloc = request.url.netloc  # noqa: F841
@@ -195,7 +215,7 @@ async def async_url_access(request: Request) -> None:
         pass
 
 
-@get("/sync-url-access", status_code=HTTP_204_NO_CONTENT)
+@get("/sync-url-access", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 def sync_url_access(request: Request) -> None:
     scheme = request.url.scheme  # noqa: F841
     netloc = request.url.netloc  # noqa: F841
