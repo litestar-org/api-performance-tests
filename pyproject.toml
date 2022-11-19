@@ -1,25 +1,34 @@
 [tool.poetry]
-name = "api-performance-tests"
+name = "starlite_api_bench"
 version = "0.1.0"
 description = "Benchmarks for Python ASGI frameworks"
-authors = ["Na'aman Hirschfeld <nhirschfeld@gmail.com>"]
+authors = ["Na'aman Hirschfeld <nhirschfeld@gmail.com>", "Janek Nouvertné <j.a.nouvertne@posteo.de>"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
-starlite = { git = "https://github.com/starlite-api/starlite.git", branch = "main" }
-uvloop = "*"
-uvicorn = "*"
-gunicorn = "*"
 matplotlib = "*"
 seaborn = "*"
 pandas = "*"
 rich = "^12.6.0"
 click = "^8.1.3"
-starlette = "*"
-fastapi = "*"
-blacksheep = "*"
-sanic = "*"
-sanic-testing = "^22.9.0"
+docker = "^6.0.1"
+starlite = { git = "https://github.com/starlite-api/starlite.git", branch = "main" }
+starlette = { version = "*", optional = true }
+fastapi = { version = "*", optional = true }
+blacksheep = { version = "*", optional = true }
+sanic = { version = "*", optional = true }
+sanic-testing = { version = "*", optional = true }
+pyyaml = "^6.0"
+
+[tool.poetry.extras]
+test = ["starlite", "starlette", "fastapi", "blacksheep", "sanic", "sanic-testing"]
+
+[tool.poetry.scripts]
+bench = "starlite_api_bench.cli:cli"
+
+[tool.poetry.group.dev.dependencies]
+mypy = "^0.991"
+black = "^22.10.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

@@ -1,3 +1,5 @@
+from typing import TYPE_CHECKING
+
 from starlite import (
     Cookie,
     File,
@@ -10,11 +12,13 @@ from starlite import (
 )
 from starlite.status_codes import HTTP_204_NO_CONTENT
 
-from . import data
-from .test import EndpointSpec
+import test_data
 
-response_headers = {name: ResponseHeader(value=value) for name, value in data.RESPONSE_HEADERS.items()}
-response_cookies = [Cookie(key=key, value=value) for key, value in data.RESPONSE_COOKIES.items()]
+if TYPE_CHECKING:
+    from frameworks.test import EndpointSpec
+
+response_headers = {name: ResponseHeader(value=value) for name, value in test_data.RESPONSE_HEADERS.items()}
+response_cookies = [Cookie(key=key, value=value) for key, value in test_data.RESPONSE_COOKIES.items()]
 
 
 # plaintext response
@@ -22,22 +26,22 @@ response_cookies = [Cookie(key=key, value=value) for key, value in data.RESPONSE
 
 @get("/async-plaintext-6k", media_type=MediaType.TEXT)
 async def async_plaintext_6k() -> str:
-    return data.TEXT_6k
+    return test_data.TEXT_6k
 
 
 @get("/sync-plaintext-6k", media_type=MediaType.TEXT)
 def sync_plaintext_6k() -> str:
-    return data.TEXT_6k
+    return test_data.TEXT_6k
 
 
 @get("/async-plaintext-70k", media_type=MediaType.TEXT)
 async def async_plaintext_70k() -> str:
-    return data.TEXT_70k
+    return test_data.TEXT_70k
 
 
 @get("/sync-plaintext-70k", media_type=MediaType.TEXT)
 def sync_plaintext_70k() -> str:
-    return data.TEXT_70k
+    return test_data.TEXT_70k
 
 
 # JSON response
@@ -45,32 +49,32 @@ def sync_plaintext_70k() -> str:
 
 @get("/async-json-2k", media_type=MediaType.JSON)
 async def async_json_2k() -> dict:
-    return data.JSON_2K
+    return test_data.JSON_2K
 
 
 @get("/sync-json-2k", media_type=MediaType.JSON)
 def sync_json_2k() -> dict:
-    return data.JSON_2K
+    return test_data.JSON_2K
 
 
 @get("/async-json-10k", media_type=MediaType.JSON)
 async def async_json_10k() -> dict:
-    return data.JSON_10K
+    return test_data.JSON_10K
 
 
 @get("/sync-json-10k", media_type=MediaType.JSON)
 def sync_json_10k() -> dict:
-    return data.JSON_10K
+    return test_data.JSON_10K
 
 
 @get("/async-json-450k", media_type=MediaType.JSON)
 async def async_json_450k() -> dict:
-    return data.JSON_450K
+    return test_data.JSON_450K
 
 
 @get("/sync-json-450k", media_type=MediaType.JSON)
 def sync_json_450k() -> dict:
-    return data.JSON_450K
+    return test_data.JSON_450K
 
 
 # params
@@ -210,42 +214,42 @@ def sync_url_access(request: Request) -> None:
 
 @get("/async-file-response-100B")
 async def async_file_response_100b() -> File:
-    return File(path=data.RESPONSE_FILE_100B, filename="response_file")
+    return File(path=test_data.RESPONSE_FILE_100B, filename="response_file")
 
 
 @get("/async-file-response-50K")
 async def async_file_response_50k() -> File:
-    return File(path=data.RESPONSE_FILE_50K, filename="response_file")
+    return File(path=test_data.RESPONSE_FILE_50K, filename="response_file")
 
 
 @get("/async-file-response-1K")
 async def async_file_response_1k() -> File:
-    return File(path=data.RESPONSE_FILE_1K, filename="response_file")
+    return File(path=test_data.RESPONSE_FILE_1K, filename="response_file")
 
 
 @get("/async-file-response-1M")
 async def async_file_response_1m() -> File:
-    return File(path=data.RESPONSE_FILE_1M, filename="response_file")
+    return File(path=test_data.RESPONSE_FILE_1M, filename="response_file")
 
 
 @get("/sync-file-response-100B")
 def sync_file_response_100b() -> File:
-    return File(path=data.RESPONSE_FILE_100B, filename="response_file")
+    return File(path=test_data.RESPONSE_FILE_100B, filename="response_file")
 
 
 @get("/sync-file-response-50K")
 def sync_file_response_50k() -> File:
-    return File(path=data.RESPONSE_FILE_50K, filename="response_file")
+    return File(path=test_data.RESPONSE_FILE_50K, filename="response_file")
 
 
 @get("/sync-file-response-1K")
 def sync_file_response_1k() -> File:
-    return File(path=data.RESPONSE_FILE_1K, filename="response_file")
+    return File(path=test_data.RESPONSE_FILE_1K, filename="response_file")
 
 
 @get("/sync-file-response-1M")
 def sync_file_response_1m() -> File:
-    return File(path=data.RESPONSE_FILE_1M, filename="response_file")
+    return File(path=test_data.RESPONSE_FILE_1M, filename="response_file")
 
 
 app = Starlite(
@@ -297,7 +301,7 @@ app = Starlite(
 )
 
 
-def run_spec_test(url: str, spec: EndpointSpec) -> None:
+def run_spec_test(url: str, spec: "EndpointSpec") -> None:
     with TestClient(app=app) as client:
         res = client.get(url, **spec.get("request", {}))
         assert res.status_code == spec["result"]["status_code"]

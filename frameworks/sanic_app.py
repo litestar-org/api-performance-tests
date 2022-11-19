@@ -1,4 +1,5 @@
 import urllib.parse
+from typing import TYPE_CHECKING
 from unittest.mock import MagicMock
 
 import anyio
@@ -8,8 +9,10 @@ from sanic.application.motd import MOTD
 from sanic.log import LOGGING_CONFIG_DEFAULTS
 from sanic.response import ResponseStream, empty, file, file_stream, json, text
 
-from . import data
-from .test import EndpointSpec
+import test_data
+
+if TYPE_CHECKING:
+    from frameworks.test import EndpointSpec
 
 log_config = {
     **LOGGING_CONFIG_DEFAULTS,
@@ -49,22 +52,22 @@ MOTD.output = MagicMock()
 
 @app.route("/async-plaintext-6k")
 async def async_plaintext_6k(request: Request) -> HTTPResponse:
-    return text(data.TEXT_6k)
+    return text(test_data.TEXT_6k)
 
 
 @app.route("/sync-plaintext-6k")
 def sync_plaintext_6k(request: Request) -> HTTPResponse:
-    return text(data.TEXT_6k)
+    return text(test_data.TEXT_6k)
 
 
 @app.route("/async-plaintext-70k")
 async def async_plaintext_70k(request: Request) -> HTTPResponse:
-    return text(data.TEXT_70k)
+    return text(test_data.TEXT_70k)
 
 
 @app.route("/sync-plaintext-70k")
 def sync_plaintext_70k(request: Request) -> HTTPResponse:
-    return text(data.TEXT_70k)
+    return text(test_data.TEXT_70k)
 
 
 # JSON response
@@ -72,32 +75,32 @@ def sync_plaintext_70k(request: Request) -> HTTPResponse:
 
 @app.route("/async-json-2k")
 async def async_json_2k(request: Request) -> HTTPResponse:
-    return json(data.JSON_2K)
+    return json(test_data.JSON_2K)
 
 
 @app.route("/sync-json-2k")
 def sync_json_2k(request: Request) -> HTTPResponse:
-    return json(data.JSON_2K)
+    return json(test_data.JSON_2K)
 
 
 @app.route("/async-json-10k")
 async def async_json_10k(request: Request) -> HTTPResponse:
-    return json(data.JSON_10K)
+    return json(test_data.JSON_10K)
 
 
 @app.route("/sync-json-10k")
 def sync_json_10k(request: Request) -> HTTPResponse:
-    return json(data.JSON_10K)
+    return json(test_data.JSON_10K)
 
 
 @app.route("/async-json-450k")
 async def async_json_450k(request: Request) -> HTTPResponse:
-    return json(data.JSON_450K)
+    return json(test_data.JSON_450K)
 
 
 @app.route("/sync-json-450k")
 def sync_json_450k(request: Request) -> HTTPResponse:
-    return json(data.JSON_450K)
+    return json(test_data.JSON_450K)
 
 
 # params
@@ -170,12 +173,12 @@ def sync_request_headers(request: Request) -> HTTPResponse:
 
 @app.route("/async-response-headers")
 async def async_response_headers(request: Request) -> HTTPResponse:
-    return empty(headers=data.RESPONSE_HEADERS)
+    return empty(headers=test_data.RESPONSE_HEADERS)
 
 
 @app.route("/sync-response-headers")
 def sync_response_headers(request: Request) -> HTTPResponse:
-    return empty(headers=data.RESPONSE_HEADERS)
+    return empty(headers=test_data.RESPONSE_HEADERS)
 
 
 # cookies
@@ -200,7 +203,7 @@ def sync_request_cookies(request: Request) -> HTTPResponse:
 @app.route("/async-response-cookies")
 async def async_response_cookies(request: Request) -> HTTPResponse:
     res = empty()
-    for key, value in data.RESPONSE_COOKIES.items():
+    for key, value in test_data.RESPONSE_COOKIES.items():
         res.cookies[key] = value
     return res
 
@@ -208,7 +211,7 @@ async def async_response_cookies(request: Request) -> HTTPResponse:
 @app.route("/sync-response-cookies")
 def sync_response_cookies(request: Request) -> HTTPResponse:
     res = empty()
-    for key, value in data.RESPONSE_COOKIES.items():
+    for key, value in test_data.RESPONSE_COOKIES.items():
         res.cookies[key] = value
     return res
 
@@ -253,46 +256,46 @@ def sync_url_access(request: Request) -> None:
 
 @app.route("/async-file-response-100B")
 async def async_file_response_100b(request: Request) -> HTTPResponse:
-    return await file(location=data.RESPONSE_FILE_100B, filename="response_file")
+    return await file(location=test_data.RESPONSE_FILE_100B, filename="response_file")
 
 
 @app.route("/async-file-response-50K")
 async def async_file_response_50k(request: Request) -> HTTPResponse:
-    return await file(location=data.RESPONSE_FILE_50K, filename="response_file")
+    return await file(location=test_data.RESPONSE_FILE_50K, filename="response_file")
 
 
 @app.route("/async-file-response-1K")
 async def async_file_response_1k(request: Request) -> HTTPResponse:
-    return await file(location=data.RESPONSE_FILE_1K, filename="response_file")
+    return await file(location=test_data.RESPONSE_FILE_1K, filename="response_file")
 
 
 @app.route("/async-file-response-1M")
 async def async_file_response_1m(request: Request) -> ResponseStream:
-    return await file_stream(location=data.RESPONSE_FILE_1M, filename="response_file")
+    return await file_stream(location=test_data.RESPONSE_FILE_1M, filename="response_file")
 
 
 @app.route("/sync-file-response-100B")
 def sync_file_response_100b(request: Request) -> HTTPResponse:
     with anyio.start_blocking_portal() as portal:
-        return portal.call(file, data.RESPONSE_FILE_100B)
+        return portal.call(file, test_data.RESPONSE_FILE_100B)
 
 
 @app.route("/sync-file-response-50K")
 def sync_file_response_50k(request: Request) -> HTTPResponse:
     with anyio.start_blocking_portal() as portal:
-        return portal.call(file, data.RESPONSE_FILE_50K)
+        return portal.call(file, test_data.RESPONSE_FILE_50K)
 
 
 @app.route("/sync-file-response-1K")
 def sync_file_response_1k(request: Request) -> HTTPResponse:
     with anyio.start_blocking_portal() as portal:
-        return portal.call(file, data.RESPONSE_FILE_1K)
+        return portal.call(file, test_data.RESPONSE_FILE_1K)
 
 
 @app.route("/sync-file-response-1M")
 def sync_file_response_1m(request: Request) -> HTTPResponse:
     with anyio.start_blocking_portal() as portal:
-        return portal.call(file, data.RESPONSE_FILE_1M)
+        return portal.call(file, test_data.RESPONSE_FILE_1M)
 
 
 def run_spec_test(url: str, spec: "EndpointSpec") -> None:
