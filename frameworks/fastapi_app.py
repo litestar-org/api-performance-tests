@@ -8,7 +8,7 @@ from starlette.status import HTTP_204_NO_CONTENT
 import test_data
 
 if TYPE_CHECKING:
-    from frameworks.test import EndpointSpec
+    from test_frameworks import EndpointSpec
 
 app = FastAPI()
 

@@ -9,7 +9,7 @@ from blacksheep.testing import TestClient
 import test_data
 
 if TYPE_CHECKING:
-    from frameworks.test import EndpointSpec
+    from test_frameworks import EndpointSpec
 
 
 RESPONSE_COOKIES = [Cookie(name=name, value=value) for name, value in test_data.RESPONSE_COOKIES.items()]

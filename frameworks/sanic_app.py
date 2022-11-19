@@ -12,7 +12,8 @@ from sanic.response import ResponseStream, empty, file, file_stream, json, text
 import test_data
 
 if TYPE_CHECKING:
-    from frameworks.test import EndpointSpec
+    from test_frameworks import EndpointSpec
+
 
 log_config = {
     **LOGGING_CONFIG_DEFAULTS,
