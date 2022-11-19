@@ -1,11 +1,9 @@
 import urllib.parse
 from typing import TYPE_CHECKING
-from unittest.mock import MagicMock
 
 import anyio
 from sanic import HTTPResponse, Request, Sanic
 from sanic.application.constants import Mode
-from sanic.application.motd import MOTD
 from sanic.log import LOGGING_CONFIG_DEFAULTS
 from sanic.response import ResponseStream, empty, file, file_stream, json, text
 
@@ -43,10 +41,11 @@ log_config = {
         "app_console": {"class": "logging.NullHandler", "formatter": "generic"},
     },
 }
-app = Sanic("MyApp", log_config=log_config)
-app.config.ACCESS_LOG = False
+# app = Sanic("MyApp", log_config=log_config)
+app = Sanic("MyApp")
+# app.config.ACCESS_LOG = False
 
-MOTD.output = MagicMock()
+# MOTD.output = MagicMock()
 
 # json
 
@@ -259,17 +258,17 @@ def sync_url_access(request: Request) -> HTTPResponse:
 
 @app.route("/async-file-response-100B")
 async def async_file_response_100b(request: Request) -> HTTPResponse:
-    return await file(location=test_data.RESPONSE_FILE_100B, filename="response_file")
+    return await file_stream(location=test_data.RESPONSE_FILE_100B, filename="response_file")
 
 
 @app.route("/async-file-response-50K")
 async def async_file_response_50k(request: Request) -> HTTPResponse:
-    return await file(location=test_data.RESPONSE_FILE_50K, filename="response_file")
+    return await file_stream(location=test_data.RESPONSE_FILE_50K, filename="response_file")
 
 
 @app.route("/async-file-response-1K")
 async def async_file_response_1k(request: Request) -> HTTPResponse:
-    return await file(location=test_data.RESPONSE_FILE_1K, filename="response_file")
+    return await file_stream(location=test_data.RESPONSE_FILE_1K, filename="response_file")
 
 
 @app.route("/async-file-response-1M")

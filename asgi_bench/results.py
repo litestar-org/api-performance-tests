@@ -6,7 +6,7 @@ import seaborn as sns
 from matplotlib import pyplot as plt
 
 from .types import BenchmarkMode, EndpointCategory, SuiteResults
-from .util import has_error_results
+from .util import get_error_percentage
 
 COLOR_PALETTE = [
     "#5C80BC",
@@ -70,18 +70,19 @@ def _data_for_plot(
                 if category not in categories:
                     continue
                 for test_result in category_results:
-                    has_errors = has_error_results(test_result)
+                    error_percentage = get_error_percentage(test_result)
+                    is_valid = error_percentage <= 1
                     ret.append(
                         {
                             "target": framework,
                             "name": f'{test_result["name"]} ({endpoint_mode})',
-                            f"stddev": test_result[benchmark_mode]["stddev"] if not has_errors else 0,
-                            f"score_mean": test_result[benchmark_mode]["mean"] if not has_errors else 0,
-                            f"score_50": test_result[benchmark_mode]["percentiles"]["50"] if not has_errors else 0,
-                            f"score_75": test_result[benchmark_mode]["percentiles"]["75"] if not has_errors else 0,
-                            f"score_90": test_result[benchmark_mode]["percentiles"]["90"] if not has_errors else 0,
-                            f"score_95": test_result[benchmark_mode]["percentiles"]["95"] if not has_errors else 0,
-                            f"score_99": test_result[benchmark_mode]["percentiles"]["99"] if not has_errors else 0,
+                            f"stddev": test_result[benchmark_mode]["stddev"] if is_valid else 0,
+                            f"score_mean": test_result[benchmark_mode]["mean"] if is_valid else 0,
+                            f"score_50": test_result[benchmark_mode]["percentiles"]["50"] if is_valid else 0,
+                            f"score_75": test_result[benchmark_mode]["percentiles"]["75"] if is_valid else 0,
+                            f"score_90": test_result[benchmark_mode]["percentiles"]["90"] if is_valid else 0,
+                            f"score_95": test_result[benchmark_mode]["percentiles"]["95"] if is_valid else 0,
+                            f"score_99": test_result[benchmark_mode]["percentiles"]["99"] if is_valid else 0,
                         }
                     )
     if ret:
@@ -147,6 +148,7 @@ def _draw_plot(
         if category:
             filename = f"{category}_{filename}"
         plt.savefig(output_dir / filename)
+        plt.close()
 
 
 def _draw_percentile_plots(

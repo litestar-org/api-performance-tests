@@ -17,7 +17,7 @@ from .types import (
     FrameworkSpec,
     TestSpec,
 )
-from .util import has_error_results
+from .util import get_error_percentage
 
 SERVER_PORT = 8081
 
@@ -161,8 +161,9 @@ class Runner:
                 *_args_from_spec(test_spec),
             )
         results = json.loads(res)
-        if has_error_results(results["result"]):
-            self.console.print(f"    [red]Completed {test_spec.pretty_name!r} with errors")
+        error_percentage = get_error_percentage(results["result"])
+        if error_percentage:
+            self.console.print(f"    [red]Completed {test_spec.pretty_name} with errors ({error_percentage}%)")
         else:
             self.console.print(f"    [green]Completed: {test_spec.pretty_name}")
         return results

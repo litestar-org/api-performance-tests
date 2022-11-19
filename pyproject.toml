@@ -19,6 +19,7 @@ blacksheep = { version = "*", optional = true }
 sanic = { version = "*", optional = true }
 sanic-testing = { version = "*", optional = true }
 pyyaml = "^6.0"
+httpx = "^0.23.1"
 
 [tool.poetry.extras]
 test = ["starlite", "starlette", "fastapi", "blacksheep", "sanic", "sanic-testing"]
