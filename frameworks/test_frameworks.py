@@ -75,11 +75,7 @@ ENDPOINT_SPEC: dict[str, EndpointSpec] = {
 
 
 def test_all_frameworks() -> None:
-    import blacksheep_app
-    import fastapi_app
-    import sanic_app
-    import starlette_app
-    import starlite_app
+    from . import blacksheep_app, fastapi_app, sanic_app, starlette_app, starlite_app
 
     for framework in [starlite_app, starlette_app, fastapi_app, sanic_app, blacksheep_app]:
         for endpoint_type in ["sync", "async"]:

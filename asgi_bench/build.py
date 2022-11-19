@@ -16,12 +16,13 @@ def temporary_dockerfile(framework_spec: FrameworkSpec) -> Generator[Path, None,
     # because the docker sdk does not allow to pass a context while also supplying a
     # file-like object, we have to store it on disk temporarily
 
-    template = (Path.cwd() / "DockerfileFrameworks.tpl").read_text()
+    cwd = Path.cwd()
+    template = (cwd / "DockerfileFrameworks.tpl").read_text()
     content = template.format(
-        pip_package=framework_spec.pip_package,
+        pip_package=framework_spec.pip_install_targets,
         framework=framework_spec.name,
     )
-    dockerfile = Path.cwd() / ".dockerfile.tmp"
+    dockerfile = cwd / ".dockerfile.tmp"
     dockerfile.write_text(content)
     yield dockerfile
     dockerfile.unlink()
