@@ -1,12 +1,12 @@
 import json
 from pathlib import Path
 
-data_path = Path("test_data")
+data_path = Path(__file__).parent
 
-RESPONSE_FILE_100B = Path("test_data/100B").resolve()
-RESPONSE_FILE_1K = Path("test_data/1K").resolve()
-RESPONSE_FILE_50K = Path("test_data/50K").resolve()
-RESPONSE_FILE_1M = Path("test_data/1M").resolve()
+RESPONSE_FILE_100B = (data_path / "100B").resolve()
+RESPONSE_FILE_1K = (data_path / "1K").resolve()
+RESPONSE_FILE_50K = (data_path / "50K").resolve()
+RESPONSE_FILE_1M = (data_path / "1M").resolve()
 
 TEXT_6k = (data_path / "text_6k").read_text()
 TEXT_70k = (data_path / "text_70k").read_text()

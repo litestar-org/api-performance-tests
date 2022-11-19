@@ -6,10 +6,10 @@ from starlette.responses import FileResponse, JSONResponse, PlainTextResponse, R
 from starlette.status import HTTP_204_NO_CONTENT
 from starlette.testclient import TestClient
 
-from . import data
+import test_data
 
 if TYPE_CHECKING:
-    from .test import EndpointSpec
+    from frameworks.test import EndpointSpec
 
 app = Starlette()
 
@@ -18,22 +18,22 @@ app = Starlette()
 
 @app.route("/async-plaintext-6k")
 async def async_plaintext_6k(request: Request) -> PlainTextResponse:
-    return PlainTextResponse(data.TEXT_6k)
+    return PlainTextResponse(test_data.TEXT_6k)
 
 
 @app.route("/sync-plaintext-6k")
 def sync_plaintext_6k(request: Request) -> PlainTextResponse:
-    return PlainTextResponse(data.TEXT_6k)
+    return PlainTextResponse(test_data.TEXT_6k)
 
 
 @app.route("/async-plaintext-70k")
 async def async_plaintext_70k(request: Request) -> PlainTextResponse:
-    return PlainTextResponse(data.TEXT_70k)
+    return PlainTextResponse(test_data.TEXT_70k)
 
 
 @app.route("/sync-plaintext-70k")
 def sync_plaintext_70k(request: Request) -> PlainTextResponse:
-    return PlainTextResponse(data.TEXT_70k)
+    return PlainTextResponse(test_data.TEXT_70k)
 
 
 # JSON response
@@ -41,32 +41,32 @@ def sync_plaintext_70k(request: Request) -> PlainTextResponse:
 
 @app.route("/async-json-2k")
 async def async_json_2k(request: Request) -> JSONResponse:
-    return JSONResponse(data.JSON_2K)
+    return JSONResponse(test_data.JSON_2K)
 
 
 @app.route("/sync-json-2k")
 def sync_json_2k(request: Request) -> JSONResponse:
-    return JSONResponse(data.JSON_2K)
+    return JSONResponse(test_data.JSON_2K)
 
 
 @app.route("/async-json-10k")
 async def async_json_10k(request: Request) -> JSONResponse:
-    return JSONResponse(data.JSON_10K)
+    return JSONResponse(test_data.JSON_10K)
 
 
 @app.route("/sync-json-10k")
 def sync_json_10k(request: Request) -> JSONResponse:
-    return JSONResponse(data.JSON_10K)
+    return JSONResponse(test_data.JSON_10K)
 
 
 @app.route("/async-json-450k")
 async def async_json_450k(request: Request) -> JSONResponse:
-    return JSONResponse(data.JSON_450K)
+    return JSONResponse(test_data.JSON_450K)
 
 
 @app.route("/sync-json-450k")
 def sync_json_450k(request: Request) -> JSONResponse:
-    return JSONResponse(data.JSON_450K)
+    return JSONResponse(test_data.JSON_450K)
 
 
 # params
@@ -143,12 +143,12 @@ def sync_request_headers(request: Request) -> Response:
 
 @app.route("/async-response-headers")
 async def async_response_headers(request: Request) -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT, headers=data.RESPONSE_HEADERS)
+    return Response(status_code=HTTP_204_NO_CONTENT, headers=test_data.RESPONSE_HEADERS)
 
 
 @app.route("/sync-response-headers")
 def sync_response_headers(request: Request) -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT, headers=data.RESPONSE_HEADERS)
+    return Response(status_code=HTTP_204_NO_CONTENT, headers=test_data.RESPONSE_HEADERS)
 
 
 # cookies
@@ -173,7 +173,7 @@ def sync_request_cookies(request: Request) -> Response:
 @app.route("/async-response-cookies")
 async def async_response_cookies(request: Request) -> Response:
     res = Response(status_code=HTTP_204_NO_CONTENT)
-    for key, value in data.RESPONSE_COOKIES.items():
+    for key, value in test_data.RESPONSE_COOKIES.items():
         res.set_cookie(key, value)
     return res
 
@@ -181,7 +181,7 @@ async def async_response_cookies(request: Request) -> Response:
 @app.route("/sync-response-cookies")
 def sync_response_cookies(request: Request) -> Response:
     res = Response(status_code=HTTP_204_NO_CONTENT)
-    for key, value in data.RESPONSE_COOKIES.items():
+    for key, value in test_data.RESPONSE_COOKIES.items():
         res.set_cookie(key, value)
     return res
 
@@ -224,42 +224,42 @@ def sync_url_access(request: Request) -> None:
 
 @app.route("/async-file-response-100B")
 async def async_file_response_100b(request: Request) -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_100B, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_100B, filename="response_file")
 
 
 @app.route("/async-file-response-50K")
 async def async_file_response_50k(request: Request) -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_50K, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_50K, filename="response_file")
 
 
 @app.route("/async-file-response-1K")
 async def async_file_response_1k(request: Request) -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_1K, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_1K, filename="response_file")
 
 
 @app.route("/async-file-response-1M")
 async def async_file_response_1m(request: Request) -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_1M, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_1M, filename="response_file")
 
 
 @app.route("/sync-file-response-100B")
 def sync_file_response_100b(request: Request) -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_100B, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_100B, filename="response_file")
 
 
 @app.route("/sync-file-response-50K")
 def sync_file_response_50k(request: Request) -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_50K, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_50K, filename="response_file")
 
 
 @app.route("/sync-file-response-1K")
 def sync_file_response_1k(request: Request) -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_1K, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_1K, filename="response_file")
 
 
 @app.route("/sync-file-response-1M")
 def sync_file_response_1m(request: Request) -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_1M, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_1M, filename="response_file")
 
 
 def run_spec_test(url: str, spec: "EndpointSpec") -> None:

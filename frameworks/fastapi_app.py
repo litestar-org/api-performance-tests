@@ -5,10 +5,10 @@ from fastapi.responses import FileResponse, PlainTextResponse
 from fastapi.testclient import TestClient
 from starlette.status import HTTP_204_NO_CONTENT
 
-from . import data
+import test_data
 
 if TYPE_CHECKING:
-    from .test import EndpointSpec
+    from frameworks.test import EndpointSpec
 
 app = FastAPI()
 
@@ -18,22 +18,22 @@ app = FastAPI()
 
 @app.get("/async-plaintext-6k", response_class=PlainTextResponse)
 async def async_plaintext_6k() -> str:
-    return data.TEXT_6k
+    return test_data.TEXT_6k
 
 
 @app.get("/sync-plaintext-6k", response_class=PlainTextResponse)
 def sync_plaintext_6k() -> str:
-    return data.TEXT_6k
+    return test_data.TEXT_6k
 
 
 @app.get("/async-plaintext-70k", response_class=PlainTextResponse)
 async def async_plaintext_70k() -> str:
-    return data.TEXT_70k
+    return test_data.TEXT_70k
 
 
 @app.get("/sync-plaintext-70k", response_class=PlainTextResponse)
 def sync_plaintext_70k() -> str:
-    return data.TEXT_70k
+    return test_data.TEXT_70k
 
 
 # JSON response
@@ -41,32 +41,32 @@ def sync_plaintext_70k() -> str:
 
 @app.get("/async-json-2k")
 async def async_json_2k() -> dict[str, str]:
-    return data.JSON_2K
+    return test_data.JSON_2K
 
 
 @app.get("/sync-json-2k")
 def sync_json_2k() -> dict[str, str]:
-    return data.JSON_2K
+    return test_data.JSON_2K
 
 
 @app.get("/async-json-10k")
 async def async_json_10k() -> dict[str, str]:
-    return data.JSON_10K
+    return test_data.JSON_10K
 
 
 @app.get("/sync-json-10k")
 def sync_json_10k() -> dict[str, str]:
-    return data.JSON_10K
+    return test_data.JSON_10K
 
 
 @app.get("/async-json-450k")
 async def async_json_450k() -> dict[str, str]:
-    return data.JSON_450K
+    return test_data.JSON_450K
 
 
 @app.get("/sync-json-450k")
 def sync_json_450k() -> dict[str, str]:
-    return data.JSON_450K
+    return test_data.JSON_450K
 
 
 # params
@@ -135,12 +135,12 @@ def sync_request_headers(request: Request) -> Response:
 
 @app.get("/async-response-headers")
 async def async_response_headers() -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT, headers=data.RESPONSE_HEADERS)
+    return Response(status_code=HTTP_204_NO_CONTENT, headers=test_data.RESPONSE_HEADERS)
 
 
 @app.get("/sync-response-headers")
 def sync_response_headers() -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT, headers=data.RESPONSE_HEADERS)
+    return Response(status_code=HTTP_204_NO_CONTENT, headers=test_data.RESPONSE_HEADERS)
 
 
 # cookies
@@ -165,7 +165,7 @@ def sync_request_cookies(request: Request) -> Response:
 @app.get("/async-response-cookies")
 async def async_response_cookies() -> Response:
     res = Response(status_code=HTTP_204_NO_CONTENT)
-    for key, value in data.RESPONSE_COOKIES.items():
+    for key, value in test_data.RESPONSE_COOKIES.items():
         res.set_cookie(key, value)
     return res
 
@@ -173,7 +173,7 @@ async def async_response_cookies() -> Response:
 @app.get("/sync-response-cookies")
 def sync_response_cookies() -> Response:
     res = Response(status_code=HTTP_204_NO_CONTENT)
-    for key, value in data.RESPONSE_COOKIES.items():
+    for key, value in test_data.RESPONSE_COOKIES.items():
         res.set_cookie(key, value)
     return res
 
@@ -216,42 +216,42 @@ def sync_url_access(request: Request) -> None:
 
 @app.get("/async-file-response-100B")
 async def async_file_response_100b() -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_100B, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_100B, filename="response_file")
 
 
 @app.get("/async-file-response-50K")
 async def async_file_response_50k() -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_50K, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_50K, filename="response_file")
 
 
 @app.get("/async-file-response-1K")
 async def async_file_response_1k() -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_1K, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_1K, filename="response_file")
 
 
 @app.get("/async-file-response-1M")
 async def async_file_response_1m() -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_1M, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_1M, filename="response_file")
 
 
 @app.get("/sync-file-response-100B")
 def sync_file_response_100b() -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_100B, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_100B, filename="response_file")
 
 
 @app.get("/sync-file-response-50K")
 def sync_file_response_50k() -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_50K, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_50K, filename="response_file")
 
 
 @app.get("/sync-file-response-1K")
 def sync_file_response_1k() -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_1K, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_1K, filename="response_file")
 
 
 @app.get("/sync-file-response-1M")
 def sync_file_response_1m() -> FileResponse:
-    return FileResponse(path=data.RESPONSE_FILE_1M, filename="response_file")
+    return FileResponse(path=test_data.RESPONSE_FILE_1M, filename="response_file")
 
 
 def run_spec_test(url: str, spec: "EndpointSpec") -> None:

@@ -6,13 +6,13 @@ from blacksheep import Application, Cookie, Request, Response, json, text
 from blacksheep.server.responses import file, no_content
 from blacksheep.testing import TestClient
 
-from . import data
+import test_data
 
 if TYPE_CHECKING:
-    from .test import EndpointSpec
+    from frameworks.test import EndpointSpec
 
 
-RESPONSE_COOKIES = [Cookie(name=name, value=value) for name, value in data.RESPONSE_COOKIES.items()]
+RESPONSE_COOKIES = [Cookie(name=name, value=value) for name, value in test_data.RESPONSE_COOKIES.items()]
 
 app = Application()
 
@@ -22,22 +22,22 @@ app = Application()
 
 @app.router.get("/async-plaintext-6k")
 async def async_plaintext_6k() -> Response:
-    return text(data.TEXT_6k)
+    return text(test_data.TEXT_6k)
 
 
 @app.router.get("/sync-plaintext-6k")
 def sync_plaintext_6k() -> Response:
-    return text(data.TEXT_6k)
+    return text(test_data.TEXT_6k)
 
 
 @app.router.get("/async-plaintext-70k")
 async def async_plaintext_70k() -> Response:
-    return text(data.TEXT_70k)
+    return text(test_data.TEXT_70k)
 
 
 @app.router.get("/sync-plaintext-70k")
 def sync_plaintext_70k() -> Response:
-    return text(data.TEXT_70k)
+    return text(test_data.TEXT_70k)
 
 
 # JSON response
@@ -45,32 +45,32 @@ def sync_plaintext_70k() -> Response:
 
 @app.router.get("/async-json-2k")
 async def async_json_2k() -> Response:
-    return json(data.JSON_2K)
+    return json(test_data.JSON_2K)
 
 
 @app.router.get("/sync-json-2k")
 def sync_json_2k() -> Response:
-    return json(data.JSON_2K)
+    return json(test_data.JSON_2K)
 
 
 @app.router.get("/async-json-10k")
 async def async_json_10k() -> Response:
-    return json(data.JSON_10K)
+    return json(test_data.JSON_10K)
 
 
 @app.router.get("/sync-json-10k")
 def sync_json_10k() -> Response:
-    return json(data.JSON_10K)
+    return json(test_data.JSON_10K)
 
 
 @app.router.get("/async-json-450k")
 async def async_json_450k() -> Response:
-    return json(data.JSON_450K)
+    return json(test_data.JSON_450K)
 
 
 @app.router.get("/sync-json-450k")
 def sync_json_450k() -> Response:
-    return json(data.JSON_450K)
+    return json(test_data.JSON_450K)
 
 
 # params
@@ -144,14 +144,14 @@ def sync_request_headers(request: Request) -> Response:
 @app.router.get("/async-response-headers")
 async def async_response_headers() -> Response:
     res = no_content()
-    res.headers.update({k.encode("latin-1"): v.encode("latin-1") for k, v in data.RESPONSE_HEADERS.items()})
+    res.headers.update({k.encode("latin-1"): v.encode("latin-1") for k, v in test_data.RESPONSE_HEADERS.items()})
     return res
 
 
 @app.router.get("/sync-response-headers")
 def sync_response_headers() -> Response:
     res = no_content()
-    res.headers.update({k.encode("latin-1"): v.encode("latin-1") for k, v in data.RESPONSE_HEADERS.items()})
+    res.headers.update({k.encode("latin-1"): v.encode("latin-1") for k, v in test_data.RESPONSE_HEADERS.items()})
     return res
 
 
@@ -228,46 +228,50 @@ def sync_url_access(request: Request) -> None:
 
 @app.router.get("/async-file-response-100B")
 async def async_file_response_100b() -> Response:
-    content = await anyio.Path(data.RESPONSE_FILE_100B).read_bytes()
+    content = await anyio.Path(test_data.RESPONSE_FILE_100B).read_bytes()
     return file(content, file_name="response_file", content_type="application/x-binary")
 
 
 @app.router.get("/async-file-response-50K")
 async def async_file_response_50k() -> Response:
-    content = await anyio.Path(data.RESPONSE_FILE_50K).read_bytes()
+    content = await anyio.Path(test_data.RESPONSE_FILE_50K).read_bytes()
     return file(content, file_name="response_file", content_type="application/x-binary")
 
 
 @app.router.get("/async-file-response-1K")
 async def async_file_response_1k() -> Response:
-    content = await anyio.Path(data.RESPONSE_FILE_1K).read_bytes()
+    content = await anyio.Path(test_data.RESPONSE_FILE_1K).read_bytes()
     return file(content, file_name="response_file", content_type="application/x-binary")
 
 
 @app.router.get("/async-file-response-1M")
 async def async_file_response_1m() -> Response:
-    content = await anyio.Path(data.RESPONSE_FILE_1M).read_bytes()
+    content = await anyio.Path(test_data.RESPONSE_FILE_1M).read_bytes()
     return file(content, file_name="response_file", content_type="application/x-binary")
 
 
 @app.router.get("/sync-file-response-100B")
 def sync_file_response_100b() -> Response:
-    return file(data.RESPONSE_FILE_100B.read_bytes(), file_name="response_file", content_type="application/x-binary")
+    return file(
+        test_data.RESPONSE_FILE_100B.read_bytes(), file_name="response_file", content_type="application/x-binary"
+    )
 
 
 @app.router.get("/sync-file-response-50K")
 def sync_file_response_50k() -> Response:
-    return file(data.RESPONSE_FILE_50K.read_bytes(), file_name="response_file", content_type="application/x-binary")
+    return file(
+        test_data.RESPONSE_FILE_50K.read_bytes(), file_name="response_file", content_type="application/x-binary"
+    )
 
 
 @app.router.get("/sync-file-response-1K")
 def sync_file_response_1k() -> Response:
-    return file(data.RESPONSE_FILE_1K.read_bytes(), file_name="response_file", content_type="application/x-binary")
+    return file(test_data.RESPONSE_FILE_1K.read_bytes(), file_name="response_file", content_type="application/x-binary")
 
 
 @app.router.get("/sync-file-response-1M")
 def sync_file_response_1m() -> Response:
-    return file(data.RESPONSE_FILE_1M.read_bytes(), file_name="response_file", content_type="application/x-binary")
+    return file(test_data.RESPONSE_FILE_1M.read_bytes(), file_name="response_file", content_type="application/x-binary")
 
 
 def run_spec_test(url: str, spec: "EndpointSpec") -> None:
