@@ -17,10 +17,10 @@ class TestSpec:
     headers: list[tuple[str, str]]
     endpoint_mode: EndpointMode
     benchmark_mode: BenchmarkMode
+    warmup_time: int | None = None
     time_limit: int | None = None
     request_limit: int | None = None
     rate_limit: int | None = None
-    warmup: int = 5
 
     @property
     def pretty_name(self) -> str:

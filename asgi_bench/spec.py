@@ -66,7 +66,7 @@ def make_spec(
             category=category,
             name=args["name"],
             headers=args.get("headers") or [],
-            warmup=warmup_time,
+            warmup_time=warmup_time,
             time_limit=time_limit if benchmark_mode == "rps" else None,
             request_limit=request_limit if benchmark_mode == "latency" else None,
             rate_limit=rate_limit if benchmark_mode == "latency" else None,

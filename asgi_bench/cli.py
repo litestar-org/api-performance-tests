@@ -15,7 +15,7 @@ def cli() -> None:
 @cli.command()
 @click.argument("frameworks", nargs=-1)
 @click.option("--rebuild", is_flag=True, show_default=True, help="rebuild git-based images")
-@click.option("-w", "--warmup", default=5, show_default=True)
+@click.option("-w", "--warmup_time", default=5, show_default=True)
 @click.option("-R", "--rps", is_flag=True, help="run rps benchmarks")
 @click.option("-L", "--latency", is_flag=True, help="run latency benchmarks")
 @click.option("-l", "--limit", default=20, help="max requests per second for latency benchmarks", show_default=True)
@@ -106,7 +106,7 @@ def run(
 def results_command(
     run_name: int | None,
     format: tuple[str, ...],
-    percentile: tuple[str, ...] | None,
+    percentile: tuple[str, ...],
     no_error_bars: bool,
     split_categories: bool,
 ) -> None:
