@@ -123,24 +123,6 @@ def sync_mixed_params(request: Request, second: int) -> Response:
 # headers
 
 
-@app.router.get("/async-request-headers")
-async def async_request_headers(request: Request) -> Response:
-    header_dict = {}
-    for header_name, header_value in request.headers.items():
-        header_dict[header_name] = header_value
-    request.headers.get_tuples(b"header_1")
-    return no_content()
-
-
-@app.router.get("/sync-request-headers")
-def sync_request_headers(request: Request) -> Response:
-    header_dict = {}
-    for header_name, header_value in request.headers.items():
-        header_dict[header_name] = header_value
-    request.headers.get_tuples(b"header_1")
-    return no_content()
-
-
 @app.router.get("/async-response-headers")
 async def async_response_headers() -> Response:
     res = no_content()
@@ -158,22 +140,6 @@ def sync_response_headers() -> Response:
 # cookies
 
 
-@app.router.get("/async-request-cookies")
-async def async_request_cookies(request: Request) -> Response:
-    cookie_dict = {}
-    for cookie_name, cookie_value in request.cookies.items():
-        cookie_dict[cookie_name] = cookie_value
-    return no_content()
-
-
-@app.router.get("/sync-request-cookies")
-def sync_request_cookies(request: Request) -> Response:
-    cookie_dict = {}
-    for cookie_name, cookie_value in request.cookies.items():
-        cookie_dict[cookie_name] = cookie_value
-    return no_content()
-
-
 @app.router.get("/async-response-cookies")
 async def async_response_cookies() -> Response:
     res = no_content()
@@ -186,41 +152,6 @@ def sync_response_cookies() -> Response:
     res = no_content()
     res.set_cookies(RESPONSE_COOKIES)
     return res
-
-
-# url
-
-
-@app.router.get("/async-url-access")
-async def async_url_access(request: Request) -> None:
-    url = urllib.parse.urlsplit(request._url)
-    scheme = request.url.schema  # noqa: F841
-    netloc = url.netloc  # noqa: F841
-    path = request.url.path  # noqa: F841
-    fragment = request.url.fragment  # noqa: F841
-    query = request.url.query  # noqa: F841
-    username = url.username  # noqa: F841
-    password = url.password  # noqa: F841
-    port = request.url.port  # noqa: F841
-    hostname = url.hostname  # noqa: F841
-    for param, value in request.url.query.items():  # noqa: B007
-        pass
-
-
-@app.router.get("/sync-url-access")
-def sync_url_access(request: Request) -> None:
-    url = urllib.parse.urlsplit(request._url)
-    scheme = request.url.schema  # noqa: F841
-    netloc = url.netloc  # noqa: F841
-    path = request.url.path  # noqa: F841
-    fragment = request.url.fragment  # noqa: F841
-    query = request.url.query  # noqa: F841
-    username = url.username  # noqa: F841
-    password = url.password  # noqa: F841
-    port = request.url.port  # noqa: F841
-    hostname = url.hostname  # noqa: F841
-    for param, value in request.url.query.items():  # noqa: B007
-        pass
 
 
 # files

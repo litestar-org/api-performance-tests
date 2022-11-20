@@ -60,16 +60,8 @@ ENDPOINT_SPEC: dict[str, EndpointSpec] = {
         "request": {"params": {"first": "42"}},
     },
     # headers
-    "request-headers": {
-        "result": {"status_code": HTTP_204_NO_CONTENT, "content": None},
-        "request": {"headers": test_data.RESPONSE_HEADERS},
-    },
     "response-headers": {"result": {"status_code": HTTP_204_NO_CONTENT, "content": None}, "request": {}},
     # cookies
-    "request-cookies": {
-        "result": {"status_code": HTTP_204_NO_CONTENT, "content": None},
-        "request": {"cookies": test_data.RESPONSE_COOKIES},
-    },
     "response-cookies": {"result": {"status_code": HTTP_204_NO_CONTENT, "content": None}, "request": {}},
 }
 

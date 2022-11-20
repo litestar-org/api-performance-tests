@@ -195,5 +195,5 @@ class Runner:
         self._stop_all_containers()
 
         for framework_spec in self.specs:
-            self.console.print(f"[blue]Suite: {framework_spec.version_name}")
+            self.console.print(f"Suite: [magenta]{framework_spec.version_name}")
             self.run_benchmarks(framework_spec=framework_spec)

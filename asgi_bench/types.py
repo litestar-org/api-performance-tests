@@ -4,7 +4,7 @@ from typing import Literal, TypedDict
 from urllib.parse import urlparse
 
 EndpointMode = Literal["sync", "async"]
-EndpointCategory = Literal["plaintext", "json", "params", "headers", "cookies", "url", "files"]
+EndpointCategory = Literal["plaintext", "json", "params", "dynamic-response", "files"]
 BenchmarkMode = Literal["rps", "latency"]
 
 
