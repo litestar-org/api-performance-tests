@@ -1,9 +1,9 @@
+import asyncio
 from typing import TYPE_CHECKING
 
 import anyio
 from sanic import HTTPResponse, Request, Sanic
 from sanic.application.constants import Mode
-from sanic.log import LOGGING_CONFIG_DEFAULTS
 from sanic.response import ResponseStream, empty, file, file_stream, json, text
 
 import test_data
@@ -12,39 +12,8 @@ if TYPE_CHECKING:
     from test_frameworks import EndpointSpec
 
 
-log_config = {
-    **LOGGING_CONFIG_DEFAULTS,
-    "version": 1,
-    "disable_existing_loggers": True,
-    "loggers": {
-        "sanic.root": {"level": "ERROR", "handlers": ["null"]},
-        "sanic.error": {
-            "level": "DEBUG",
-            "handlers": ["error_console", "null"],
-            "propagate": True,
-            "qualname": "sanic.error",
-        },
-        "sanic.access": {
-            "level": "DEBUG",
-            "handlers": ["null"],
-            "propagate": True,
-            "qualname": "sanic.access",
-        },
-        "app": {"level": "ERROR", "handlers": ["null"], "propagate": True, "qualname": "app"},
-    },
-    "handlers": {
-        "null": {"class": "logging.NullHandler", "formatter": "generic"},
-        "console": {"class": "logging.NullHandler", "formatter": "generic"},
-        "error_console": {"class": "logging.NullHandler", "formatter": "generic"},
-        "access_console": {"class": "logging.NullHandler", "formatter": "access"},
-        "app_console": {"class": "logging.NullHandler", "formatter": "generic"},
-    },
-}
-# app = Sanic("MyApp", log_config=log_config)
 app = Sanic("MyApp")
-# app.config.ACCESS_LOG = False
 
-# MOTD.output = MagicMock()
 
 # json
 
@@ -61,6 +30,7 @@ def sync_plaintext_6k(request: Request) -> HTTPResponse:
 
 @app.route("/async-plaintext-70k")
 async def async_plaintext_70k(request: Request) -> HTTPResponse:
+    await asyncio.sleep(0.00001)
     return text(test_data.TEXT_70k)
 
 

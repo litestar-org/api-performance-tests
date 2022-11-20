@@ -71,7 +71,7 @@ def _data_for_plot(
                     continue
                 for test_result in category_results:
                     error_percentage = get_error_percentage(test_result)
-                    is_valid = error_percentage <= 0.1
+                    is_valid = error_percentage <= 1
                     ret.append(
                         {
                             "target": framework,

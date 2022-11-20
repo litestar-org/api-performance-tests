@@ -1,3 +1,4 @@
+import asyncio
 from typing import TYPE_CHECKING
 
 from starlite import Cookie, File, MediaType, ResponseHeader, Starlite, TestClient, get
@@ -28,6 +29,7 @@ def sync_plaintext_6k() -> str:
 
 @get("/async-plaintext-70k", media_type=MediaType.TEXT)
 async def async_plaintext_70k() -> str:
+    await asyncio.sleep(0.00001)
     return test_data.TEXT_70k
 
 
