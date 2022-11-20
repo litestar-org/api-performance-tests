@@ -1,5 +1,3 @@
-from asyncio import sleep
-
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import PlainTextResponse
@@ -9,7 +7,6 @@ app = Starlette()
 
 @app.route(path="/async-plaintext-no-params", methods=["GET"])
 async def async_plaintext_no_params(_) -> PlainTextResponse:
-    await sleep(0.0000001)
     return PlainTextResponse("Hello, world!")
 
 
@@ -20,7 +17,6 @@ def sync_plaintext_no_params(_) -> PlainTextResponse:
 
 @app.route(path="/async-plaintext/{first:int}", methods=["GET"])
 async def async_plaintext_path_param(request: Request) -> PlainTextResponse:
-    await sleep(0.0000001)
     return PlainTextResponse(f"The number is {request.path_params['first'] * 2}")
 
 
@@ -31,7 +27,6 @@ def sync_plaintext_path_param(request: Request) -> PlainTextResponse:
 
 @app.route(path="/async-plaintext-query-param", methods=["GET"])
 async def async_plaintext_query_param(request: Request) -> PlainTextResponse:
-    await sleep(0.0000001)
     return PlainTextResponse(f"The number is {int(request.query_params['first']) * 2}")
 
 
@@ -42,7 +37,6 @@ def sync_plaintext_query_param(request: Request) -> PlainTextResponse:
 
 @app.route(path="/async-plaintext-mixed-params/{second:int}", methods=["GET"])
 async def async_plaintext_mixed_params(request: Request) -> PlainTextResponse:
-    await sleep(0.0000001)
     return PlainTextResponse(f"The number is {int(request.query_params['first']) + request.path_params['second']}")
 
 
