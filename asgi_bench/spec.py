@@ -1,3 +1,4 @@
+from collections import defaultdict
 from pathlib import Path
 
 from .types import (
@@ -79,24 +80,25 @@ def make_spec(
     ]
 
     framework_specs = []
-    requested_frameworks = {}
+    requested_frameworks = defaultdict(list)
     for framework in frameworks:
         name, *parts = framework.split("@", 1)
         version = parts[0] if parts else None
-        requested_frameworks[name] = version
+        requested_frameworks[name].append(version)
 
     for path in (Path.cwd() / "frameworks").iterdir():
         if path.is_file() and path.name.endswith("_app.py"):
             name = path.name.removesuffix("_app.py")
             if name not in requested_frameworks:
                 continue
-            framework_specs.append(
-                FrameworkSpec(
-                    name=name,
-                    version=requested_frameworks[name],
-                    path=path,
-                    tests=test_specs,
+            for requested_version in requested_frameworks.get(name, []):
+                framework_specs.append(
+                    FrameworkSpec(
+                        name=name,
+                        version=requested_version,
+                        path=path,
+                        tests=test_specs,
+                    )
                 )
-            )
 
     return framework_specs
