@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from fastapi import FastAPI, Request, Response
+from fastapi import FastAPI, Response
 from fastapi.responses import FileResponse, PlainTextResponse
 from starlette.status import HTTP_204_NO_CONTENT
 

@@ -144,20 +144,6 @@ def sync_response_headers() -> None:
 # cookies
 
 
-@get("/async-request-cookies", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
-async def async_request_cookies(request: Request) -> None:
-    cookie_dict = {}
-    for cookie_name, cookie_value in request.cookies.items():
-        cookie_dict[cookie_name] = cookie_value
-
-
-@get("/sync-request-cookies", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
-def sync_request_cookies(request: Request) -> None:
-    cookie_dict = {}
-    for cookie_name, cookie_value in request.cookies.items():
-        cookie_dict[cookie_name] = cookie_value
-
-
 @get(
     "/async-response-cookies",
     response_cookies=response_cookies,

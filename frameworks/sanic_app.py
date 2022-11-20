@@ -1,4 +1,3 @@
-import urllib.parse
 from typing import TYPE_CHECKING
 
 import anyio
