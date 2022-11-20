@@ -5,7 +5,7 @@ from starlite import MediaType, Starlite, get
 
 @get("/async-plaintext-no-params", media_type=MediaType.TEXT)
 async def async_plaintext_no_params() -> str:
-    await sleep(0)
+    await sleep(0.0000001)
     return "Hello, world!"
 
 
@@ -14,20 +14,20 @@ def sync_plaintext_no_params() -> str:
     return "Hello, world!"
 
 
-@get("/async-plaintext/{first:str}", media_type=MediaType.TEXT)
+@get("/async-plaintext/{first:int}", media_type=MediaType.TEXT)
 async def async_plaintext_path_param(first: int) -> str:
-    await sleep(0)
+    await sleep(0.0000001)
     return f"The number is {first * 2}"
 
 
-@get("/sync-plaintext/{first:str}", media_type=MediaType.TEXT)
+@get("/sync-plaintext/{first:int}", media_type=MediaType.TEXT)
 def sync_plaintext_path_param(first: int) -> str:
     return f"The number is {first * 2}"
 
 
 @get("/async-plaintext-query-param", media_type=MediaType.TEXT)
 async def async_plaintext_query_param(first: int) -> str:
-    await sleep(0)
+    await sleep(0.0000001)
     return f"The number is {first * 2}"
 
 
@@ -36,13 +36,13 @@ def sync_plaintext_query_param(first: int) -> str:
     return f"The number is {first * 2}"
 
 
-@get("/async-plaintext-mixed-params/{second:str}", media_type=MediaType.TEXT)
+@get("/async-plaintext-mixed-params/{second:int}", media_type=MediaType.TEXT)
 async def async_plaintext_mixed_params(first: int, second: int) -> str:
-    await sleep(0)
+    await sleep(0.0000001)
     return f"The number is {first + second}"
 
 
-@get("/sync-plaintext-mixed-params/{second:str}", media_type=MediaType.TEXT)
+@get("/sync-plaintext-mixed-params/{second:int}", media_type=MediaType.TEXT)
 def sync_plaintext_mixed_params(first: int, second: int) -> str:
     return f"The number is {first + second}"
 
