@@ -1,15 +1,6 @@
 from typing import TYPE_CHECKING
 
-from starlite import (
-    Cookie,
-    File,
-    MediaType,
-    Request,
-    ResponseHeader,
-    Starlite,
-    TestClient,
-    get,
-)
+from starlite import Cookie, File, MediaType, ResponseHeader, Starlite, TestClient, get
 from starlite.status_codes import HTTP_204_NO_CONTENT
 
 import test_data
@@ -233,8 +224,6 @@ app = Starlite(
         async_response_headers,
         sync_response_headers,
         #
-        async_request_cookies,
-        sync_request_cookies,
         async_response_cookies,
         sync_response_cookies,
         #

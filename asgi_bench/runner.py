@@ -142,15 +142,16 @@ class Runner:
                     container.stop()
 
     def run_benchmark(self, test_spec: TestSpec) -> dict[str, Any]:
-        with self.console.status("  [yellow]Warming up endpoint"):
-            self._run_bench_in_container(
-                f"http://127.0.0.1:{SERVER_PORT}{test_spec.path}",
-                "--no-print",
-                *_header_args_from_spec(test_spec),
-                f"--rate=10",
-                f"--duration={test_spec.warmup}s",
-            )
-            time.sleep(2)
+        if test_spec.warmup_time:
+            with self.console.status("  [yellow]Warming up endpoint"):
+                self._run_bench_in_container(
+                    f"http://127.0.0.1:{SERVER_PORT}{test_spec.path}",
+                    "--no-print",
+                    *_header_args_from_spec(test_spec),
+                    "--rate=10",
+                    f"--duration={test_spec.warmup_time}s",
+                )
+                time.sleep(2)
 
         with self.console.status(f"  [cyan]Running: {test_spec.pretty_name}"):
             res = self._run_bench_in_container(

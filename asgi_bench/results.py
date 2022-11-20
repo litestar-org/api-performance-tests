@@ -66,29 +66,30 @@ def _data_for_plot(
         categories = (categories,)
     for framework, framework_results in results.items():
         for endpoint_mode, endpoint_mode_results in framework_results[benchmark_mode].items():
-            for category, category_results in endpoint_mode_results.items():
+            for category, category_results in endpoint_mode_results.items():  # type: ignore[attr-defined]
                 if category not in categories:
                     continue
                 for test_result in category_results:
                     error_percentage = get_error_percentage(test_result)
-                    is_valid = error_percentage <= 1
+                    is_valid = error_percentage <= 0.1
                     ret.append(
                         {
                             "target": framework,
                             "name": f'{test_result["name"]} ({endpoint_mode})',
-                            f"stddev": test_result[benchmark_mode]["stddev"] if is_valid else 0,
-                            f"score_mean": test_result[benchmark_mode]["mean"] if is_valid else 0,
-                            f"score_50": test_result[benchmark_mode]["percentiles"]["50"] if is_valid else 0,
-                            f"score_75": test_result[benchmark_mode]["percentiles"]["75"] if is_valid else 0,
-                            f"score_90": test_result[benchmark_mode]["percentiles"]["90"] if is_valid else 0,
-                            f"score_95": test_result[benchmark_mode]["percentiles"]["95"] if is_valid else 0,
-                            f"score_99": test_result[benchmark_mode]["percentiles"]["99"] if is_valid else 0,
+                            "stddev": test_result[benchmark_mode]["stddev"] if is_valid else 0,
+                            "score_mean": test_result[benchmark_mode]["mean"] if is_valid else 0,
+                            "score_50": test_result[benchmark_mode]["percentiles"]["50"] if is_valid else 0,
+                            "score_75": test_result[benchmark_mode]["percentiles"]["75"] if is_valid else 0,
+                            "score_90": test_result[benchmark_mode]["percentiles"]["90"] if is_valid else 0,
+                            "score_95": test_result[benchmark_mode]["percentiles"]["95"] if is_valid else 0,
+                            "score_99": test_result[benchmark_mode]["percentiles"]["99"] if is_valid else 0,
                         }
                     )
     if ret:
         data = sorted(ret, key=lambda r: r["target"])
         df = pd.DataFrame(data)
         return df
+    return None
 
 
 def _draw_plot(
@@ -138,7 +139,7 @@ def _draw_plot(
     if error_bars:
         x_coords = [p.get_x() + 0.5 * p.get_width() for p in ax.patches]
         y_coords = [p.get_height() for p in ax.patches]
-        plt.errorbar(x=x_coords, y=y_coords, yerr=df[f"stddev"], fmt="none", c="k", capsize=4)
+        plt.errorbar(x=x_coords, y=y_coords, yerr=df["stddev"], fmt="none", c="k", capsize=4)
 
     plt.xticks(rotation=60, horizontalalignment="right")
     plt.tight_layout()
@@ -178,7 +179,7 @@ def make_plots(
     percentiles: tuple[str, ...],
     error_bars: bool,
     run_number: int | None,
-    formats: tuple[str] = ("png",),
+    formats: tuple[str, ...] = ("png",),
     split_categories: bool,
 ) -> None:
     cwd = Path.cwd()
@@ -186,7 +187,7 @@ def make_plots(
     output_dir = cwd / "plots" / f"run_{run_number}"
     output_dir.mkdir(exist_ok=True, parents=True)
 
-    all_categories: tuple[EndpointCategory, ...] = ("plaintext", "json", "params", "headers", "cookies", "url", "files")
+    all_categories: tuple[EndpointCategory, ...] = ("plaintext", "json", "params", "dynamic-response", "files")
     benchmark_modes: tuple[BenchmarkMode, ...] = ("rps", "latency")
 
     for benchmark_mode in benchmark_modes:
