@@ -38,63 +38,30 @@ Setup is identical for all frameworks.
 7. sync endpoint with mixed parameters returning text (s-mp)
 8. async endpoint with mixed parameters returning text (a-mp)
 
+#### Autocannon Settings:
+
+Each endpoint for each framework is stress using the `autocannon` default settings x2 times.
+
+#### Uvicorn/Gunicorn Settings:
+
+The applications are launched using gunicorn with uvicorn workers - their number depends on the available threads in the
+machine. The settings are identical for all applications, you can see it in the `gunicorn.config.py` in each application
+folder.
+
 ## Executing the Tests
 
 To execute the tests:
 
 1. clone the repo
-2. execute `./run-simple.sh`
+2. run `./test.sh`
 
-### Benchmarks
+The test.sh script will create a virtual environment and install the dependencies for you using poetry.
 
-#### Comparing against other frameworks
+### Notes:
 
-- `./run.sh bench rps -f all` will run tests comparing requests per second of Starlite, Starlette, Sanic, FastAPI and blacksheep
-- `./run.sh bench rps -f starlite -f sanic` will run tests comparing requests per second of Starlite and Sanic
-- `./run.sh bench latency -f all` will run tests comparing requests per second of Starlite, Starlette, Sanic, FastAPI and blacksheep
-- `./run.sh bench latency -f starlite -f sanic` will run tests comparing requests per second of Starlite and Sanic
-
-#### Comparing different Starlite versions
-
-`./run.sh bench rps -b v1.20.0 v1.39.0 performance_updates` will run rps tests, comparing Starlite releases `v1.20.0`, `v1.39.0`
-and the `performance_updates` branch
-
-#### Test Settings
-
-|                                   |                                                 |
-| --------------------------------- | ----------------------------------------------- |
-| -w, --warmup                      | duration of the warmup period (default: 5s)     |
-| -e, --endpoints [sync&#124;async] | endpoint types to select (default: sync, async) |
-| -t, --type [plaintext&#124;json]  | test types to select (default: plaintext, json) |
-| -f, --frameworks                  | frameworks to tests                             |
-| -b, --branches                    | starlite branches to tests                      |
-
-#### RPS settings
-
-|                |                                              |
-| -------------- | -------------------------------------------- |
-| -d, --duration | duration of the testing period (default: 5s) |
-
-#### Latency Settings
-
-|                |                                    |
-| -------------- | ---------------------------------- |
-| -l, --limit    | rate limit for requests per second |
-| -r, --requests | total number of requests           |
-
-### Analyzing the results
-
-- `./run.sh analyze` will create plots of the test results and store them in the `results` folder
-- `./run.sh analyze -p 75` will create plots of the test results using measurements in the 75th percentile
-  and store them in the `results` folder
-
-#### Running the analysis locally
-
-The above commands run the analysis within the docker image. This is not necessary, and you can set up your environment
-to run it locally as well:
-
-- Install dependencies with `poetry install`
-- Run analysis with `python cli.py analysis`
+- the script requires python 3.11, node 18+ and curl to be installed on the system.
+- if poetry is not installed on your system, it will be installed by the script.
+- if pnpm is not installed on your system, it will be installed by the script.
 
 ## Updating Dependencies
 

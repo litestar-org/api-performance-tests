@@ -1,0 +1,22 @@
+{
+  "name": "api-performance-tests",
+  "version": "1.0.0",
+  "description": "Performance testing using autocannon",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Goldziher/api-performance-tests.git"
+  },
+  "author": "Na'aman Hirschfeld",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Goldziher/api-performance-tests/issues"
+  },
+  "homepage": "https://github.com/Goldziher/api-performance-tests#readme",
+  "dependencies": {
+    "autocannon": "^7.10.0"
+  }
+}

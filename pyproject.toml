@@ -7,18 +7,19 @@ authors = ["Na'aman Hirschfeld <nhirschfeld@gmail.com>"]
 [tool.poetry.dependencies]
 python = "^3.11"
 starlite = { git = "https://github.com/starlite-api/starlite.git", branch = "main" }
+starlette = "*"
+fastapi = "*"
+sanic = "*"
 uvloop = "*"
+blacksheep = "*"
 uvicorn = "*"
 gunicorn = "*"
 matplotlib = "*"
 seaborn = "*"
 pandas = "*"
-rich = "*"
-click = "*"
-starlette = "*"
-fastapi = "*"
-blacksheep = "*"
-sanic = "*"
+
+[tool.poetry.group.dev.dependencies]
+black = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
