@@ -8,7 +8,7 @@ This is an API performance test comparing:
 4. [Sanic](https://github.com/sanic-org/sanic)
 5. [BlackSheep](https://github.com/Neoteroi/BlackSheep)
 
-Using the [autocannon](https://github.com/mcollina/autocannon) stress testing tool.
+Using the [bombardier](https://github.com/codesenberg/bombardier) HTTP benchmarking tool.
 
 ## Last Run Results
 
@@ -23,83 +23,86 @@ Note: PRs improving the analysis script are welcome.
 
 Setup is identical for all frameworks.
 
-- The applications are in the folders with their names - `/starlite`, `/starlette`, `/fastapi`, `/scanic`, `/blacksheep`.
-- There are no DB querying tests because all frameworks are DB agnostic and as such this has no value in itself.
-- All frameworks are testing using plaintext responses, thus not factoring in any 3rd party json libraries etc.
+- Applications reside in the `frameworks` folder and consist of a single file named `<framework_name>_app.py`
 
-### Endpoints
+### Tests
 
-1. sync endpoint without query or path parameters returning text (s-np)
-2. async endpoint without query or path parameters returning text (a-np)
-3. sync endpoint with a query parameter returning text (s-qp)
-4. async endpoint with a query parameter returning text (a-qp)
-5. sync endpoint with a path parameter returning text (s-pp)
-6. async endpoint with a path parameter returning text (a-pp)
-7. sync endpoint with mixed parameters returning text (s-mp)
-8. async endpoint with mixed parameters returning text (a-mp)
+All tests are run sync and async
+
+#### Serialization and data sending
+
+- Sending 6kB plaintext
+- Sending 70kB plaintext
+- Serializing and sending 2kB JSON
+- Serializing and sending 10kB JSON
+- Serializing and sending 450kB JSON
+- Sending a 100 bytes binary file
+- Sending a 1kB bytes binary file
+- Sending a 50kB binary file
+- Sending a 1MB bytes binary file
+
+#### Path amd query parameter handling
+
+All responses return "No Content"
+
+- No path parameters
+- Single path parameter, coerced into an integer
+- Single query parameter, coerced into an integer
+- A path and a query parameters, coerced into integers
+
+#### Modifying responses
+
+All responses return "No Content"
+
+- Setting response headers
+- Setting response cookies
 
 ## Executing the Tests
 
-To execute the tests:
+### Prerequisites
 
-1. clone the repo
-2. execute `./run-simple.sh`
+- [docker](https://docs.docker.com/get-docker/)
+- [poetry](https://python-poetry.org/docs/#installation)
+- Python 3.11
 
-### Benchmarks
+### Running tests
 
-#### Comparing against other frameworks
+1. Clone this repo
+2. Run `poetry install`
+3. Run tests with `bench run`
 
-- `./run.sh bench rps -f all` will run tests comparing requests per second of Starlite, Starlette, Sanic, FastAPI and blacksheep
-- `./run.sh bench rps -f starlite -f sanic` will run tests comparing requests per second of Starlite and Sanic
-- `./run.sh bench latency -f all` will run tests comparing requests per second of Starlite, Starlette, Sanic, FastAPI and blacksheep
-- `./run.sh bench latency -f starlite -f sanic` will run tests comparing requests per second of Starlite and Sanic
+After the run, the results will be stored in `results/run_<run_mumber>.json`
 
-#### Comparing different Starlite versions
+#### Selecting which frameworks to test
 
-`./run.sh bench rps -b v1.20.0 v1.39.0 performance_updates` will run rps tests, comparing Starlite releases `v1.20.0`, `v1.39.0`
-and the `performance_updates` branch
+To select a framework, simply pass its name to the `run command`:
+
+`bench run starlite starlette fastapi`
+
+##### Selecting a framework version
+
+- A version available on PyPi: `bench run starlite@v1.40.0`
+- A version from git: `bench run starlite@git+branch_or_tag_name`
+- A version from a specific git repository: `bench run starlite@git+https://github.com/starlite-api/starlite.git@branch_or_tag_name`
 
 #### Test Settings
 
-|                                   |                                                 |
-| --------------------------------- | ----------------------------------------------- |
-| -w, --warmup                      | duration of the warmup period (default: 5s)     |
-| -e, --endpoints [sync&#124;async] | endpoint types to select (default: sync, async) |
-| -t, --type [plaintext&#124;json]  | test types to select (default: plaintext, json) |
-| -f, --frameworks                  | frameworks to tests                             |
-| -b, --branches                    | starlite branches to tests                      |
-
-#### RPS settings
-
-|                |                                              |
-| -------------- | -------------------------------------------- |
-| -d, --duration | duration of the testing period (default: 5s) |
-
-#### Latency Settings
-
-|                |                                    |
-| -------------- | ---------------------------------- |
-| -l, --limit    | rate limit for requests per second |
-| -r, --requests | total number of requests           |
+|                                                                                            |                                                                 |
+| ------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| -r, --rebuild                                                                              | rebuild docker images                                           |
+| -L, --latency                                                                              | run latency tests                                               |
+| -R, --rps                                                                                  | run RPS tests                                                   |
+| -w, --warmup                                                                               | duration of the warmup period (default: 5s)                     |
+| -e, --endpoint mode [sync&#124;async]                                                      | endpoint types to select (default: sync, async)                 |
+| -c, --endpoint-category [plaintext&#124;json&#124;files&#124;params&#124;dynamic-response] | test types to select (default: plaintext, json)                 |
+| -d, --duration                                                                             | duration of the rps benchmarks (default: 15s)                   |
+| -l, --limit                                                                                | max requests per second for latency benchmarks (default: 20)    |
+| -r, --requests                                                                             | total number of requests for latency benchmarks (default: 1000) |
 
 ### Analyzing the results
 
-- `./run.sh analyze` will create plots of the test results and store them in the `results` folder
-- `./run.sh analyze -p 75` will create plots of the test results using measurements in the 75th percentile
-  and store them in the `results` folder
-
-#### Running the analysis locally
-
-The above commands run the analysis within the docker image. This is not necessary, and you can set up your environment
-to run it locally as well:
-
-- Install dependencies with `poetry install`
-- Run analysis with `python cli.py analysis`
-
-## Updating Dependencies
-
-To update the dependencies simply run `poetry update` and `pnpm up` respectively. These commands are executed as part
-of the test script, ensuring dependencies are always up to date.
+- Run `bench results` to generate plots from the latest test results
+- Run `bench results -s` to generate plots from the latest test results and split them into separate files for each category
 
 ## Contributing
 
