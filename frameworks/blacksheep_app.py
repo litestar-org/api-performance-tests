@@ -1,4 +1,3 @@
-import urllib.parse
 from typing import TYPE_CHECKING
 
 import anyio
@@ -121,8 +120,6 @@ def sync_mixed_params(request: Request, second: int) -> Response:
 
 
 # headers
-
-
 @app.router.get("/async-response-headers")
 async def async_response_headers() -> Response:
     res = no_content()
@@ -138,8 +135,6 @@ def sync_response_headers() -> Response:
 
 
 # cookies
-
-
 @app.router.get("/async-response-cookies")
 async def async_response_cookies() -> Response:
     res = no_content()
