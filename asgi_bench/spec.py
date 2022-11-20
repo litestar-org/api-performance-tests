@@ -1,7 +1,5 @@
 from pathlib import Path
 
-from test_data import RESPONSE_COOKIES, RESPONSE_HEADERS
-
 from .types import (
     BenchmarkMode,
     EndpointCategory,
@@ -27,22 +25,9 @@ ENDPOINTS: dict[EndpointCategory, dict[str, EndpointDict]] = {
         "query-param?first=42": {"name": "query params"},
         "mixed-params/42?first=21": {"name": "mixed params"},
     },
-    "headers": {
-        "request-headers": {
-            "name": "request headers",
-            "headers": list(RESPONSE_HEADERS.items()),
-        },
+    "dynamic-response": {
         "response-headers": {"name": "response headers"},
-    },
-    "cookies": {
-        "request-cookies": {
-            "name": "request cookies",
-            "headers": [("Set-Cookie", f"{key}={value}") for key, value in RESPONSE_COOKIES.items()],
-        },
         "response-cookies": {"name": "response cookies"},
-    },
-    "url": {
-        "url-access?a=1&a=2&1=3&b=true&c=false&d=abc": {"name": "url access"},
     },
     "files": {
         "file-response-100B": {"name": "file response 100 bytes"},

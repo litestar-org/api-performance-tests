@@ -121,25 +121,6 @@ def sync_mixed_params(first: int, second: int) -> None:
     pass
 
 
-# headers
-
-
-@get("/async-request-headers", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
-async def async_request_headers(request: Request) -> None:
-    header_dict = {}
-    for header_name, header_value in request.headers.items():
-        header_dict[header_name] = header_value
-    request.headers.getall("header_1")
-
-
-@get("/sync-request-headers", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
-def sync_request_headers(request: Request) -> None:
-    header_dict = {}
-    for header_name, header_value in request.headers.items():
-        header_dict[header_name] = header_value
-    request.headers.getall("header_1")
-
-
 @get(
     "/async-response-headers",
     response_headers=response_headers,
@@ -195,39 +176,6 @@ async def async_response_cookies() -> None:
 )
 def sync_response_cookies() -> None:
     pass
-
-
-# url
-
-
-@get("/async-url-access", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
-async def async_url_access(request: Request) -> None:
-    scheme = request.url.scheme  # noqa: F841
-    netloc = request.url.netloc  # noqa: F841
-    path = request.url.path  # noqa: F841
-    fragment = request.url.fragment  # noqa: F841
-    query = request.url.query  # noqa: F841
-    username = request.url.username  # noqa: F841
-    password = request.url.password  # noqa: F841
-    port = request.url.port  # noqa: F841
-    hostname = request.url.hostname  # noqa: F841
-    for param, value in request.query_params.items():  # noqa: B007
-        pass
-
-
-@get("/sync-url-access", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
-def sync_url_access(request: Request) -> None:
-    scheme = request.url.scheme  # noqa: F841
-    netloc = request.url.netloc  # noqa: F841
-    path = request.url.path  # noqa: F841
-    fragment = request.url.fragment  # noqa: F841
-    query = request.url.query  # noqa: F841
-    username = request.url.username  # noqa: F841
-    password = request.url.password  # noqa: F841
-    port = request.url.port  # noqa: F841
-    hostname = request.url.hostname  # noqa: F841
-    for param, value in request.query_params.items():  # noqa: B007
-        pass
 
 
 # files
@@ -296,8 +244,6 @@ app = Starlite(
         async_mixed_params,
         sync_mixed_params,
         #
-        async_request_headers,
-        sync_request_headers,
         async_response_headers,
         sync_response_headers,
         #
@@ -305,9 +251,6 @@ app = Starlite(
         sync_request_cookies,
         async_response_cookies,
         sync_response_cookies,
-        #
-        async_url_access,
-        sync_url_access,
         #
         async_file_response_100b,
         sync_file_response_100b,
