@@ -84,6 +84,7 @@ To select a framework, simply pass its name to the `run command`:
 - A version available on PyPi: `bench run starlite@v1.40.0`
 - A version from git: `bench run starlite@git+branch_or_tag_name`
 - A version from a specific git repository: `bench run starlite@git+https://github.com/starlite-api/starlite.git@branch_or_tag_name`
+- A local file: `bench run starlite@file+/path/to/starlite`
 
 #### Test Settings
 

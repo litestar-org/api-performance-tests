@@ -4,11 +4,14 @@ from pathlib import Path
 from secrets import token_hex
 
 import docker  # type: ignore
+import jinja2
 from rich.console import Console
 
 from .types import FrameworkSpec
 
 console = Console()
+template_env = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
+dockerfile_template = template_env.get_template("DockerfileFrameworks.jinja")
 
 
 @contextmanager
@@ -17,10 +20,15 @@ def temporary_dockerfile(framework_spec: FrameworkSpec) -> Generator[Path, None,
     # file-like object, we have to store it on disk temporarily
 
     cwd = Path.cwd()
-    template = (cwd / "DockerfileFrameworks.tpl").read_text()
-    content = template.format(
-        pip_package=framework_spec.pip_install_targets,
+    # template = (cwd / "DockerfileFrameworks.tpl").read_text()
+    # content = template.format(
+    #     pip_package=framework_spec.pip_install_targets,
+    #     framework=framework_spec.name,
+    # )
+    content = dockerfile_template.render(
         framework=framework_spec.name,
+        pip_package=framework_spec.pip_install_targets,
+        is_local=framework_spec.is_local_target,
     )
     dockerfile = cwd / ".dockerfile.tmp"
     dockerfile.write_text(content)

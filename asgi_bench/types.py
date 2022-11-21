@@ -78,11 +78,17 @@ class FrameworkSpec:
                 return self.version
             git_target = self.version.split("git+", 1)[-1]
             return f"git+{FRAMEWORK_REPOS[self.name]}@{git_target}"
+        elif self.is_local_target:
+            return self.name
         return f"{self.name}=={self.version}"
 
     @property
     def is_git_target(self) -> bool:
         return bool(self.version and self.version.startswith("git+"))
+
+    @property
+    def is_local_target(self) -> bool:
+        return bool(self.version and self.version.startswith("file+"))
 
     @property
     def extra_requirements(self) -> list[str]:
