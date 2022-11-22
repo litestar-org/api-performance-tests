@@ -234,43 +234,43 @@ def sync_response_cookies() -> Response:
 @app.router.get("/async-file-response-100B")
 async def async_file_response_100b() -> Response:
     content = await anyio.Path(test_data.FILE_100B).read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/async-file-response-1K")
 async def async_file_response_1k() -> Response:
     content = await anyio.Path(test_data.FILE_1K).read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/async-file-response-10K")
 async def async_file_response_10k() -> Response:
     content = await anyio.Path(test_data.FILE_10K).read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/async-file-response-100K")
 async def async_file_response_100k() -> Response:
     content = await anyio.Path(test_data.FILE_100K).read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/async-file-response-500K")
 async def async_file_response_500k() -> Response:
     content = await anyio.Path(test_data.FILE_500K).read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/async-file-response-1M")
 async def async_file_response_1m() -> Response:
     content = await anyio.Path(test_data.FILE_1M).read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/async-file-response-5M")
 async def async_file_response_5m() -> Response:
     content = await anyio.Path(test_data.FILE_5M).read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 # files sync
@@ -279,40 +279,40 @@ async def async_file_response_5m() -> Response:
 @app.router.get("/sync-file-response-100B")
 def sync_file_response_100b() -> Response:
     content = test_data.FILE_100B.read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/sync-file-response-1K")
 def sync_file_response_1k() -> Response:
     content = test_data.FILE_1K.read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/sync-file-response-10K")
 def sync_file_response_10k() -> Response:
     content = test_data.FILE_10K.read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/sync-file-response-100K")
 def sync_file_response_100k() -> Response:
     content = test_data.FILE_100K.read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/sync-file-response-500K")
 def sync_file_response_500k() -> Response:
     content = test_data.FILE_500K.read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/sync-file-response-1M")
 def sync_file_response_1m() -> Response:
     content = test_data.FILE_1M.read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
 
 
 @app.router.get("/sync-file-response-5M")
 def sync_file_response_5m() -> Response:
     content = test_data.FILE_5M.read_bytes()
-    return file(content, file_name="response_file", content_type="application/x-binary")
+    return file(content, file_name="response_file", content_type="application/octet-stream")
