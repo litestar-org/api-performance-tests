@@ -12,13 +12,30 @@ from .types import (
 
 ENDPOINTS: dict[EndpointCategory, dict[str, EndpointDict]] = {
     "plaintext": {
-        "plaintext-6k": {"name": "plaintext 6kB"},
-        "plaintext-70k": {"name": "plaintext 70kB"},
+        "plaintext-100B": {"name": "plaintext 100 bytes"},
+        "plaintext-1K": {"name": "plaintext 1kB"},
+        "plaintext-10K": {"name": "plaintext 10kB"},
+        "plaintext-100K": {"name": "plaintext 100kB"},
+        "plaintext-500K": {"name": "plaintext 500kB"},
+        "plaintext-1M": {"name": "plaintext 1MB"},
+        "plaintext-5M": {"name": "plaintext 5MB"},
     },
     "json": {
-        "json-2k": {"name": "JSON 2kB"},
-        "json-10k": {"name": "JSON 10kB"},
-        "json-450k": {"name": "JSON 450kB"},
+        "json-1K": {"name": "json 1kB"},
+        "json-10K": {"name": "json 10kB"},
+        "json-100K": {"name": "json 100kB"},
+        "json-500K": {"name": "json 500kB"},
+        "json-1M": {"name": "json 1MB"},
+        "json-5M": {"name": "json 5MB"},
+    },
+    "files": {
+        "file-response-100B": {"name": "file response 100 bytes"},
+        "file-response-1K": {"name": "file response 1kB"},
+        "file-response-10K": {"name": "file response 10kB"},
+        "file-response-100K": {"name": "file response 100kB"},
+        "file-response-500K": {"name": "file response 500kB"},
+        "file-response-1M": {"name": "file response 1MB"},
+        "file-response-5M": {"name": "file response 5MB"},
     },
     "params": {
         "no-params": {"name": "no params"},
@@ -29,12 +46,6 @@ ENDPOINTS: dict[EndpointCategory, dict[str, EndpointDict]] = {
     "dynamic-response": {
         "response-headers": {"name": "response headers"},
         "response-cookies": {"name": "response cookies"},
-    },
-    "files": {
-        "file-response-100B": {"name": "file response 100 bytes"},
-        "file-response-1K": {"name": "file response 1kB"},
-        "file-response-50K": {"name": "file response 50kB"},
-        "file-response-1M": {"name": "file response 1MB"},
     },
 }
 

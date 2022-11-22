@@ -1,74 +1,149 @@
-import asyncio
-from typing import TYPE_CHECKING
-
-from starlite import Cookie, File, MediaType, ResponseHeader, Starlite, TestClient, get
+from starlite import Cookie, File, MediaType, ResponseHeader, Starlite, get
 from starlite.status_codes import HTTP_204_NO_CONTENT
 
 import test_data
-
-if TYPE_CHECKING:
-    from test_frameworks import EndpointSpec
-
 
 response_headers = {name: ResponseHeader(value=value) for name, value in test_data.RESPONSE_HEADERS.items()}
 response_cookies = [Cookie(key=key, value=value) for key, value in test_data.RESPONSE_COOKIES.items()]
 
 
-# plaintext response
+@get("/async-plaintext-100B", media_type=MediaType.TEXT)
+async def async_plaintext_100b() -> str:
+    return test_data.TEXT_100B
 
 
-@get("/async-plaintext-6k", media_type=MediaType.TEXT)
-async def async_plaintext_6k() -> str:
-    return test_data.TEXT_6k
+@get("/async-plaintext-1K", media_type=MediaType.TEXT)
+async def async_plaintext_1k() -> str:
+    return test_data.TEXT_1K
 
 
-@get("/sync-plaintext-6k", media_type=MediaType.TEXT)
-def sync_plaintext_6k() -> str:
-    return test_data.TEXT_6k
+@get("/async-plaintext-10K", media_type=MediaType.TEXT)
+async def async_plaintext_10k() -> str:
+    return test_data.TEXT_10K
 
 
-@get("/async-plaintext-70k", media_type=MediaType.TEXT)
-async def async_plaintext_70k() -> str:
-    await asyncio.sleep(0.00001)
-    return test_data.TEXT_70k
+@get("/async-plaintext-100K", media_type=MediaType.TEXT)
+async def async_plaintext_100k() -> str:
+    return test_data.TEXT_100K
 
 
-@get("/sync-plaintext-70k", media_type=MediaType.TEXT)
-def sync_plaintext_70k() -> str:
-    return test_data.TEXT_70k
+@get("/async-plaintext-500K", media_type=MediaType.TEXT)
+async def async_plaintext_500k() -> str:
+    return test_data.TEXT_500K
 
 
-# JSON response
+@get("/async-plaintext-1M", media_type=MediaType.TEXT)
+async def async_plaintext_1m() -> str:
+    return test_data.TEXT_1M
 
 
-@get("/async-json-2k", media_type=MediaType.JSON)
-async def async_json_2k() -> dict:
-    return test_data.JSON_2K
+@get("/async-plaintext-5M", media_type=MediaType.TEXT)
+async def async_plaintext_5m() -> str:
+    return test_data.TEXT_5M
 
 
-@get("/sync-json-2k", media_type=MediaType.JSON)
-def sync_json_2k() -> dict:
-    return test_data.JSON_2K
+# plaintext sync
 
 
-@get("/async-json-10k", media_type=MediaType.JSON)
+@get("/sync-plaintext-100B", media_type=MediaType.TEXT)
+def sync_plaintext_100b() -> str:
+    return test_data.TEXT_100B
+
+
+@get("/sync-plaintext-1K", media_type=MediaType.TEXT)
+def sync_plaintext_1k() -> str:
+    return test_data.TEXT_1K
+
+
+@get("/sync-plaintext-10K", media_type=MediaType.TEXT)
+def sync_plaintext_10k() -> str:
+    return test_data.TEXT_10K
+
+
+@get("/sync-plaintext-100K", media_type=MediaType.TEXT)
+def sync_plaintext_100k() -> str:
+    return test_data.TEXT_100K
+
+
+@get("/sync-plaintext-500K", media_type=MediaType.TEXT)
+def sync_plaintext_500k() -> str:
+    return test_data.TEXT_500K
+
+
+@get("/sync-plaintext-1M", media_type=MediaType.TEXT)
+def sync_plaintext_1m() -> str:
+    return test_data.TEXT_1M
+
+
+@get("/sync-plaintext-5M", media_type=MediaType.TEXT)
+def sync_plaintext_5m() -> str:
+    return test_data.TEXT_5M
+
+
+# JSON async
+
+
+@get("/async-json-1K", media_type=MediaType.JSON)
+async def async_json_1k() -> dict:
+    return test_data.JSON_1K
+
+
+@get("/async-json-10K", media_type=MediaType.JSON)
 async def async_json_10k() -> dict:
     return test_data.JSON_10K
 
 
-@get("/sync-json-10k", media_type=MediaType.JSON)
+@get("/async-json-100K", media_type=MediaType.JSON)
+async def async_json_100k() -> dict:
+    return test_data.JSON_100K
+
+
+@get("/async-json-500K", media_type=MediaType.JSON)
+async def async_json_500k() -> dict:
+    return test_data.JSON_500K
+
+
+@get("/async-json-1M", media_type=MediaType.JSON)
+async def async_json_1m() -> dict:
+    return test_data.JSON_1M
+
+
+@get("/async-json-5M", media_type=MediaType.JSON)
+async def async_json_5m() -> dict:
+    return test_data.JSON_5M
+
+
+# JSON sync
+
+
+@get("/sync-json-1K", media_type=MediaType.JSON)
+def sync_json_1k() -> dict:
+    return test_data.JSON_1K
+
+
+@get("/sync-json-10K", media_type=MediaType.JSON)
 def sync_json_10k() -> dict:
     return test_data.JSON_10K
 
 
-@get("/async-json-450k", media_type=MediaType.JSON)
-async def async_json_450k() -> dict:
-    return test_data.JSON_450K
+@get("/sync-json-100K", media_type=MediaType.JSON)
+def sync_json_100k() -> dict:
+    return test_data.JSON_100K
 
 
-@get("/sync-json-450k", media_type=MediaType.JSON)
-def sync_json_450k() -> dict:
-    return test_data.JSON_450K
+@get("/sync-json-500K", media_type=MediaType.JSON)
+def sync_json_500k() -> dict:
+    return test_data.JSON_500K
+
+
+@get("/sync-json-1M", media_type=MediaType.JSON)
+def sync_json_1m() -> dict:
+    return test_data.JSON_1M
+
+
+@get("/sync-json-5M", media_type=MediaType.JSON)
+def sync_json_5m() -> dict:
+    return test_data.JSON_5M
 
 
 # params
@@ -157,63 +232,115 @@ def sync_response_cookies() -> None:
     pass
 
 
-# files
+# files async
 
 
 @get("/async-file-response-100B")
 async def async_file_response_100b() -> File:
-    return File(path=test_data.RESPONSE_FILE_100B, filename="response_file")
-
-
-@get("/async-file-response-50K")
-async def async_file_response_50k() -> File:
-    return File(path=test_data.RESPONSE_FILE_50K, filename="response_file")
+    return File(path=test_data.FILE_100B, filename="response_file")
 
 
 @get("/async-file-response-1K")
 async def async_file_response_1k() -> File:
-    return File(path=test_data.RESPONSE_FILE_1K, filename="response_file")
+    return File(path=test_data.FILE_1K, filename="response_file")
+
+
+@get("/async-file-response-10K")
+async def async_file_response_10k() -> File:
+    return File(path=test_data.FILE_10K, filename="response_file")
+
+
+@get("/async-file-response-100K")
+async def async_file_response_100k() -> File:
+    return File(path=test_data.FILE_100K, filename="response_file")
+
+
+@get("/async-file-response-500K")
+async def async_file_response_500k() -> File:
+    return File(path=test_data.FILE_500K, filename="response_file")
 
 
 @get("/async-file-response-1M")
 async def async_file_response_1m() -> File:
-    return File(path=test_data.RESPONSE_FILE_1M, filename="response_file")
+    return File(path=test_data.FILE_1M, filename="response_file")
+
+
+@get("/async-file-response-5M")
+async def async_file_response_5m() -> File:
+    return File(path=test_data.FILE_5M, filename="response_file")
+
+
+# files sync
 
 
 @get("/sync-file-response-100B")
 def sync_file_response_100b() -> File:
-    return File(path=test_data.RESPONSE_FILE_100B, filename="response_file")
-
-
-@get("/sync-file-response-50K")
-def sync_file_response_50k() -> File:
-    return File(path=test_data.RESPONSE_FILE_50K, filename="response_file")
+    return File(path=test_data.FILE_100B, filename="response_file")
 
 
 @get("/sync-file-response-1K")
 def sync_file_response_1k() -> File:
-    return File(path=test_data.RESPONSE_FILE_1K, filename="response_file")
+    return File(path=test_data.FILE_1K, filename="response_file")
+
+
+@get("/sync-file-response-10K")
+def sync_file_response_10k() -> File:
+    return File(path=test_data.FILE_10K, filename="response_file")
+
+
+@get("/sync-file-response-100K")
+def sync_file_response_100k() -> File:
+    return File(path=test_data.FILE_100K, filename="response_file")
+
+
+@get("/sync-file-response-500K")
+def sync_file_response_500k() -> File:
+    return File(path=test_data.FILE_500K, filename="response_file")
 
 
 @get("/sync-file-response-1M")
 def sync_file_response_1m() -> File:
-    return File(path=test_data.RESPONSE_FILE_1M, filename="response_file")
+    return File(path=test_data.FILE_1M, filename="response_file")
+
+
+@get("/sync-file-response-5M")
+def sync_file_response_5m() -> File:
+    return File(path=test_data.FILE_5M, filename="response_file")
 
 
 app = Starlite(
     route_handlers=[
-        async_plaintext_6k,
-        sync_plaintext_6k,
-        async_plaintext_70k,
-        sync_plaintext_70k,
-        #
-        async_json_2k,
-        sync_json_2k,
+        # plaintext async
+        async_plaintext_100b,
+        async_plaintext_1k,
+        async_plaintext_10k,
+        async_plaintext_100k,
+        async_plaintext_500k,
+        async_plaintext_1m,
+        async_plaintext_5m,
+        # plaintext sync
+        sync_plaintext_100b,
+        sync_plaintext_1k,
+        sync_plaintext_10k,
+        sync_plaintext_100k,
+        sync_plaintext_500k,
+        sync_plaintext_1m,
+        sync_plaintext_5m,
+        # json async
+        async_json_1k,
         async_json_10k,
+        async_json_100k,
+        async_json_500k,
+        async_json_1m,
+        async_json_5m,
+        # json sync
+        sync_json_1k,
         sync_json_10k,
-        async_json_450k,
-        sync_json_450k,
-        #
+        sync_json_100k,
+        sync_json_500k,
+        sync_json_1m,
+        sync_json_5m,
+        # params
         async_no_params,
         sync_no_params,
         async_path_params,
@@ -228,27 +355,22 @@ app = Starlite(
         #
         async_response_cookies,
         sync_response_cookies,
-        #
+        # files async
         async_file_response_100b,
-        sync_file_response_100b,
         async_file_response_1k,
-        sync_file_response_1k,
-        async_file_response_50k,
-        sync_file_response_50k,
+        async_file_response_10k,
+        async_file_response_100k,
+        async_file_response_500k,
         async_file_response_1m,
+        async_file_response_5m,
+        # files sync
+        sync_file_response_100b,
+        sync_file_response_1k,
+        sync_file_response_10k,
+        sync_file_response_100k,
+        sync_file_response_500k,
         sync_file_response_1m,
+        sync_file_response_5m,
     ],
     openapi_config=None,
 )
-
-
-def run_spec_test(url: str, spec: "EndpointSpec") -> None:
-    with TestClient(app=app) as client:
-        res = client.get(url, **spec.get("request", {}))
-        assert res.status_code == spec["result"]["status_code"]
-        if expect_bytes := spec["result"].get("bytes"):
-            assert expect_bytes == res.content
-        if expect_text := spec["result"].get("text"):
-            assert expect_text == res.text
-        if expect_json := spec["result"].get("json"):
-            assert res.json() == expect_json
