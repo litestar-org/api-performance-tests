@@ -66,7 +66,7 @@ ENDPOINT_SPEC: dict[str, EndpointSpec] = {
 }
 
 
-def test_all_frameworks() -> None:
+def run_framework_tests() -> None:
     from . import blacksheep_app, fastapi_app, sanic_app, starlette_app, starlite_app
 
     for framework in [starlite_app, starlette_app, fastapi_app, sanic_app, blacksheep_app]:

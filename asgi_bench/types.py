@@ -1,11 +1,20 @@
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal, TypedDict
+from typing import Literal, TypedDict, TypeGuard
 from urllib.parse import urlparse
 
 EndpointMode = Literal["sync", "async"]
 EndpointCategory = Literal["plaintext", "json", "params", "dynamic-response", "files"]
 BenchmarkMode = Literal["rps", "latency"]
+VersionPrefix = Literal["pip", "git", "docker", "file"]
+
+FRAMEWORK_REPOS = {
+    "starlite": "https://github.com/starlite-api/starlite.git",
+    "starlette": "https://github.com/encode/starlette.git",
+    "fastapi": "https://github.com/tiangolo/fastapi.git",
+    "sanic": "https://github.com/sanic-org/sanic.git",
+    "blacksheep": "https://github.com/Neoteroi/BlackSheep.git",
+}
 
 
 @dataclass
@@ -32,13 +41,8 @@ class EndpointDict(TypedDict, total=False):
     name: str
 
 
-FRAMEWORK_REPOS = {
-    "starlite": "https://github.com/starlite-api/starlite.git",
-    "starlette": "https://github.com/encode/starlette.git",
-    "fastapi": "https://github.com/tiangolo/fastapi.git",
-    "sanic": "https://github.com/sanic-org/sanic.git",
-    "blacksheep": "https://github.com/Neoteroi/BlackSheep.git",
-}
+def _validate_prefix(prefix: str) -> TypeGuard[VersionPrefix]:
+    return prefix in {"pip", "git", "docker", "file"}
 
 
 @dataclass
@@ -49,46 +53,72 @@ class FrameworkSpec:
     version: str | None = None
 
     @property
+    def typed_version(self) -> tuple[VersionPrefix, str]:
+        prefix: VersionPrefix = "pip"
+        version = ""
+        if self.version:
+            if "+" in self.version:
+                prefix_, version = self.version.split("+", 1)
+                if not _validate_prefix(prefix_):
+                    raise ValueError(f"Invalid version type: {prefix_!r}")
+                prefix = prefix_
+            else:
+                version = self.version
+        return prefix, version
+
+    @property
+    def is_git_target(self) -> bool:
+        return self.typed_version[0] == "git"
+
+    @property
+    def is_local_target(self) -> bool:
+        return self.typed_version[0] == "file"
+
+    @property
+    def is_docker_target(self) -> bool:
+        return self.typed_version[0] == "docker"
+
+    @property
+    def is_pip_target(self) -> bool:
+        return self.typed_version[0] == "pip"
+
+    @property
     def image_tag(self) -> str:
         versioned_name = self.version_name.replace(":", "_").replace("/", "_").replace(".git", "")
         return f"starlite-api-bench:{versioned_name}"
 
     @property
+    def build_stage_image(self) -> str | None:
+        if self.is_docker_target:
+            return self.typed_version[1]
+        return None
+
+    @property
     def version_name(self) -> str:
         if not self.version:
             return self.name
-        if self.is_git_target:
-            git_target = self.version.removeprefix("git+")
-            if git_target.startswith("https"):
-                target = urlparse(git_target).path
-            elif git_target.startswith("ssh"):
-                target = git_target.split(":", 1)[-1]
-            else:
-                target = git_target
-        else:
-            target = self.version
-        return f"{self.name}:{target}"
+        prefix, version = self.typed_version
+        if prefix == "git":
+            if version.startswith("https"):
+                version = urlparse(version).path
+            elif version.startswith("ssh"):
+                version = version.split(":", 1)[-1]
+        elif prefix == "file":
+            version = "local"
+        return f"{self.name}:{version}"
 
     @property
     def pip_package(self) -> str:
         if not self.version:
             return self.name
-        if self.is_git_target:
-            if self.version.removeprefix("git+").startswith(("https", "ssh")):
-                return self.version
-            git_target = self.version.split("git+", 1)[-1]
-            return f"git+{FRAMEWORK_REPOS[self.name]}@{git_target}"
-        elif self.is_local_target:
-            return self.name
+        prefix, version = self.typed_version
+        if prefix == "git":
+            if version.startswith(("https", "ssh")):
+                return f"git+{version}"
+            return f"git+{FRAMEWORK_REPOS[self.name]}@{version}"
+        elif prefix == "file":
+            return version
         return f"{self.name}=={self.version}"
-
-    @property
-    def is_git_target(self) -> bool:
-        return bool(self.version and self.version.startswith("git+"))
-
-    @property
-    def is_local_target(self) -> bool:
-        return bool(self.version and self.version.startswith("file+"))
 
     @property
     def extra_requirements(self) -> list[str]:

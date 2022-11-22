@@ -69,7 +69,7 @@ All responses return "No Content"
 
 1. Clone this repo
 2. Run `poetry install`
-3. Run tests with `bench run`
+3. Run tests with `bench run --rps --latency`
 
 After the run, the results will be stored in `results/run_<run_mumber>.json`
 
@@ -77,14 +77,14 @@ After the run, the results will be stored in `results/run_<run_mumber>.json`
 
 To select a framework, simply pass its name to the `run command`:
 
-`bench run starlite starlette fastapi`
+`bench run --rps starlite starlette fastapi`
 
 ##### Selecting a framework version
 
-- A version available on PyPi: `bench run starlite@v1.40.0`
-- A version from git: `bench run starlite@git+branch_or_tag_name`
-- A version from a specific git repository: `bench run starlite@git+https://github.com/starlite-api/starlite.git@branch_or_tag_name`
-- A local file: `bench run starlite@file+/path/to/starlite`
+- A version available on PyPi: `bench run --rps starlite@v1.40.0`
+- A version from git: `bench run --rps starlite@git+branch_or_tag_name`
+- A version from a specific git repository: `bench run --rps starlite@git+https://github.com/starlite-api/starlite.git@branch_or_tag_name`
+- A local file: `bench run --rps starlite@file+/path/to/starlite`
 
 #### Test Settings
 
