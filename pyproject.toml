@@ -22,12 +22,17 @@ pyyaml = "*"
 httpx = "*"
 uvloop = "*"
 anyio = "*"
+jinja2 = "^3.1.2"
+uvicorn = "^0.20.0"
 
 [tool.poetry.extras]
 test = ["starlite", "starlette", "fastapi", "blacksheep", "sanic", "sanic-testing"]
 
 [tool.poetry.scripts]
 bench = "asgi_bench.cli:cli"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.2.0"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

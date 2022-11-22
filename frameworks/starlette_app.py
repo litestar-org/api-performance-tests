@@ -1,5 +1,3 @@
-from typing import TYPE_CHECKING
-
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import FileResponse, JSONResponse, PlainTextResponse, Response
@@ -7,66 +5,148 @@ from starlette.status import HTTP_204_NO_CONTENT
 
 import test_data
 
-if TYPE_CHECKING:
-    from test_frameworks import EndpointSpec
-
-
 app = Starlette()
 
-# plaintext response
+# plaintext async
 
 
-@app.route("/async-plaintext-6k")
-async def async_plaintext_6k(request: Request) -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_6k)
+@app.route("/async-plaintext-100B")
+async def async_plaintext_100b(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_100B)
 
 
-@app.route("/sync-plaintext-6k")
-def sync_plaintext_6k(request: Request) -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_6k)
+@app.route("/async-plaintext-1K")
+async def async_plaintext_1k(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_1K)
 
 
-@app.route("/async-plaintext-70k")
-async def async_plaintext_70k(request: Request) -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_70k)
+@app.route("/async-plaintext-10K")
+async def async_plaintext_10k(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_10K)
 
 
-@app.route("/sync-plaintext-70k")
-def sync_plaintext_70k(request: Request) -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_70k)
+@app.route("/async-plaintext-100K")
+async def async_plaintext_100k(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_100K)
+
+
+@app.route("/async-plaintext-500K")
+async def async_plaintext_500k(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_500K)
+
+
+@app.route("/async-plaintext-1M")
+async def async_plaintext_1m(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_1M)
+
+
+@app.route("/async-plaintext-5M")
+async def async_plaintext_5m(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_5M)
+
+
+# plaintext sync
+
+
+@app.route("/sync-plaintext-100B")
+def sync_plaintext_100b(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_100B)
+
+
+@app.route("/sync-plaintext-1K")
+def sync_plaintext_1k(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_1K)
+
+
+@app.route("/sync-plaintext-10K")
+def sync_plaintext_10k(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_10K)
+
+
+@app.route("/sync-plaintext-100K")
+def sync_plaintext_100k(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_100K)
+
+
+@app.route("/sync-plaintext-500K")
+def sync_plaintext_500k(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_500K)
+
+
+@app.route("/sync-plaintext-1M")
+def sync_plaintext_1m(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_1M)
+
+
+@app.route("/sync-plaintext-5M")
+def sync_plaintext_5m(request: Request) -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_5M)
 
 
 # JSON response
 
 
-@app.route("/async-json-2k")
-async def async_json_2k(request: Request) -> JSONResponse:
-    return JSONResponse(test_data.JSON_2K)
+@app.route("/async-json-1K")
+async def async_json_1k(request: Request) -> JSONResponse:
+    return JSONResponse(test_data.JSON_1K)
 
 
-@app.route("/sync-json-2k")
-def sync_json_2k(request: Request) -> JSONResponse:
-    return JSONResponse(test_data.JSON_2K)
-
-
-@app.route("/async-json-10k")
+@app.route("/async-json-10K")
 async def async_json_10k(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_10K)
 
 
-@app.route("/sync-json-10k")
+@app.route("/async-json-100K")
+async def async_json_100k(request: Request) -> JSONResponse:
+    return JSONResponse(test_data.JSON_100K)
+
+
+@app.route("/async-json-500K")
+async def async_json_500k(request: Request) -> JSONResponse:
+    return JSONResponse(test_data.JSON_500K)
+
+
+@app.route("/async-json-1M")
+async def async_json_1m(request: Request) -> JSONResponse:
+    return JSONResponse(test_data.JSON_1M)
+
+
+@app.route("/async-json-5M")
+async def async_json_5m(request: Request) -> JSONResponse:
+    return JSONResponse(test_data.JSON_5M)
+
+
+# JSON sync
+
+
+@app.route("/sync-json-1K")
+def sync_json_1k(request: Request) -> JSONResponse:
+    return JSONResponse(test_data.JSON_1K)
+
+
+@app.route("/sync-json-10K")
 def sync_json_10k(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_10K)
 
 
-@app.route("/async-json-450k")
-async def async_json_450k(request: Request) -> JSONResponse:
-    return JSONResponse(test_data.JSON_450K)
+@app.route("/sync-json-100K")
+def sync_json_100k(request: Request) -> JSONResponse:
+    return JSONResponse(test_data.JSON_100K)
 
 
-@app.route("/sync-json-450k")
-def sync_json_450k(request: Request) -> JSONResponse:
-    return JSONResponse(test_data.JSON_450K)
+@app.route("/sync-json-500K")
+def sync_json_500k(request: Request) -> JSONResponse:
+    return JSONResponse(test_data.JSON_500K)
+
+
+@app.route("/sync-json-1M")
+def sync_json_1m(request: Request) -> JSONResponse:
+    return JSONResponse(test_data.JSON_1M)
+
+
+@app.route("/sync-json-5M")
+def sync_json_5m(request: Request) -> JSONResponse:
+    return JSONResponse(test_data.JSON_5M)
 
 
 # params
@@ -157,53 +237,72 @@ def sync_response_cookies(request: Request) -> Response:
 
 @app.route("/async-file-response-100B")
 async def async_file_response_100b(request: Request) -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_100B, filename="response_file")
-
-
-@app.route("/async-file-response-50K")
-async def async_file_response_50k(request: Request) -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_50K, filename="response_file")
+    return FileResponse(path=test_data.FILE_100B, filename="response_file")
 
 
 @app.route("/async-file-response-1K")
 async def async_file_response_1k(request: Request) -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_1K, filename="response_file")
+    return FileResponse(path=test_data.FILE_1K, filename="response_file")
+
+
+@app.route("/async-file-response-10K")
+async def async_file_response_10k(request: Request) -> FileResponse:
+    return FileResponse(path=test_data.FILE_10K, filename="response_file")
+
+
+@app.route("/async-file-response-100K")
+async def async_file_response_100k(request: Request) -> FileResponse:
+    return FileResponse(path=test_data.FILE_100K, filename="response_file")
+
+
+@app.route("/async-file-response-500K")
+async def async_file_response_500k(request: Request) -> FileResponse:
+    return FileResponse(path=test_data.FILE_500K, filename="response_file")
 
 
 @app.route("/async-file-response-1M")
 async def async_file_response_1m(request: Request) -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_1M, filename="response_file")
+    return FileResponse(path=test_data.FILE_1M, filename="response_file")
+
+
+@app.route("/async-file-response-5M")
+async def async_file_response_5m(request: Request) -> FileResponse:
+    return FileResponse(path=test_data.FILE_5M, filename="response_file")
+
+
+# files sync
 
 
 @app.route("/sync-file-response-100B")
 def sync_file_response_100b(request: Request) -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_100B, filename="response_file")
-
-
-@app.route("/sync-file-response-50K")
-def sync_file_response_50k(request: Request) -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_50K, filename="response_file")
+    return FileResponse(path=test_data.FILE_100B, filename="response_file")
 
 
 @app.route("/sync-file-response-1K")
 def sync_file_response_1k(request: Request) -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_1K, filename="response_file")
+    return FileResponse(path=test_data.FILE_1K, filename="response_file")
+
+
+@app.route("/sync-file-response-10K")
+def sync_file_response_10k(request: Request) -> FileResponse:
+    return FileResponse(path=test_data.FILE_10K, filename="response_file")
+
+
+@app.route("/sync-file-response-100K")
+def sync_file_response_100k(request: Request) -> FileResponse:
+    return FileResponse(path=test_data.FILE_100K, filename="response_file")
+
+
+@app.route("/sync-file-response-500K")
+def sync_file_response_500k(request: Request) -> FileResponse:
+    return FileResponse(path=test_data.FILE_500K, filename="response_file")
 
 
 @app.route("/sync-file-response-1M")
 def sync_file_response_1m(request: Request) -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_1M, filename="response_file")
+    return FileResponse(path=test_data.FILE_1M, filename="response_file")
 
 
-def run_spec_test(url: str, spec: "EndpointSpec") -> None:
-    from starlette.testclient import TestClient
-
-    with TestClient(app=app) as client:
-        res = client.get(url, **spec.get("request", {}))
-        assert res.status_code == spec["result"]["status_code"]
-        if expect_bytes := spec["result"].get("bytes"):
-            assert expect_bytes == res.content
-        if expect_text := spec["result"].get("text"):
-            assert expect_text == res.text
-        if expect_json := spec["result"].get("json"):
-            assert res.json() == expect_json
+@app.route("/sync-file-response-5M")
+def sync_file_response_5m(request: Request) -> FileResponse:
+    return FileResponse(path=test_data.FILE_5M, filename="response_file")

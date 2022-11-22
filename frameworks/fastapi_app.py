@@ -1,71 +1,152 @@
-from typing import TYPE_CHECKING
-
 from fastapi import FastAPI, Response
 from fastapi.responses import FileResponse, PlainTextResponse
 from starlette.status import HTTP_204_NO_CONTENT
 
 import test_data
 
-if TYPE_CHECKING:
-    from test_frameworks import EndpointSpec
-
 app = FastAPI()
 
 
-# plaintext response
+# plaintext async
 
 
-@app.get("/async-plaintext-6k", response_class=PlainTextResponse)
-async def async_plaintext_6k() -> str:
-    return test_data.TEXT_6k
+@app.get("/async-plaintext-100B")
+async def async_plaintext_100b() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_100B)
 
 
-@app.get("/sync-plaintext-6k", response_class=PlainTextResponse)
-def sync_plaintext_6k() -> str:
-    return test_data.TEXT_6k
+@app.get("/async-plaintext-1K")
+async def async_plaintext_1k() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_1K)
 
 
-@app.get("/async-plaintext-70k", response_class=PlainTextResponse)
-async def async_plaintext_70k() -> str:
-    return test_data.TEXT_70k
+@app.get("/async-plaintext-10K")
+async def async_plaintext_10k() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_10K)
 
 
-@app.get("/sync-plaintext-70k", response_class=PlainTextResponse)
-def sync_plaintext_70k() -> str:
-    return test_data.TEXT_70k
+@app.get("/async-plaintext-100K")
+async def async_plaintext_100k() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_100K)
+
+
+@app.get("/async-plaintext-500K")
+async def async_plaintext_500k() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_500K)
+
+
+@app.get("/async-plaintext-1M")
+async def async_plaintext_1m() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_1M)
+
+
+@app.get("/async-plaintext-5M")
+async def async_plaintext_5m() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_5M)
+
+
+# plaintext sync
+
+
+@app.get("/sync-plaintext-100B")
+def sync_plaintext_100b() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_100B)
+
+
+@app.get("/sync-plaintext-1K")
+def sync_plaintext_1k() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_1K)
+
+
+@app.get("/sync-plaintext-10K")
+def sync_plaintext_10k() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_10K)
+
+
+@app.get("/sync-plaintext-100K")
+def sync_plaintext_100k() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_100K)
+
+
+@app.get("/sync-plaintext-500K")
+def sync_plaintext_500k() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_500K)
+
+
+@app.get("/sync-plaintext-1M")
+def sync_plaintext_1m() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_1M)
+
+
+@app.get("/sync-plaintext-5M")
+def sync_plaintext_5m() -> PlainTextResponse:
+    return PlainTextResponse(test_data.TEXT_5M)
 
 
 # JSON response
 
 
-@app.get("/async-json-2k")
-async def async_json_2k() -> dict[str, str]:
-    return test_data.JSON_2K
+@app.get("/async-json-1K")
+async def async_json_1k() -> dict:
+    return test_data.JSON_1K
 
 
-@app.get("/sync-json-2k")
-def sync_json_2k() -> dict[str, str]:
-    return test_data.JSON_2K
-
-
-@app.get("/async-json-10k")
-async def async_json_10k() -> dict[str, str]:
+@app.get("/async-json-10K")
+async def async_json_10k() -> dict:
     return test_data.JSON_10K
 
 
-@app.get("/sync-json-10k")
-def sync_json_10k() -> dict[str, str]:
+@app.get("/async-json-100K")
+async def async_json_100k() -> dict:
+    return test_data.JSON_100K
+
+
+@app.get("/async-json-500K")
+async def async_json_500k() -> dict:
+    return test_data.JSON_500K
+
+
+@app.get("/async-json-1M")
+async def async_json_1m() -> dict:
+    return test_data.JSON_1M
+
+
+@app.get("/async-json-5M")
+async def async_json_5m() -> dict:
+    return test_data.JSON_5M
+
+
+# JSON sync
+
+
+@app.get("/sync-json-1K")
+def sync_json_1k() -> dict:
+    return test_data.JSON_1K
+
+
+@app.get("/sync-json-10K")
+def sync_json_10k() -> dict:
     return test_data.JSON_10K
 
 
-@app.get("/async-json-450k")
-async def async_json_450k() -> dict[str, str]:
-    return test_data.JSON_450K
+@app.get("/sync-json-100K")
+def sync_json_100k() -> dict:
+    return test_data.JSON_100K
 
 
-@app.get("/sync-json-450k")
-def sync_json_450k() -> dict[str, str]:
-    return test_data.JSON_450K
+@app.get("/sync-json-500K")
+def sync_json_500k() -> dict:
+    return test_data.JSON_500K
+
+
+@app.get("/sync-json-1M")
+def sync_json_1m() -> dict:
+    return test_data.JSON_1M
+
+
+@app.get("/sync-json-5M")
+def sync_json_5m() -> dict:
+    return test_data.JSON_5M
 
 
 # params
@@ -143,58 +224,77 @@ def sync_response_cookies() -> Response:
     return res
 
 
-# files
+# files async
 
 
 @app.get("/async-file-response-100B")
 async def async_file_response_100b() -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_100B, filename="response_file")
-
-
-@app.get("/async-file-response-50K")
-async def async_file_response_50k() -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_50K, filename="response_file")
+    return FileResponse(path=test_data.FILE_100B, filename="response_file")
 
 
 @app.get("/async-file-response-1K")
 async def async_file_response_1k() -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_1K, filename="response_file")
+    return FileResponse(path=test_data.FILE_1K, filename="response_file")
+
+
+@app.get("/async-file-response-10K")
+async def async_file_response_10k() -> FileResponse:
+    return FileResponse(path=test_data.FILE_10K, filename="response_file")
+
+
+@app.get("/async-file-response-100K")
+async def async_file_response_100k() -> FileResponse:
+    return FileResponse(path=test_data.FILE_100K, filename="response_file")
+
+
+@app.get("/async-file-response-500K")
+async def async_file_response_500k() -> FileResponse:
+    return FileResponse(path=test_data.FILE_500K, filename="response_file")
 
 
 @app.get("/async-file-response-1M")
 async def async_file_response_1m() -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_1M, filename="response_file")
+    return FileResponse(path=test_data.FILE_1M, filename="response_file")
+
+
+@app.get("/async-file-response-5M")
+async def async_file_response_5m() -> FileResponse:
+    return FileResponse(path=test_data.FILE_5M, filename="response_file")
+
+
+# files sync
 
 
 @app.get("/sync-file-response-100B")
 def sync_file_response_100b() -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_100B, filename="response_file")
-
-
-@app.get("/sync-file-response-50K")
-def sync_file_response_50k() -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_50K, filename="response_file")
+    return FileResponse(path=test_data.FILE_100B, filename="response_file")
 
 
 @app.get("/sync-file-response-1K")
 def sync_file_response_1k() -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_1K, filename="response_file")
+    return FileResponse(path=test_data.FILE_1K, filename="response_file")
+
+
+@app.get("/sync-file-response-10K")
+def sync_file_response_10k() -> FileResponse:
+    return FileResponse(path=test_data.FILE_10K, filename="response_file")
+
+
+@app.get("/sync-file-response-100K")
+def sync_file_response_100k() -> FileResponse:
+    return FileResponse(path=test_data.FILE_100K, filename="response_file")
+
+
+@app.get("/sync-file-response-500K")
+def sync_file_response_500k() -> FileResponse:
+    return FileResponse(path=test_data.FILE_500K, filename="response_file")
 
 
 @app.get("/sync-file-response-1M")
 def sync_file_response_1m() -> FileResponse:
-    return FileResponse(path=test_data.RESPONSE_FILE_1M, filename="response_file")
+    return FileResponse(path=test_data.FILE_1M, filename="response_file")
 
 
-def run_spec_test(url: str, spec: "EndpointSpec") -> None:
-    from fastapi.testclient import TestClient
-
-    with TestClient(app=app) as client:
-        res = client.get(url, **spec.get("request", {}))
-        assert res.status_code == spec["result"]["status_code"]
-        if expect_bytes := spec["result"].get("bytes"):
-            assert expect_bytes == res.content
-        if expect_text := spec["result"].get("text"):
-            assert expect_text == res.text
-        if expect_json := spec["result"].get("json"):
-            assert res.json() == expect_json
+@app.get("/sync-file-response-5M")
+def sync_file_response_5m() -> FileResponse:
+    return FileResponse(path=test_data.FILE_5M, filename="response_file")

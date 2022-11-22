@@ -125,7 +125,6 @@ class Runner:
         for container in self.docker_client.containers.list(ignore_removed=True):
             if image in container.image.tags:
                 container.stop()
-
         return self.docker_client.containers.run(image=image, ports={SERVER_PORT: SERVER_PORT}, detach=True)
 
     def _run_bench_in_container(self, *args: str) -> str:

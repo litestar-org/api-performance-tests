@@ -1,7 +1,7 @@
 import click
 
 from asgi_bench import results
-from asgi_bench.build import build_docker_images
+from asgi_bench.build import build_docker_images, remove_docker_images
 from asgi_bench.runner import Runner
 from asgi_bench.spec import ENDPOINT_CATEGORIES
 from asgi_bench.types import BenchmarkMode, EndpointCategory, EndpointMode
@@ -14,7 +14,7 @@ def cli() -> None:
 
 @cli.command()
 @click.argument("frameworks", nargs=-1)
-@click.option("--rebuild", is_flag=True, show_default=True, help="rebuild git-based images")
+@click.option("--rebuild", is_flag=True, show_default=True, help="rebuild images")
 @click.option("-w", "--warmup", default=5, show_default=True)
 @click.option("-R", "--rps", is_flag=True, help="run rps benchmarks")
 @click.option("-L", "--latency", is_flag=True, help="run latency benchmarks")
@@ -71,7 +71,7 @@ def run(
 
     runner.print_suite_config()
 
-    build_docker_images(framework_specs=runner.specs, rebuild_git=rebuild)
+    build_docker_images(framework_specs=runner.specs, rebuild=rebuild)
 
     runner.run()
 
@@ -117,3 +117,8 @@ def results_command(
         error_bars=not no_error_bars,
         split_categories=split_categories,
     )
+
+
+@cli.command(help="remove all benchmark docker images built")
+def remove_images():
+    remove_docker_images()
