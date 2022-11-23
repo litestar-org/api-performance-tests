@@ -3,7 +3,7 @@ import click
 from asgi_bench import results
 from asgi_bench.build import build_docker_images, remove_docker_images
 from asgi_bench.runner import Runner
-from asgi_bench.spec import ENDPOINT_CATEGORIES
+from asgi_bench.spec import ENDPOINT_CATEGORIES, FRAMEWORKS
 from asgi_bench.types import BenchmarkMode, EndpointCategory, EndpointMode
 
 
@@ -52,6 +52,8 @@ def run(
     endpoint_mode: tuple[EndpointMode, ...],
     endpoint_category: tuple[EndpointCategory, ...],
 ) -> None:
+    if not frameworks:
+        frameworks = FRAMEWORKS
     benchmark_modes: tuple[BenchmarkMode, ...] = ()
     if rps:
         benchmark_modes = ("rps",)

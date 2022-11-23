@@ -1,3 +1,5 @@
+import time
+
 import anyio
 from sanic import HTTPResponse, Request, Sanic
 from sanic.response import ResponseStream, empty, file, file_stream, json, text
@@ -306,3 +308,46 @@ def sync_file_response_1m(request: Request) -> HTTPResponse:
 def sync_file_response_5m(request: Request) -> HTTPResponse:
     with anyio.start_blocking_portal() as portal:
         return portal.call(file, test_data.FILE_5M)
+
+
+class SyncDependencyOne:
+    def __init__(self) -> None:
+        time.sleep(0.00000001)
+        self.value = "sync_dependency_one"
+
+
+class SyncDependencyTwo:
+    def __init__(self, one: SyncDependencyOne) -> None:
+        time.sleep(0.00000001)
+        self.value = [one.value, "sync_dependency_two"]
+
+
+class SyncDependencyThree:
+    def __init__(self, two: SyncDependencyTwo) -> None:
+        time.sleep(0.00000001)
+        self.value = [*two.value, "sync_dependency_three"]
+
+
+app.ext.add_dependency(SyncDependencyOne)
+app.ext.add_dependency(SyncDependencyTwo)
+app.ext.add_dependency(SyncDependencyThree)
+
+
+@app.get("/sync-dependencies-sync")
+def sync_dependencies_sync(
+    request: Request,
+    injected_sync_one: SyncDependencyOne,
+    injected_sync_two: SyncDependencyTwo,
+    injected_sync_three: SyncDependencyThree,
+) -> HTTPResponse:
+    return json(injected_sync_three.value)
+
+
+@app.get("/async-dependencies-sync")
+async def async_dependencies_sync(
+    request: Request,
+    injected_sync_one: SyncDependencyOne,
+    injected_sync_two: SyncDependencyTwo,
+    injected_sync_three: SyncDependencyThree,
+) -> HTTPResponse:
+    return json(injected_sync_three.value)

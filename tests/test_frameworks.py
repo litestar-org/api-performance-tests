@@ -1,6 +1,6 @@
 import multiprocessing
+import time
 from contextlib import contextmanager
-from typing import TypedDict
 
 import httpx
 import pytest
@@ -17,34 +17,17 @@ def run_app(app):
         kwargs={
             "app": app,
             "port": "8181",
-            # "access_log": False,
-            # "log_level": 50,
+            "access_log": False,
+            "log_level": 50,
         },
         daemon=True,
     )
     proc.start()
+    time.sleep(2)
     try:
         yield
     finally:
         proc.kill()
-
-
-class ResultSpec(TypedDict):
-    status_code: int
-    bytes: bytes | None
-    json: dict | None
-    text: str | None
-
-
-class RequestSpec(TypedDict, total=False):
-    headers: dict[str, str]
-    params: dict[str, str]
-    cookies: dict[str, str]
-
-
-class EndpointSpec(TypedDict):
-    result: ResultSpec
-    request: RequestSpec
 
 
 ENDPOINT_SPEC = {
@@ -84,24 +67,60 @@ ENDPOINT_SPEC = {
     "response-headers": {"result": {"status_code": 204, "content": None}, "request": {}},
     # cookies
     "response-cookies": {"result": {"status_code": 204, "content": None}, "request": {}},
+    "dependencies-sync": {
+        "result": {
+            "status_code": 200,
+            "json": ["sync_dependency_one", "sync_dependency_two", "sync_dependency_three"],
+        },
+        "request": {},
+        "skip": ["starlette"],
+    },
+    "dependencies-async": {
+        "result": {
+            "status_code": 200,
+            "json": ["async_dependency_one", "async_dependency_two", "async_dependency_three"],
+        },
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "dependencies-mixed": {
+        "result": {
+            "status_code": 200,
+            "json": [
+                ["sync_dependency_one", "sync_dependency_two", "sync_dependency_three"],
+                ["async_dependency_one", "async_dependency_two", "async_dependency_three"],
+            ],
+        },
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
 }
 
 
-@pytest.mark.parametrize("framework", ["starlite", "starlette", "fastapi", "sanic", "blacksheep"])
-@pytest.mark.parametrize("path_spec", list(ENDPOINT_SPEC.items()))
+@pytest.fixture(params=["starlite", "starlette", "fastapi", "sanic", "blacksheep"], scope="session")
+def framework(request):
+    framework_name = request.param
+    module = getattr(frameworks, f"{framework_name}_app")
+    with run_app(module.app):
+        yield framework_name
+
+
+@pytest.mark.parametrize("path", list(ENDPOINT_SPEC))
 @pytest.mark.parametrize("endpoint_type", ["sync", "async"])
-def test_framework(framework: str, path_spec: tuple[str, EndpointSpec], endpoint_type: str) -> None:
-    framework = getattr(frameworks, f"{framework}_app")
-    path, spec = path_spec
+def test_framework(framework: str, path: str, endpoint_type: str) -> None:
+    spec = ENDPOINT_SPEC[path]
 
-    with run_app(framework.app):
-        url = f"http://127.0.0.1:8181/{endpoint_type}-{path}"
-        res = httpx.get(url, **spec.get("request", {}))
+    if framework in spec.get("skip", []):
+        pytest.skip()
 
-        assert res.status_code == spec["result"]["status_code"]
-        if expect_bytes := spec["result"].get("bytes"):
-            assert expect_bytes == res.content
-        if expect_text := spec["result"].get("text"):
-            assert expect_text == res.text
-        if expect_json := spec["result"].get("json"):
-            assert res.json() == expect_json
+    url = f"http://127.0.0.1:8181/{endpoint_type}-{path}"
+    res = httpx.get(url, **spec.get("request", {}))
+
+    assert res.status_code == spec["result"]["status_code"]
+    if expect_bytes := spec["result"].get("bytes"):
+        assert expect_bytes == res.content
+    if expect_text := spec["result"].get("text"):
+        assert expect_text == res.text
+    if expect_json := spec["result"].get("json"):
+        # breakpoint()
+        assert res.json() == expect_json

@@ -4,17 +4,10 @@ from typing import Literal, TypedDict, TypeGuard
 from urllib.parse import urlparse
 
 EndpointMode = Literal["sync", "async"]
-EndpointCategory = Literal["plaintext", "json", "params", "dynamic-response", "files"]
+EndpointCategory = Literal["plaintext", "json", "params", "dynamic-response", "files", "dependency-injection"]
 BenchmarkMode = Literal["rps", "latency"]
 VersionPrefix = Literal["pip", "git", "docker", "file"]
-
-FRAMEWORK_REPOS = {
-    "starlite": "https://github.com/starlite-api/starlite.git",
-    "starlette": "https://github.com/encode/starlette.git",
-    "fastapi": "https://github.com/tiangolo/fastapi.git",
-    "sanic": "https://github.com/sanic-org/sanic.git",
-    "blacksheep": "https://github.com/Neoteroi/BlackSheep.git",
-}
+Framework = Literal["starlite", "starlette", "fastapi", "sanic", "blacksheep"]
 
 
 @dataclass
@@ -26,6 +19,7 @@ class TestSpec:
     headers: list[tuple[str, str]]
     endpoint_mode: EndpointMode
     benchmark_mode: BenchmarkMode
+    is_supported: bool
     warmup_time: int | None = None
     time_limit: int | None = None
     request_limit: int | None = None
@@ -36,18 +30,13 @@ class TestSpec:
         return f"{self.benchmark_mode} - {self.name} ({self.endpoint_mode})"
 
 
-class EndpointDict(TypedDict, total=False):
-    headers: list[tuple[str, str]] | None
-    name: str
-
-
 def _validate_prefix(prefix: str) -> TypeGuard[VersionPrefix]:
     return prefix in {"pip", "git", "docker", "file"}
 
 
 @dataclass
 class FrameworkSpec:
-    name: str
+    name: Framework
     path: Path
     tests: list[TestSpec]
     version: str | None = None
@@ -115,6 +104,8 @@ class FrameworkSpec:
         if prefix == "git":
             if version.startswith(("https", "ssh")):
                 return f"git+{version}"
+            from spec import FRAMEWORK_REPOS
+
             return f"git+{FRAMEWORK_REPOS[self.name]}@{version}"
         elif prefix == "file":
             return version

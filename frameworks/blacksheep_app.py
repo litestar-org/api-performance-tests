@@ -1,3 +1,5 @@
+import time
+
 import anyio
 from blacksheep import Application, Cookie, Request, Response, json, text
 from blacksheep.server.responses import file, no_content
@@ -316,3 +318,44 @@ def sync_file_response_1m() -> Response:
 def sync_file_response_5m() -> Response:
     content = test_data.FILE_5M.read_bytes()
     return file(content, file_name="response_file", content_type="application/octet-stream")
+
+
+class SyncDependencyOne:
+    def __init__(self) -> None:
+        time.sleep(0.00000001)
+        self.value = "sync_dependency_one"
+
+
+class SyncDependencyTwo:
+    def __init__(self, one: SyncDependencyOne) -> None:
+        time.sleep(0.00000001)
+        self.value = [one.value, "sync_dependency_two"]
+
+
+class SyncDependencyThree:
+    def __init__(self, two: SyncDependencyTwo) -> None:
+        time.sleep(0.00000001)
+        self.value = [*two.value, "sync_dependency_three"]
+
+
+app.services.add_exact_scoped(SyncDependencyOne)
+app.services.add_exact_scoped(SyncDependencyTwo)
+app.services.add_exact_scoped(SyncDependencyThree)
+
+
+@app.router.get("/sync-dependencies-sync")
+def sync_dependencies_sync(
+    injected_sync_one: SyncDependencyOne,
+    injected_sync_two: SyncDependencyTwo,
+    injected_sync_three: SyncDependencyThree,
+) -> Response:
+    return json(injected_sync_three.value)
+
+
+@app.router.get("/async-dependencies-sync")
+async def async_dependencies_sync(
+    injected_sync_one: SyncDependencyOne,
+    injected_sync_two: SyncDependencyTwo,
+    injected_sync_three: SyncDependencyThree,
+) -> Response:
+    return json(injected_sync_three.value)
