@@ -94,6 +94,36 @@ ENDPOINT_SPEC = {
         "request": {},
         "skip": ["starlette", "sanic", "blacksheep"],
     },
+    "serialize-pydantic-50": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_50x2},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-pydantic-100": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_100x5},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-pydantic-500": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_500x3},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-dataclasses-50": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_50x2},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-dataclasses-100": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_100x5},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-dataclasses-500": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_500x3},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
 }
 
 
@@ -122,5 +152,4 @@ def test_framework(framework: str, path: str, endpoint_type: str) -> None:
     if expect_text := spec["result"].get("text"):
         assert expect_text == res.text
     if expect_json := spec["result"].get("json"):
-        # breakpoint()
         assert res.json() == expect_json

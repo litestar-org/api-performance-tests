@@ -61,6 +61,7 @@ def _data_for_plot(
     results: dict[str, SuiteResults],
     benchmark_mode: BenchmarkMode,
     categories: tuple[EndpointCategory, ...] | EndpointCategory,
+    tolerance: float,
 ) -> pd.DataFrame | None:
     ret = []
     if isinstance(categories, str):
@@ -72,7 +73,7 @@ def _data_for_plot(
                     continue
                 for test_result in category_results:
                     error_percentage = get_error_percentage(test_result)
-                    is_valid = error_percentage <= 1
+                    is_valid = error_percentage <= tolerance
                     ret.append(
                         {
                             "target": framework,
@@ -182,6 +183,7 @@ def make_plots(
     run_number: int | None,
     formats: tuple[str, ...] = ("png",),
     split_categories: bool,
+    tolerance: float = 0.1,
 ) -> None:
     cwd = Path.cwd()
     run_number, results = collect_results(run_number)
@@ -195,7 +197,7 @@ def make_plots(
             continue
         if split_categories:
             for category in ENDPOINT_CATEGORIES:
-                df = _data_for_plot(results, benchmark_mode, category)
+                df = _data_for_plot(results, benchmark_mode, category, tolerance=tolerance)
                 if df is None:
                     continue
                 _draw_percentile_plots(
@@ -208,7 +210,7 @@ def make_plots(
                     category=category,
                 )
         else:
-            df = _data_for_plot(results, benchmark_mode, ENDPOINT_CATEGORIES)
+            df = _data_for_plot(results, benchmark_mode, ENDPOINT_CATEGORIES, tolerance=tolerance)
             if df is None:
                 continue
             _draw_percentile_plots(

@@ -2,7 +2,7 @@ from .types import TestResult
 
 
 def get_error_response_count(test_result: TestResult) -> int:
-    return test_result["req4xx"] + test_result["req5xx"]
+    return test_result["req4xx"] + test_result["req5xx"] + test_result.get("others", 0)
 
 
 def get_success_response_count(test_result: TestResult) -> int:

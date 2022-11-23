@@ -104,13 +104,21 @@ def run(
     help="include error bars",
     show_default=True,
 )
-@click.option("-s", "--split-categories", is_flag=True, help="split categories into separate files")
+@click.option("-s", "--split-categories", is_flag=True, help="split category results into separate files")
+@click.option(
+    "-t",
+    "--tolerance",
+    type=float,
+    default=0.1,
+    help="threshold of error responses at which a test will be considered invalid",
+)
 def results_command(
     run_name: int | None,
     format: tuple[str, ...],
     percentile: tuple[str, ...],
     no_error_bars: bool,
     split_categories: bool,
+    tolerance: float,
 ) -> None:
     results.make_plots(
         formats=format,
@@ -118,6 +126,7 @@ def results_command(
         run_number=run_name,
         error_bars=not no_error_bars,
         split_categories=split_categories,
+        tolerance=tolerance,
     )
 
 

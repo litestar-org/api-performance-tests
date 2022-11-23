@@ -458,7 +458,7 @@ name = "pydantic"
 version = "1.10.2"
 description = "Data validation and settings management using python type hints"
 category = "main"
-optional = true
+optional = false
 python-versions = ">=3.7"
 
 [package.dependencies]
@@ -764,7 +764,7 @@ full = ["httpx (>=0.22.0)", "itsdangerous", "jinja2", "python-multipart", "pyyam
 
 [[package]]
 name = "starlite"
-version = "1.40.1"
+version = "1.41.0"
 description = "Performant, light and flexible ASGI API Framework"
 category = "main"
 optional = true
@@ -895,7 +895,7 @@ test = ["starlite", "starlette", "fastapi", "blacksheep", "sanic", "sanic-testin
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.11"
-content-hash = "cc48eb34a32ef45111cf9a77cbda6e1993710a99410708c61c40489ea2271e08"
+content-hash = "5b5879f4bebc7295d12ac83dcea1f48a440915e33d734724285f0ebf0eddadd2"
 
 [metadata.files]
 aiofiles = [
@@ -1683,8 +1683,8 @@ starlette = [
     {file = "starlette-0.21.0.tar.gz", hash = "sha256:b1b52305ee8f7cfc48cde383496f7c11ab897cd7112b33d998b1317dc8ef9027"},
 ]
 starlite = [
-    {file = "starlite-1.40.1-py3-none-any.whl", hash = "sha256:d9e73bdd9d63cb981ba53ebb89af4565d01ef715081bbbf8a43599d120e684a9"},
-    {file = "starlite-1.40.1.tar.gz", hash = "sha256:c4d47a0a72f3e0a86e0135cfb939d0906cce0ff7c7f2d953bd426df4067bb106"},
+    {file = "starlite-1.41.0-py3-none-any.whl", hash = "sha256:d5694296206ba125acc534eba79c87f51de123f1e68b78d48e6af9f853cf92c8"},
+    {file = "starlite-1.41.0.tar.gz", hash = "sha256:03a96714a73b3b27f042606e9d75c0847ec1d7c79f00cf65ab73073c8be5c0d5"},
 ]
 starlite-multipart = [
     {file = "starlite-multipart-1.2.0.tar.gz", hash = "sha256:9ba2108cfd47de07240dc90e55397080ec9ca0c6992ec1097a02dd32ba4ca593"},

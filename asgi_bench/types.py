@@ -4,7 +4,9 @@ from typing import Literal, TypedDict, TypeGuard
 from urllib.parse import urlparse
 
 EndpointMode = Literal["sync", "async"]
-EndpointCategory = Literal["plaintext", "json", "params", "dynamic-response", "files", "dependency-injection"]
+EndpointCategory = Literal[
+    "plaintext", "json", "params", "dynamic-response", "files", "dependency-injection", "serialization"
+]
 BenchmarkMode = Literal["rps", "latency"]
 VersionPrefix = Literal["pip", "git", "docker", "file"]
 Framework = Literal["starlite", "starlette", "fastapi", "sanic", "blacksheep"]
@@ -104,7 +106,7 @@ class FrameworkSpec:
         if prefix == "git":
             if version.startswith(("https", "ssh")):
                 return f"git+{version}"
-            from spec import FRAMEWORK_REPOS
+            from .spec import FRAMEWORK_REPOS
 
             return f"git+{FRAMEWORK_REPOS[self.name]}@{version}"
         elif prefix == "file":

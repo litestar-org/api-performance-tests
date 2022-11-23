@@ -1,6 +1,8 @@
 import json
 from pathlib import Path
 
+from . import objects
+
 RESPONSE_HEADERS = {f"header_{i}": "value" for i in range(10)}
 RESPONSE_COOKIES = {f"cookie_{i}": "value" for i in range(10)}
 
@@ -30,3 +32,12 @@ JSON_100K = json.loads((data_path / "100K.json").read_text())
 JSON_500K = json.loads((data_path / "500K.json").read_text())
 JSON_1M = json.loads((data_path / "1M.json").read_text())
 JSON_5M = json.loads((data_path / "5M.json").read_text())
+
+PERSON_DATA_50x2 = json.loads((data_path / "person_50x2.json").read_text())
+PERSON_DATA_100x5 = json.loads((data_path / "person_100x5.json").read_text())
+PERSON_DATA_500x3 = json.loads((data_path / "person_500x3.json").read_text())
+
+
+PERSONS_PYDANTIC_50x2, PERSONS_DATACLASSES_50x2 = objects.load(PERSON_DATA_50x2)
+PERSONS_PYDANTIC_100x5, PERSONS_DATACLASSES_100x5 = objects.load(PERSON_DATA_100x5)
+PERSONS_PYDANTIC_500x3, PERSONS_DATACLASSES_500x3 = objects.load(PERSON_DATA_100x5)
