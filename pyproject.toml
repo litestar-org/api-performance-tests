@@ -24,6 +24,7 @@ uvloop = "*"
 anyio = "*"
 jinja2 = "^3.1.2"
 uvicorn = "^0.20.0"
+pydantic = "^1.10.2"
 
 [tool.poetry.extras]
 test = ["starlite", "starlette", "fastapi", "blacksheep", "sanic", "sanic-testing"]

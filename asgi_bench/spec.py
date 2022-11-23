@@ -89,6 +89,18 @@ TEST_CATEGORIES: list[TestCategory] = [
             Endpoint(path="dependencies-mixed", name="dependencies mixed", exclude=["sanic", "blacksheep"]),
         ],
     ),
+    TestCategory(
+        name="serialization",
+        frameworks=("starlite", "fastapi"),
+        endpoints=[
+            Endpoint(path="serialize-pydantic-50", name="serialize pydantic, 50 objects"),
+            Endpoint(path="serialize-pydantic-100", name="serialize pydantic, 100 objects"),
+            Endpoint(path="serialize-pydantic-500", name="serialize pydantic, 500 objects"),
+            Endpoint(path="serialize-dataclasses-50", name="serialize dataclasses, 50 objects"),
+            Endpoint(path="serialize-dataclasses-100", name="serialize dataclasses, 100 objects"),
+            Endpoint(path="serialize-dataclasses-500", name="serialize dataclasses, 500 objects"),
+        ],
+    ),
 ]
 
 CATEGORIES_BY_NAME: dict[EndpointCategory, TestCategory] = {c.name: c for c in TEST_CATEGORIES}
@@ -137,9 +149,9 @@ def make_spec(
                         name=endpoint.name,
                         headers=endpoint.headers,
                         warmup_time=warmup_time,
-                        time_limit=time_limit if benchmark_mode == "rps" else None,
-                        request_limit=request_limit if benchmark_mode == "latency" else None,
-                        rate_limit=rate_limit if benchmark_mode == "latency" else None,
+                        time_limit=time_limit or 15 if benchmark_mode == "rps" else None,
+                        request_limit=request_limit or 1000 if benchmark_mode == "latency" else None,
+                        rate_limit=rate_limit or 20 if benchmark_mode == "latency" else None,
                         slug_name=f"{endpoint_mode}-{endpoint.path.split('?')[0]}",
                         is_supported=framework_name in category.frameworks and framework_name not in endpoint.exclude,
                     )
