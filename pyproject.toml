@@ -16,7 +16,7 @@ starlite = { version = "*", optional = true}
 starlette = { version = "*", optional = true }
 fastapi = { version = "*", optional = true }
 blacksheep = { version = "*", optional = true }
-sanic = { version = "*", optional = true }
+sanic = {extras = ["ext"], version = "^22.9.1", optional = true}
 sanic-testing = { version = "*", optional = true }
 pyyaml = "*"
 httpx = "*"

@@ -4,9 +4,10 @@ from typing import Literal, TypedDict, TypeGuard
 from urllib.parse import urlparse
 
 EndpointMode = Literal["sync", "async"]
-EndpointCategory = Literal["plaintext", "json", "params", "dynamic-response", "files"]
+EndpointCategory = Literal["plaintext", "json", "params", "dynamic-response", "files", "dependency-injection"]
 BenchmarkMode = Literal["rps", "latency"]
 VersionPrefix = Literal["pip", "git", "docker", "file"]
+Framework = Literal["starlite", "starlette", "fastapi", "sanic", "blacksheep"]
 
 FRAMEWORK_REPOS = {
     "starlite": "https://github.com/starlite-api/starlite.git",
@@ -26,6 +27,7 @@ class TestSpec:
     headers: list[tuple[str, str]]
     endpoint_mode: EndpointMode
     benchmark_mode: BenchmarkMode
+    is_supported: bool
     warmup_time: int | None = None
     time_limit: int | None = None
     request_limit: int | None = None
@@ -34,11 +36,6 @@ class TestSpec:
     @property
     def pretty_name(self) -> str:
         return f"{self.benchmark_mode} - {self.name} ({self.endpoint_mode})"
-
-
-class EndpointDict(TypedDict, total=False):
-    headers: list[tuple[str, str]] | None
-    name: str
 
 
 def _validate_prefix(prefix: str) -> TypeGuard[VersionPrefix]:

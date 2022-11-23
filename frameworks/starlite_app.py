@@ -1,4 +1,7 @@
-from starlite import Cookie, File, MediaType, ResponseHeader, Starlite, get
+import time
+
+import anyio
+from starlite import Cookie, File, MediaType, Provide, ResponseHeader, Starlite, get
 from starlite.status_codes import HTTP_204_NO_CONTENT
 
 import test_data
@@ -308,8 +311,136 @@ def sync_file_response_5m() -> File:
     return File(path=test_data.FILE_5M, filename="response_file")
 
 
+# dependency injection
+
+
+def sync_dependency_one() -> str:
+    time.sleep(0.00000001)
+    return "sync_dependency_one"
+
+
+def sync_dependency_two(injected_sync_one: str) -> list[str]:
+    time.sleep(0.00000001)
+    return [injected_sync_one, "sync_dependency_two"]
+
+
+def sync_dependency_three(injected_sync_two: list[str]) -> list[str]:
+    time.sleep(0.00000001)
+    return [*injected_sync_two, "sync_dependency_three"]
+
+
+async def async_dependency_one() -> str:
+    await anyio.sleep(0.00000001)
+    return "async_dependency_one"
+
+
+async def async_dependency_two(injected_async_one: str) -> list[str]:
+    await anyio.sleep(0.00000001)
+    return [injected_async_one, "async_dependency_two"]
+
+
+async def async_dependency_three(injected_async_two: list[str]) -> list[str]:
+    await anyio.sleep(0.00000001)
+    return [*injected_async_two, "async_dependency_three"]
+
+
+async def dependencies_mixed(
+    injected_sync_three: list[str], injected_async_three: list[str]
+) -> tuple[list[str], list[str]]:
+    return injected_sync_three, injected_async_three
+
+
+_DEPENDENCIES_SYNC = {
+    "injected_sync_one": Provide(sync_dependency_one),
+    "injected_sync_two": Provide(sync_dependency_two),
+    "injected_sync_three": Provide(sync_dependency_three),
+}
+
+_DEPENDENCIES_ASYNC = {
+    "injected_async_one": Provide(async_dependency_one),
+    "injected_async_two": Provide(async_dependency_two),
+    "injected_async_three": Provide(async_dependency_three),
+}
+
+
+@get("/sync-dependencies-sync", dependencies=_DEPENDENCIES_SYNC)
+def sync_dependencies_sync(
+    injected_sync_one: str, injected_sync_two: list[str], injected_sync_three: list[str]
+) -> list[str]:
+    return injected_sync_three
+
+
+@get("/sync-dependencies-async", dependencies=_DEPENDENCIES_ASYNC)
+def sync_dependencies_async(
+    injected_async_one: str, injected_async_two: list[str], injected_async_three: list[str]
+) -> list[str]:
+    return injected_async_three
+
+
+@get(
+    "/sync-dependencies-mixed",
+    dependencies={
+        **_DEPENDENCIES_SYNC,
+        **_DEPENDENCIES_ASYNC,
+        "injected_mixed": Provide(dependencies_mixed),
+    },
+)
+def sync_dependencies_mixed(
+    injected_sync_one: str,
+    injected_sync_two: list[str],
+    injected_sync_three: list[str],
+    injected_async_one: str,
+    injected_async_two: list[str],
+    injected_async_three: list[str],
+    injected_mixed: tuple[list[str], list[str]],
+) -> tuple[list[str], list[str]]:
+    return injected_mixed
+
+
+@get("/async-dependencies-sync", dependencies=_DEPENDENCIES_SYNC)
+async def async_dependencies_sync(
+    injected_sync_one: str, injected_sync_two: list[str], injected_sync_three: list[str]
+) -> list[str]:
+    return injected_sync_three
+
+
+@get("/async-dependencies-async", dependencies=_DEPENDENCIES_ASYNC)
+async def async_dependencies_async(
+    injected_async_one: str, injected_async_two: list[str], injected_async_three: list[str]
+) -> list[str]:
+    return injected_async_three
+
+
+@get(
+    "/async-dependencies-mixed",
+    dependencies={
+        **_DEPENDENCIES_SYNC,
+        **_DEPENDENCIES_ASYNC,
+        "injected_mixed": Provide(dependencies_mixed),
+    },
+)
+async def async_dependencies_mixed(
+    injected_sync_one: str,
+    injected_sync_two: list[str],
+    injected_sync_three: list[str],
+    injected_async_one: str,
+    injected_async_two: list[str],
+    injected_async_three: list[str],
+    injected_mixed: tuple[list[str], list[str]],
+) -> tuple[list[str], list[str]]:
+    return injected_mixed
+
+
 app = Starlite(
     route_handlers=[
+        # DI sync
+        sync_dependencies_sync,
+        sync_dependencies_async,
+        sync_dependencies_mixed,
+        # DI async
+        async_dependencies_sync,
+        async_dependencies_async,
+        async_dependencies_mixed,
         # plaintext async
         async_plaintext_100b,
         async_plaintext_1k,

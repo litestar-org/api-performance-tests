@@ -142,7 +142,7 @@ class Runner:
 
     def run_benchmark(self, test_spec: TestSpec) -> dict[str, Any]:
         if test_spec.warmup_time:
-            with self.console.status("  [yellow]Warming up endpoint"):
+            with self.console.status(f"  [yellow][Warmup][/yellow] {test_spec.pretty_name}"):
                 self._run_bench_in_container(
                     f"http://127.0.0.1:{SERVER_PORT}{test_spec.path}",
                     "--no-print",
@@ -152,7 +152,7 @@ class Runner:
                 )
                 time.sleep(2)
 
-        with self.console.status(f"  [cyan]Running: {test_spec.pretty_name}"):
+        with self.console.status(f"  [cyan][Running][/cyan] {test_spec.pretty_name}"):
             res = self._run_bench_in_container(
                 f"http://127.0.0.1:{SERVER_PORT}{test_spec.path}",
                 "--latencies",
@@ -163,9 +163,9 @@ class Runner:
         results = json.loads(res)
         error_percentage = get_error_percentage(results["result"])
         if error_percentage:
-            self.console.print(f"    [red]Completed {test_spec.pretty_name} with errors ({error_percentage}%)")
+            self.console.print(f"    [red][Error][/red] {test_spec.pretty_name} with errors ({error_percentage}%)")
         else:
-            self.console.print(f"    [green]Completed: {test_spec.pretty_name}")
+            self.console.print(f"    [green][Completed][/green] {test_spec.pretty_name}")
         return results
 
     def run_benchmarks(self, framework_spec: FrameworkSpec) -> None:
@@ -180,12 +180,15 @@ class Runner:
         self.console.print("  [blue]Running benchmarks")
 
         for test_spec in framework_spec.tests:
-            results = self.run_benchmark(test_spec)
-            self._write_results(
-                target=framework_spec.version_name,
-                spec=test_spec,
-                results=results,
-            )
+            if test_spec.is_supported:
+                results = self.run_benchmark(test_spec)
+                self._write_results(
+                    target=framework_spec.version_name,
+                    spec=test_spec,
+                    results=results,
+                )
+            else:
+                self.console.print(f"    [yellow][Skipped][/yellow] {test_spec.pretty_name}")
 
         with self.console.status("  [yellow]Stopping container"):
             container.stop()
@@ -196,4 +199,9 @@ class Runner:
 
         for framework_spec in self.specs:
             self.console.print(f"Suite: [magenta]{framework_spec.version_name}")
-            self.run_benchmarks(framework_spec=framework_spec)
+            if framework_spec.tests:
+                self.run_benchmarks(framework_spec=framework_spec)
+            else:
+                self.console.print(
+                    f"[yellow]Skipping suite {framework_spec.version_name!r} because no tests were selected"
+                )

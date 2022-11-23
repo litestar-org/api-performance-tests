@@ -5,6 +5,7 @@ import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt
 
+from .spec import ENDPOINT_CATEGORIES
 from .types import BenchmarkMode, EndpointCategory, SuiteResults
 from .util import get_error_percentage
 
@@ -187,14 +188,13 @@ def make_plots(
     output_dir = cwd / "plots" / f"run_{run_number}"
     output_dir.mkdir(exist_ok=True, parents=True)
 
-    all_categories: tuple[EndpointCategory, ...] = ("plaintext", "json", "params", "dynamic-response", "files")
     benchmark_modes: tuple[BenchmarkMode, ...] = ("rps", "latency")
 
     for benchmark_mode in benchmark_modes:
         if not all(benchmark_mode in mode_results for mode_results in results.values()):
             continue
         if split_categories:
-            for category in all_categories:
+            for category in ENDPOINT_CATEGORIES:
                 df = _data_for_plot(results, benchmark_mode, category)
                 if df is None:
                     continue
@@ -208,7 +208,7 @@ def make_plots(
                     category=category,
                 )
         else:
-            df = _data_for_plot(results, benchmark_mode, all_categories)
+            df = _data_for_plot(results, benchmark_mode, ENDPOINT_CATEGORIES)
             if df is None:
                 continue
             _draw_percentile_plots(
