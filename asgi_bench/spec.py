@@ -1,6 +1,7 @@
 import dataclasses
 from collections import defaultdict
 from pathlib import Path
+from typing import cast
 
 from .types import (
     BenchmarkMode,
@@ -123,7 +124,7 @@ def make_spec(
 
     for path in (Path.cwd() / "frameworks").iterdir():
         if path.is_file() and path.name.endswith("_app.py"):
-            framework_name = path.name.removesuffix("_app.py")
+            framework_name = cast(Framework, path.name.removesuffix("_app.py"))
             if framework_name not in requested_frameworks:
                 continue
             for requested_version in requested_frameworks.get(framework_name, []):
@@ -157,3 +158,13 @@ def make_spec(
                 )
 
     return framework_specs
+
+
+FRAMEWORK_REPOS: dict[Framework, str] = {
+    "starlite": "https://github.com/starlite-api/starlite.git",
+    "starlette": "https://github.com/encode/starlette.git",
+    "fastapi": "https://github.com/tiangolo/fastapi.git",
+    "sanic": "https://github.com/sanic-org/sanic.git",
+    "blacksheep": "https://github.com/Neoteroi/BlackSheep.git",
+}
+FRAMEWORKS: tuple[Framework, ...] = tuple(FRAMEWORK_REPOS.keys())

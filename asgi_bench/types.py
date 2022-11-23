@@ -9,14 +9,6 @@ BenchmarkMode = Literal["rps", "latency"]
 VersionPrefix = Literal["pip", "git", "docker", "file"]
 Framework = Literal["starlite", "starlette", "fastapi", "sanic", "blacksheep"]
 
-FRAMEWORK_REPOS = {
-    "starlite": "https://github.com/starlite-api/starlite.git",
-    "starlette": "https://github.com/encode/starlette.git",
-    "fastapi": "https://github.com/tiangolo/fastapi.git",
-    "sanic": "https://github.com/sanic-org/sanic.git",
-    "blacksheep": "https://github.com/Neoteroi/BlackSheep.git",
-}
-
 
 @dataclass
 class TestSpec:
@@ -44,7 +36,7 @@ def _validate_prefix(prefix: str) -> TypeGuard[VersionPrefix]:
 
 @dataclass
 class FrameworkSpec:
-    name: str
+    name: Framework
     path: Path
     tests: list[TestSpec]
     version: str | None = None
@@ -112,6 +104,8 @@ class FrameworkSpec:
         if prefix == "git":
             if version.startswith(("https", "ssh")):
                 return f"git+{version}"
+            from spec import FRAMEWORK_REPOS
+
             return f"git+{FRAMEWORK_REPOS[self.name]}@{version}"
         elif prefix == "file":
             return version

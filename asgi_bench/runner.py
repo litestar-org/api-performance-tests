@@ -197,8 +197,8 @@ class Runner:
     def run(self) -> None:
         self._stop_all_containers()
 
-        for framework_spec in self.specs:
-            self.console.print(f"Suite: [magenta]{framework_spec.version_name}")
+        for i, framework_spec in enumerate(self.specs, 1):
+            self.console.print(f"Suite ({i}/{len(self.specs)}): [magenta]{framework_spec.version_name}")
             if framework_spec.tests:
                 self.run_benchmarks(framework_spec=framework_spec)
             else:
