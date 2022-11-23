@@ -40,11 +40,11 @@ def _args_from_spec(test_spec: TestSpec) -> list[str]:
     return args
 
 
-def _wait_for_online() -> bool:
-    for _ in range(5):
+def _wait_for_online(attempts: int = 5) -> bool:
+    for _ in range(attempts):
         try:
             res = httpx.get(f"http://127.0.0.1:{SERVER_PORT}/sync-no-params", timeout=1)
-            if res.status_code == 200:
+            if res.status_code == 204:
                 return True
         except httpx.HTTPError:
             time.sleep(1)
@@ -168,15 +168,32 @@ class Runner:
             self.console.print(f"    [green][Completed][/green] {test_spec.pretty_name}")
         return results
 
-    def run_benchmarks(self, framework_spec: FrameworkSpec) -> None:
+    def _check_container_health(self, spec: FrameworkSpec, container: Container) -> Container:
+        with self.console.status("  [yellow]Checking container health"):
+            is_healthy = _wait_for_online(1)
+        if is_healthy:
+            return container
+        self._stop_container(container)
+        return self._start_container(spec)
 
-        with self.console.status(f"[yellow]Starting container: {framework_spec.image_tag}"):
-            container = self._run_image(framework_spec.image_tag)
+    def _stop_container(self, container: Container) -> None:
+        with self.console.status("  [yellow]Stopping container"):
+            container.stop()
+        self.console.print("  [blue]Container stopped")
+
+    def _start_container(self, spec: FrameworkSpec) -> Container:
+        with self.console.status(f"[yellow]Starting container: {spec.image_tag}"):
+            container = self._run_image(spec.image_tag)
         self.console.print("  [cyan]Container started")
 
         with self.console.status("[yellow]Waiting for server to come online"):
             _wait_for_online()
-        self.console.print("  [cyan]Server online")
+
+        return container
+
+    def run_benchmarks(self, framework_spec: FrameworkSpec) -> None:
+        container = self._start_container(framework_spec)
+
         self.console.print("  [blue]Running benchmarks")
 
         for test_spec in framework_spec.tests:
@@ -189,10 +206,9 @@ class Runner:
                 )
             else:
                 self.console.print(f"    [yellow][Skipped][/yellow] {test_spec.pretty_name}")
+            container = self._check_container_health(framework_spec, container)
 
-        with self.console.status("  [yellow]Stopping container"):
-            container.stop()
-        self.console.print("  [blue]Container stopped")
+        self._stop_container(container)
 
     def run(self) -> None:
         self._stop_all_containers()
