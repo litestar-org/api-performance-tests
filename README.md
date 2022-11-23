@@ -31,11 +31,30 @@ All tests are run sync and async
 
 #### Serialization and data sending
 
+##### Plaintext
+
 - Sending 6kB plaintext
 - Sending 70kB plaintext
+
+##### JSON
+
 - Serializing and sending 2kB JSON
 - Serializing and sending 10kB JSON
 - Serializing and sending 450kB JSON
+
+##### Serialization
+
+(only supported by `Starlite` and `FastAPI`)
+
+- Serializing 50 dataclass objects each referencing 2 more dataclass objects
+- Serializing 100 dataclass objects each referencing 5 more dataclass objects
+- Serializing 500 dataclass objects each referencing 3 more dataclass objects
+- Serializing 50 pydantic objects each referencing 2 more pydantic objects
+- Serializing 100 pydantic objects each referencing 5 more pydantic objects
+- Serializing 500 pydantic objects each referencing 3 more pydantic objects
+
+##### Files
+
 - Sending a 100 bytes binary file
 - Sending a 1kB bytes binary file
 - Sending a 50kB binary file
@@ -49,6 +68,14 @@ All responses return "No Content"
 - Single path parameter, coerced into an integer
 - Single query parameter, coerced into an integer
 - A path and a query parameters, coerced into integers
+
+#### Dependency injection
+
+(not supported by `Starlette`)
+
+- Resolving 3 nested synchronous dependencies
+- Resolving 3 nested asynchronous dependencies (only supported by `Starlite` and `FastAPI`)
+- Resolving 3 nested synchronous, and 3 nested asynchronous dependencies (only supported by `Starlite` and `FastAPI`)
 
 #### Modifying responses
 
@@ -88,17 +115,17 @@ To select a framework, simply pass its name to the `run command`:
 
 #### Test Settings
 
-|                                                                                            |                                                                 |
-| ------------------------------------------------------------------------------------------ | --------------------------------------------------------------- |
-| -r, --rebuild                                                                              | rebuild docker images                                           |
-| -L, --latency                                                                              | run latency tests                                               |
-| -R, --rps                                                                                  | run RPS tests                                                   |
-| -w, --warmup                                                                               | duration of the warmup period (default: 5s)                     |
-| -e, --endpoint mode [sync&#124;async]                                                      | endpoint types to select (default: sync, async)                 |
-| -c, --endpoint-category [plaintext&#124;json&#124;files&#124;params&#124;dynamic-response] | test types to select (default: plaintext, json)                 |
-| -d, --duration                                                                             | duration of the rps benchmarks (default: 15s)                   |
-| -l, --limit                                                                                | max requests per second for latency benchmarks (default: 20)    |
-| -r, --requests                                                                             | total number of requests for latency benchmarks (default: 1000) |
+|                                                                                                                                         |                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| -r, --rebuild                                                                                                                           | rebuild docker images                                           |
+| -L, --latency                                                                                                                           | run latency tests                                               |
+| -R, --rps                                                                                                                               | run RPS tests                                                   |
+| -w, --warmup                                                                                                                            | duration of the warmup period (default: 5s)                     |
+| -e, --endpoint mode [sync&#124;async]                                                                                                   | endpoint types to select (default: sync, async)                 |
+| -c, --endpoint-category [plaintext&#124;json&#124;files&#124;params&#124;dynamic-response&#124;dependency-injection&#124;serialization] | test types to select (default: all)                             |
+| -d, --duration                                                                                                                          | duration of the rps benchmarks (default: 15s)                   |
+| -l, --limit                                                                                                                             | max requests per second for latency benchmarks (default: 20)    |
+| -r, --requests                                                                                                                          | total number of requests for latency benchmarks (default: 1000) |
 
 ### Analyzing the results
 
