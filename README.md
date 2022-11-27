@@ -42,6 +42,7 @@ All tests are run sync and async
 - Sending 5MB plaintext
 
 ##### JSON
+
 Serializing a dictionary into JSON
 
 - Serializing and sending 1kB JSON

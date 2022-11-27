@@ -1,8 +1,9 @@
 import atexit
 import json
 import time
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Any
+from typing import Any, Generator
 
 import docker
 import httpx
@@ -168,47 +169,38 @@ class Runner:
             self.console.print(f"    [green][Completed][/green] {test_spec.pretty_name}")
         return results
 
-    def _check_container_health(self, spec: FrameworkSpec, container: Container) -> Container:
-        with self.console.status("  [yellow]Checking container health"):
-            is_healthy = _wait_for_online(1)
-        if is_healthy:
-            return container
-        self._stop_container(container)
-        return self._start_container(spec)
+    @contextmanager
+    def provide_service(self, spec: FrameworkSpec) -> Generator[bool, None, None]:
+        with self.console.status(f"  [yellow]  Starting container: {spec.image_tag}"):
+            container = self._run_image(spec.image_tag)
 
-    def _stop_container(self, container: Container) -> None:
+        with self.console.status("  [yellow]Waiting for server to come online"):
+            is_online = _wait_for_online()
+        if not is_online:
+            self.console.print("    [red]Server failed to come online")
+            yield False
+
+        yield True
+
         with self.console.status("  [yellow]Stopping container"):
             container.stop()
-        self.console.print("  [blue]Container stopped")
-
-    def _start_container(self, spec: FrameworkSpec) -> Container:
-        with self.console.status(f"[yellow]Starting container: {spec.image_tag}"):
-            container = self._run_image(spec.image_tag)
-        self.console.print("  [cyan]Container started")
-
-        with self.console.status("[yellow]Waiting for server to come online"):
-            _wait_for_online()
-
-        return container
 
     def run_benchmarks(self, framework_spec: FrameworkSpec) -> None:
-        container = self._start_container(framework_spec)
-
         self.console.print("  [blue]Running benchmarks")
 
         for test_spec in framework_spec.tests:
             if test_spec.is_supported:
-                results = self.run_benchmark(test_spec)
-                self._write_results(
-                    target=framework_spec.version_name,
-                    spec=test_spec,
-                    results=results,
-                )
+                with self.provide_service(framework_spec) as container:
+                    if not container:
+                        continue
+                    results = self.run_benchmark(test_spec)
+                    self._write_results(
+                        target=framework_spec.version_name,
+                        spec=test_spec,
+                        results=results,
+                    )
             else:
                 self.console.print(f"    [yellow][Skipped][/yellow] {test_spec.pretty_name}")
-            container = self._check_container_health(framework_spec, container)
-
-        self._stop_container(container)
 
     def run(self) -> None:
         self._stop_all_containers()

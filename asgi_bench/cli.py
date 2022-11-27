@@ -112,6 +112,7 @@ def run(
     default=0.1,
     help="threshold of error responses at which a test will be considered invalid",
 )
+@click.option("-f", "--framework", multiple=True, default=None)
 def results_command(
     run_name: int | None,
     format: tuple[str, ...],
@@ -119,6 +120,7 @@ def results_command(
     no_error_bars: bool,
     split_percentiles: bool,
     tolerance: float,
+    framework: tuple[str, ...] | None,
 ) -> None:
     results.make_plots(
         formats=format,
@@ -127,6 +129,7 @@ def results_command(
         error_bars=not no_error_bars,
         split_percentiles=split_percentiles,
         tolerance=tolerance,
+        frameworks=framework,
     )
 
 

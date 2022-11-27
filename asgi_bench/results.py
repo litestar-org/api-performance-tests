@@ -55,10 +55,17 @@ def collect_results(run_number: int | None = None) -> tuple[int, dict[str, Suite
 
 
 def _data_for_plot(
-    results: dict[str, SuiteResults], benchmark_mode: BenchmarkMode, tolerance: float, percentiles: tuple[str, ...]
+    results: dict[str, SuiteResults],
+    benchmark_mode: BenchmarkMode,
+    tolerance: float,
+    percentiles: tuple[str, ...],
+    frameworks: tuple[str, ...] | None,
 ) -> pd.DataFrame | None:
     ret = []
     for framework, framework_results in results.items():
+        if frameworks and framework not in frameworks:
+            continue
+
         for endpoint_mode, endpoint_mode_results in framework_results[benchmark_mode].items():
             for category, category_results in endpoint_mode_results.items():  # type: ignore[attr-defined]
                 for test_result in category_results:
@@ -77,10 +84,12 @@ def _data_for_plot(
                                 "percentile": percentile,
                             }
                         )
+
     if ret:
         data = sorted(ret, key=lambda r: r["target"])
         df = pd.DataFrame(data)
         return df
+
     return None
 
 
@@ -122,9 +131,9 @@ def _draw_plot(
         facet_row="percentile",
         height=280 * percentile_count if percentile_count > 1 else None,
         width=600 if percentile_count > 1 else None,
-        labels={"score": "RPS", "endpoint_mode": "mode"},
-        hover_data=["stddev"],
-        # color_discrete_map={target: COLOR_PALETTE[i] for i, target in enumerate(df["target"].unique())}
+        labels={"score": "RPS", "endpoint_mode": "mode", "name": ""},
+        # hover_data=["stddev"],
+        # color_discrete_map={target: COLOR_PALETTE[i] for i, target in enumerate(df["target"].unique())},
     )
 
     for format_ in formats:
@@ -133,8 +142,11 @@ def _draw_plot(
             filename_parts.append(percentile)
         if category:
             filename_parts.append(category)
-        filename = Path("_".join(filename_parts)).with_suffix("." + format_)
-        plot.write_image(output_dir / filename)
+        filename = output_dir / Path("_".join(filename_parts)).with_suffix("." + format_)
+        if format_ == "html":
+            plot.write_html(filename)
+        else:
+            plot.write_image(filename, scale=2)
 
 
 def make_plots(
@@ -145,6 +157,7 @@ def make_plots(
     formats: tuple[str, ...] = ("png",),
     split_percentiles: bool,
     tolerance: float = 0.1,
+    frameworks: tuple[str, ...] | None,
 ) -> None:
     cwd = Path.cwd()
     run_number, results = collect_results(run_number)
@@ -156,7 +169,9 @@ def make_plots(
     for benchmark_mode in benchmark_modes:
         if not all(benchmark_mode in mode_results for mode_results in results.values()):
             continue
-        df = _data_for_plot(results, benchmark_mode, tolerance=tolerance, percentiles=percentiles)
+        df = _data_for_plot(
+            results, benchmark_mode, tolerance=tolerance, percentiles=percentiles, frameworks=frameworks
+        )
         for category in ENDPOINT_CATEGORIES:
             if split_percentiles:
                 for percentile in percentiles:
