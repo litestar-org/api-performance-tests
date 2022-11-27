@@ -2,19 +2,16 @@ import json
 from pathlib import Path
 
 import pandas as pd
-import seaborn as sns
-from matplotlib import pyplot as plt
+import plotly.express as px
 
 from .spec import ENDPOINT_CATEGORIES
-from .types import BenchmarkMode, EndpointCategory, SuiteResults
+from .types import BenchmarkMode, SuiteResults
 from .util import get_error_percentage
 
 COLOR_PALETTE = [
-    "#5C80BC",
-    "#30323D",
+    "#a78bfa",
     "#c8c9c5",
     "#2dd4bf",
-    "#a78bfa",
     "#fb7185",
     "#c084fc",
     "#a78bfa",
@@ -58,35 +55,28 @@ def collect_results(run_number: int | None = None) -> tuple[int, dict[str, Suite
 
 
 def _data_for_plot(
-    results: dict[str, SuiteResults],
-    benchmark_mode: BenchmarkMode,
-    categories: tuple[EndpointCategory, ...] | EndpointCategory,
-    tolerance: float,
+    results: dict[str, SuiteResults], benchmark_mode: BenchmarkMode, tolerance: float, percentiles: tuple[str, ...]
 ) -> pd.DataFrame | None:
     ret = []
-    if isinstance(categories, str):
-        categories = (categories,)
     for framework, framework_results in results.items():
         for endpoint_mode, endpoint_mode_results in framework_results[benchmark_mode].items():
             for category, category_results in endpoint_mode_results.items():  # type: ignore[attr-defined]
-                if category not in categories:
-                    continue
                 for test_result in category_results:
                     error_percentage = get_error_percentage(test_result)
                     is_valid = error_percentage <= tolerance
-                    ret.append(
-                        {
-                            "target": framework,
-                            "name": f'{test_result["name"]} ({endpoint_mode})',
-                            "stddev": test_result[benchmark_mode]["stddev"] if is_valid else 0,
-                            "score_mean": test_result[benchmark_mode]["mean"] if is_valid else 0,
-                            "score_50": test_result[benchmark_mode]["percentiles"]["50"] if is_valid else 0,
-                            "score_75": test_result[benchmark_mode]["percentiles"]["75"] if is_valid else 0,
-                            "score_90": test_result[benchmark_mode]["percentiles"]["90"] if is_valid else 0,
-                            "score_95": test_result[benchmark_mode]["percentiles"]["95"] if is_valid else 0,
-                            "score_99": test_result[benchmark_mode]["percentiles"]["99"] if is_valid else 0,
-                        }
-                    )
+                    for percentile in percentiles:
+                        ret.append(
+                            {
+                                "target": framework,
+                                "name": test_result["name"],
+                                "endpoint_mode": endpoint_mode,
+                                "category": category,
+                                "stddev": test_result[benchmark_mode]["stddev"] if is_valid else 0,
+                                "mean": test_result[benchmark_mode]["mean"] if is_valid else 0,
+                                "score": test_result[benchmark_mode]["percentiles"][percentile] if is_valid else 0,
+                                "percentile": percentile,
+                            }
+                        )
     if ret:
         data = sorted(ret, key=lambda r: r["target"])
         df = pd.DataFrame(data)
@@ -97,83 +87,54 @@ def _data_for_plot(
 def _draw_plot(
     *,
     df: pd.DataFrame,
-    percentile: str,
     output_dir: Path,
     benchmark_mode: BenchmarkMode,
     formats: tuple[str, ...],
     error_bars: bool,
     category: str | None = None,
+    percentile: str | None = None,
 ):
-    targets = df["target"].unique()
-    benchmark_codes = sorted(df["name"].unique())
 
-    fig, ax = plt.subplots(figsize=(8.2, 4.8))
-
-    plot = sns.barplot(
-        data=df,
-        x="name",
-        y=f"score_{percentile}",
-        hue="target",
-        hue_order=targets,
-        order=benchmark_codes,
-        palette=COLOR_PALETTE,
-        edgecolor="#FFFFFF",
-        errorbar=None,
-        width=0.7,
-        ax=ax,
-    )
-    ax.set(xlabel="benchmark type", ylabel=None)
-    plt.legend()
-
-    mt_fmt = "mean" if percentile == "mean" else f"{percentile}th percentile"
     if benchmark_mode == "rps":
-        title = f"Requests per second - {mt_fmt} (higher is better)"
-        ax.yaxis.set_major_formatter(lambda i, pos: str(int(i / 1000)) + "k")
+        title = "Requests per second (higher is better)"
     else:
-        title = f"Latency - {mt_fmt} (lower is better)"
-        ax.yaxis.set_major_formatter(lambda i, pos: f"{i / 1000}ms")
+        title = "Latency (lower is better)"
 
-    plot.set(title=title)
+    df = df.query(f"category == '{category}'")
 
-    plt.xticks(rotation=60, horizontalalignment="right")
-    plt.tight_layout()
+    if percentile:
+        df = df.query(f"percentile == '{percentile}'")
+        percentile_count = 1
+    else:
+        percentile_count = len(df["percentile"].unique())
+    if df.empty:
+        return
 
-    if error_bars:
-        x_coords = [p.get_x() + 0.5 * p.get_width() for p in ax.patches]
-        y_coords = [p.get_height() for p in ax.patches]
-        plt.errorbar(x=x_coords, y=y_coords, yerr=df["stddev"], fmt="none", c="k", capsize=4)
+    plot = px.bar(
+        df,
+        x="name",
+        y="score",
+        color="target",
+        barmode="group",
+        text="target",
+        title=title,
+        facet_col="endpoint_mode",
+        facet_row="percentile",
+        height=280 * percentile_count if percentile_count > 1 else None,
+        width=600 if percentile_count > 1 else None,
+        labels={"score": "RPS", "endpoint_mode": "mode"},
+        hover_data=["stddev"],
+        # color_discrete_map={target: COLOR_PALETTE[i] for i, target in enumerate(df["target"].unique())}
+    )
 
-    plt.xticks(rotation=60, horizontalalignment="right")
-    plt.tight_layout()
-
-    for format in formats:
-        filename = f"{benchmark_mode}_{percentile}.{format}"
+    for format_ in formats:
+        filename_parts: list[str] = [benchmark_mode]
+        if percentile:
+            filename_parts.append(percentile)
         if category:
-            filename = f"{category}_{filename}"
-        plt.savefig(output_dir / filename)
-        plt.close()
-
-
-def _draw_percentile_plots(
-    *,
-    df: pd.DataFrame,
-    percentiles: tuple[str, ...],
-    output_dir: Path,
-    benchmark_mode: BenchmarkMode,
-    formats: tuple[str, ...],
-    error_bars: bool,
-    category: str | None = None,
-):
-    for percentile in percentiles:
-        _draw_plot(
-            df=df,
-            percentile=percentile,
-            output_dir=output_dir,
-            benchmark_mode=benchmark_mode,
-            formats=formats,
-            error_bars=error_bars,
-            category=category,
-        )
+            filename_parts.append(category)
+        filename = Path("_".join(filename_parts)).with_suffix("." + format_)
+        plot.write_image(output_dir / filename)
 
 
 def make_plots(
@@ -182,7 +143,7 @@ def make_plots(
     error_bars: bool,
     run_number: int | None,
     formats: tuple[str, ...] = ("png",),
-    split_categories: bool,
+    split_percentiles: bool,
     tolerance: float = 0.1,
 ) -> None:
     cwd = Path.cwd()
@@ -195,29 +156,25 @@ def make_plots(
     for benchmark_mode in benchmark_modes:
         if not all(benchmark_mode in mode_results for mode_results in results.values()):
             continue
-        if split_categories:
-            for category in ENDPOINT_CATEGORIES:
-                df = _data_for_plot(results, benchmark_mode, category, tolerance=tolerance)
-                if df is None:
-                    continue
-                _draw_percentile_plots(
+        df = _data_for_plot(results, benchmark_mode, tolerance=tolerance, percentiles=percentiles)
+        for category in ENDPOINT_CATEGORIES:
+            if split_percentiles:
+                for percentile in percentiles:
+                    _draw_plot(
+                        df=df,
+                        output_dir=output_dir,
+                        benchmark_mode=benchmark_mode,
+                        formats=formats,
+                        error_bars=error_bars,
+                        category=category,
+                        percentile=percentile,
+                    )
+            else:
+                _draw_plot(
                     df=df,
-                    percentiles=percentiles,
                     output_dir=output_dir,
                     benchmark_mode=benchmark_mode,
                     formats=formats,
                     error_bars=error_bars,
                     category=category,
                 )
-        else:
-            df = _data_for_plot(results, benchmark_mode, ENDPOINT_CATEGORIES, tolerance=tolerance)
-            if df is None:
-                continue
-            _draw_percentile_plots(
-                df=df,
-                percentiles=percentiles,
-                output_dir=output_dir,
-                benchmark_mode=benchmark_mode,
-                formats=formats,
-                error_bars=error_bars,
-            )
