@@ -92,8 +92,8 @@ def run(
 @click.option(
     "-p",
     "--percentile",
-    type=click.Choice(["mean", "50", "75", "90", "95", "99"]),
-    default=("mean", "50", "75", "90", "95", "99"),
+    type=click.Choice(["50", "75", "90", "95", "99"]),
+    default=("50", "75", "90", "95", "99"),
     multiple=True,
 )
 @click.option(
@@ -104,7 +104,7 @@ def run(
     help="include error bars",
     show_default=True,
 )
-@click.option("-s", "--split-categories", is_flag=True, help="split category results into separate files")
+@click.option("-s", "--split-percentiles", is_flag=True, help="split percentile results into separate files")
 @click.option(
     "-t",
     "--tolerance",
@@ -117,7 +117,7 @@ def results_command(
     format: tuple[str, ...],
     percentile: tuple[str, ...],
     no_error_bars: bool,
-    split_categories: bool,
+    split_percentiles: bool,
     tolerance: float,
 ) -> None:
     results.make_plots(
@@ -125,11 +125,12 @@ def results_command(
         percentiles=percentile,
         run_number=run_name,
         error_bars=not no_error_bars,
-        split_categories=split_categories,
+        split_percentiles=split_percentiles,
         tolerance=tolerance,
     )
 
 
 @cli.command(help="remove all benchmark docker images built")
-def remove_images():
-    remove_docker_images()
+@click.option("-f", "--force", is_flag=True)
+def remove_images(force: bool):
+    remove_docker_images(force=force)

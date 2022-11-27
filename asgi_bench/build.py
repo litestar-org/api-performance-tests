@@ -64,10 +64,10 @@ def build_docker_images(framework_specs: list[FrameworkSpec], rebuild: bool = Fa
     console.print(f"  [green]{len(framework_specs)} images built successfully")
 
 
-def remove_docker_images(client: docker.DockerClient | None = None) -> None:
+def remove_docker_images(client: docker.DockerClient | None = None, force: bool = False) -> None:
     if client is None:
         client = docker.from_env()
     with console.status("[yellow]Removing all images"):
         for image in client.images.list():
             if any(tag.startswith("starlite-api-bench:") for tag in image.tags):
-                image.remove()
+                image.remove(force=force)

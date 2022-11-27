@@ -33,14 +33,22 @@ All tests are run sync and async
 
 ##### Plaintext
 
-- Sending 6kB plaintext
-- Sending 70kB plaintext
+- Sending 100 bytes plaintext
+- Sending 1kB plaintext
+- Sending 10kB plaintext
+- Sending 100kB plaintext
+- Sending 500kB plaintext
+- Sending 1MB plaintext
+- Sending 5MB plaintext
 
 ##### JSON
+Serializing a dictionary into JSON
 
-- Serializing and sending 2kB JSON
+- Serializing and sending 1kB JSON
 - Serializing and sending 10kB JSON
-- Serializing and sending 450kB JSON
+- Serializing and sending 100kB JSON
+- Serializing and sending 500kB JSON
+- Serializing and sending 1MB JSON
 
 ##### Serialization
 
