@@ -21,4 +21,4 @@ ARG RANDOM_STRING=1
 COPY frameworks/{{ framework }}_app.py /app.py
 COPY test_data/ /test_data/
 
-CMD ["uvicorn", "--no-access-log", "--loop", "uvloop", "app:app", "--host", "0.0.0.0", "--port", "8081"]
+CMD ["uvicorn", "--no-access-log", "--loop", "uvloop", "app:app", "--host", "0.0.0.0", "--port", "8081", "--timeout-keep-alive", "15"]
