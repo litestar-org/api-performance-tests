@@ -58,10 +58,11 @@ def _data_for_plot(
     results: dict[str, SuiteResults],
     benchmark_mode: BenchmarkMode,
     tolerance: float,
-    percentiles: tuple[str, ...],
+    percentiles: tuple[str, ...] | list[str],
     frameworks: tuple[str, ...] | None,
 ) -> pd.DataFrame | None:
     ret = []
+    percentiles = sorted(percentiles)
     for framework, framework_results in results.items():
         if frameworks and framework not in frameworks:
             continue

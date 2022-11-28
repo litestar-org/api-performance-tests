@@ -415,32 +415,32 @@ async def async_dependencies_mixed(
 
 @app.get("/sync-serialize-pydantic-50", response_model=list[test_data.objects.PersonPydantic])
 def sync_serialize_pydantic_50() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_50x2
+    return test_data.PERSONS_PYDANTIC_50
 
 
 @app.get("/sync-serialize-pydantic-100", response_model=list[test_data.objects.PersonPydantic])
 def sync_serialize_pydantic_100() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_100x5
-
-
-@app.get("/async-serialize-pydantic-50", response_model=list[test_data.objects.PersonPydantic])
-async def async_serialize_pydantic_50() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_50x2
-
-
-@app.get("/async-serialize-pydantic-100", response_model=list[test_data.objects.PersonPydantic])
-async def async_serialize_pydantic_100() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_100x5
+    return test_data.PERSONS_PYDANTIC_100
 
 
 @app.get("/sync-serialize-pydantic-500", response_model=list[test_data.objects.PersonPydantic])
 def sync_serialize_pydantic_500() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_500x3
+    return test_data.PERSONS_PYDANTIC_500
+
+
+@app.get("/async-serialize-pydantic-50", response_model=list[test_data.objects.PersonPydantic])
+async def async_serialize_pydantic_50() -> list[test_data.objects.PersonPydantic]:
+    return test_data.PERSONS_PYDANTIC_50
+
+
+@app.get("/async-serialize-pydantic-100", response_model=list[test_data.objects.PersonPydantic])
+async def async_serialize_pydantic_100() -> list[test_data.objects.PersonPydantic]:
+    return test_data.PERSONS_PYDANTIC_100
 
 
 @app.get("/async-serialize-pydantic-500", response_model=list[test_data.objects.PersonPydantic])
 async def async_serialize_pydantic_500() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_500x3
+    return test_data.PERSONS_PYDANTIC_500
 
 
 # serialize dataclasses
@@ -448,29 +448,29 @@ async def async_serialize_pydantic_500() -> list[test_data.objects.PersonPydanti
 
 @app.get("/sync-serialize-dataclasses-50", response_model=list[test_data.objects.PersonDataclass])
 def sync_serialize_dataclasses_50() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_PYDANTIC_50x2
+    return test_data.PERSONS_DATACLASSES_50
 
 
 @app.get("/sync-serialize-dataclasses-100", response_model=list[test_data.objects.PersonDataclass])
 def sync_serialize_dataclasses_100() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_DATACLASSES_100x5
-
-
-@app.get("/async-serialize-dataclasses-50", response_model=list[test_data.objects.PersonDataclass])
-async def async_serialize_dataclasses_50() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_PYDANTIC_50x2
-
-
-@app.get("/async-serialize-dataclasses-100", response_model=list[test_data.objects.PersonDataclass])
-async def async_serialize_dataclasses_100() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_DATACLASSES_100x5
-
-
-@app.get("/async-serialize-dataclasses-500", response_model=list[test_data.objects.PersonDataclass])
-async def async_serialize_dataclasses_500() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_DATACLASSES_500x3
+    return test_data.PERSONS_DATACLASSES_100
 
 
 @app.get("/sync-serialize-dataclasses-500", response_model=list[test_data.objects.PersonDataclass])
 def sync_serialize_dataclasses_500() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_DATACLASSES_500x3
+    return test_data.PERSONS_DATACLASSES_500
+
+
+@app.get("/async-serialize-dataclasses-50", response_model=list[test_data.objects.PersonDataclass])
+async def async_serialize_dataclasses_50() -> list[test_data.objects.PersonDataclass]:
+    return test_data.PERSONS_DATACLASSES_50
+
+
+@app.get("/async-serialize-dataclasses-100", response_model=list[test_data.objects.PersonDataclass])
+async def async_serialize_dataclasses_100() -> list[test_data.objects.PersonDataclass]:
+    return test_data.PERSONS_DATACLASSES_100
+
+
+@app.get("/async-serialize-dataclasses-500", response_model=list[test_data.objects.PersonDataclass])
+async def async_serialize_dataclasses_500() -> list[test_data.objects.PersonDataclass]:
+    return test_data.PERSONS_DATACLASSES_500

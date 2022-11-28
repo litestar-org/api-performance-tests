@@ -27,7 +27,7 @@ class PersonDataclass:
     id: str
     optional: str | None
     complex: dict[str, list[dict[str, str]]]
-    pets: list[PetDataclass] | None = None
+    pets: list[PetDataclass]
 
 
 class PetPydantic(pydantic.BaseModel):
@@ -42,7 +42,7 @@ class PersonPydantic(pydantic.BaseModel):
     id: str
     optional: str | None
     complex: dict[str, list[dict[str, str]]]
-    pets: list[PetPydantic] | None = None
+    pets: list[PetPydantic] = pydantic.Field(len=1)
 
 
 def load(raw_data: dict) -> tuple[list[PersonPydantic], list[PersonDataclass]]:

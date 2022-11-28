@@ -436,32 +436,32 @@ async def async_dependencies_mixed(
 
 @get("/sync-serialize-pydantic-50")
 def sync_serialize_pydantic_50() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_50x2
+    return test_data.PERSONS_PYDANTIC_50
 
 
 @get("/sync-serialize-pydantic-100")
 def sync_serialize_pydantic_100() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_100x5
-
-
-@get("/async-serialize-pydantic-50")
-async def async_serialize_pydantic_50() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_50x2
-
-
-@get("/async-serialize-pydantic-100")
-async def async_serialize_pydantic_100() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_100x5
+    return test_data.PERSONS_PYDANTIC_100
 
 
 @get("/sync-serialize-pydantic-500")
 def sync_serialize_pydantic_500() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_500x3
+    return test_data.PERSONS_PYDANTIC_500
+
+
+@get("/async-serialize-pydantic-50")
+async def async_serialize_pydantic_50() -> list[test_data.objects.PersonPydantic]:
+    return test_data.PERSONS_PYDANTIC_50
+
+
+@get("/async-serialize-pydantic-100")
+async def async_serialize_pydantic_100() -> list[test_data.objects.PersonPydantic]:
+    return test_data.PERSONS_PYDANTIC_100
 
 
 @get("/async-serialize-pydantic-500")
 async def async_serialize_pydantic_500() -> list[test_data.objects.PersonPydantic]:
-    return test_data.PERSONS_PYDANTIC_500x3
+    return test_data.PERSONS_PYDANTIC_500
 
 
 # serialize dataclasses
@@ -469,32 +469,32 @@ async def async_serialize_pydantic_500() -> list[test_data.objects.PersonPydanti
 
 @get("/sync-serialize-dataclasses-50")
 def sync_serialize_dataclasses_50() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_PYDANTIC_50x2
+    return test_data.PERSONS_DATACLASSES_50
 
 
 @get("/sync-serialize-dataclasses-100")
 def sync_serialize_dataclasses_100() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_DATACLASSES_100x5
-
-
-@get("/async-serialize-dataclasses-50")
-async def async_serialize_dataclasses_50() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_PYDANTIC_50x2
-
-
-@get("/async-serialize-dataclasses-100")
-async def async_serialize_dataclasses_100() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_DATACLASSES_100x5
-
-
-@get("/async-serialize-dataclasses-500")
-async def async_serialize_dataclasses_500() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_DATACLASSES_500x3
+    return test_data.PERSONS_DATACLASSES_100
 
 
 @get("/sync-serialize-dataclasses-500")
 def sync_serialize_dataclasses_500() -> list[test_data.objects.PersonDataclass]:
-    return test_data.PERSONS_DATACLASSES_500x3
+    return test_data.PERSONS_DATACLASSES_500
+
+
+@get("/async-serialize-dataclasses-50")
+async def async_serialize_dataclasses_50() -> list[test_data.objects.PersonDataclass]:
+    return test_data.PERSONS_DATACLASSES_50
+
+
+@get("/async-serialize-dataclasses-100")
+async def async_serialize_dataclasses_100() -> list[test_data.objects.PersonDataclass]:
+    return test_data.PERSONS_DATACLASSES_100
+
+
+@get("/async-serialize-dataclasses-500")
+async def async_serialize_dataclasses_500() -> list[test_data.objects.PersonDataclass]:
+    return test_data.PERSONS_DATACLASSES_500
 
 
 app = Starlite(

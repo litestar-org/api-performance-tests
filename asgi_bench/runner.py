@@ -172,19 +172,20 @@ class Runner:
 
     @contextmanager
     def provide_service(self, spec: FrameworkSpec) -> Generator[bool, None, None]:
-        with self.console.status(f"  [yellow]  Starting container: {spec.image_tag}"):
+        with self.console.status(f"[yellow]  Starting container: {spec.image_tag}"):
             container = self._run_image(spec.image_tag)
 
         with self.console.status("  [yellow]Waiting for server to come online"):
             is_online = _wait_for_online()
         if not is_online:
             self.console.print("    [red]Server failed to come online")
-            yield False
-
-        yield True
-
-        with self.console.status("  [yellow]Stopping container"):
             container.stop()
+            yield False
+        else:
+            yield True
+
+            with self.console.status("  [yellow]Stopping container"):
+                container.stop()
 
     def run_benchmarks(self, framework_spec: FrameworkSpec) -> None:
         self.console.print("  [blue]Running benchmarks")

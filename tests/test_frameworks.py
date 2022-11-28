@@ -95,32 +95,32 @@ ENDPOINT_SPEC = {
         "skip": ["starlette", "sanic", "blacksheep"],
     },
     "serialize-pydantic-50": {
-        "result": {"status_code": 200, "json": test_data.PERSON_DATA_50x2},
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_50},
         "request": {},
         "skip": ["starlette", "sanic", "blacksheep"],
     },
     "serialize-pydantic-100": {
-        "result": {"status_code": 200, "json": test_data.PERSON_DATA_100x5},
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_100},
         "request": {},
         "skip": ["starlette", "sanic", "blacksheep"],
     },
     "serialize-pydantic-500": {
-        "result": {"status_code": 200, "json": test_data.PERSON_DATA_500x3},
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_500},
         "request": {},
         "skip": ["starlette", "sanic", "blacksheep"],
     },
     "serialize-dataclasses-50": {
-        "result": {"status_code": 200, "json": test_data.PERSON_DATA_50x2},
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_50},
         "request": {},
         "skip": ["starlette", "sanic", "blacksheep"],
     },
     "serialize-dataclasses-100": {
-        "result": {"status_code": 200, "json": test_data.PERSON_DATA_100x5},
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_100},
         "request": {},
         "skip": ["starlette", "sanic", "blacksheep"],
     },
     "serialize-dataclasses-500": {
-        "result": {"status_code": 200, "json": test_data.PERSON_DATA_500x3},
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_500},
         "request": {},
         "skip": ["starlette", "sanic", "blacksheep"],
     },
