@@ -71,19 +71,23 @@ def _data_for_plot(
                 for test_result in category_results:
                     error_percentage = get_error_percentage(test_result)
                     is_valid = error_percentage <= tolerance
+                    mean = (
+                        test_result["req2xx"] / test_result["timeTakenSeconds"]
+                    )  # the provided mean includes error responses
+
+                    result = {
+                        "target": framework,
+                        "name": test_result["name"],
+                        "endpoint_mode": endpoint_mode,
+                        "category": category,
+                        "mean": mean,
+                        "stddev": test_result[benchmark_mode]["stddev"] if is_valid else 0,
+                    }
+                    ret.append({**result, "score": mean, "stat": "mean"})
+
                     for percentile in percentiles:
-                        ret.append(
-                            {
-                                "target": framework,
-                                "name": test_result["name"],
-                                "endpoint_mode": endpoint_mode,
-                                "category": category,
-                                "stddev": test_result[benchmark_mode]["stddev"] if is_valid else 0,
-                                "mean": test_result[benchmark_mode]["mean"] if is_valid else 0,
-                                "score": test_result[benchmark_mode]["percentiles"][percentile] if is_valid else 0,
-                                "percentile": percentile,
-                            }
-                        )
+                        score = test_result[benchmark_mode]["percentiles"][percentile] if is_valid else 0
+                        ret.append({**result, "score": score, "stat": f"p{percentile}"})
 
     if ret:
         data = sorted(ret, key=lambda r: r["target"])
@@ -99,7 +103,6 @@ def _draw_plot(
     output_dir: Path,
     benchmark_mode: BenchmarkMode,
     formats: tuple[str, ...],
-    error_bars: bool,
     category: str | None = None,
     percentile: str | None = None,
 ):
@@ -112,10 +115,10 @@ def _draw_plot(
     df = df.query(f"category == '{category}'")
 
     if percentile:
-        df = df.query(f"percentile == '{percentile}'")
+        df = df.query(f"stat == '{percentile}'")
         percentile_count = 1
     else:
-        percentile_count = len(df["percentile"].unique())
+        percentile_count = len(df["stat"].unique())
     if df.empty:
         return
 
@@ -128,10 +131,10 @@ def _draw_plot(
         text="target",
         title=title,
         facet_col="endpoint_mode",
-        facet_row="percentile",
+        facet_row="stat",
         height=280 * percentile_count if percentile_count > 1 else None,
         width=600 if percentile_count > 1 else None,
-        labels={"score": "RPS", "endpoint_mode": "mode", "name": ""},
+        labels={"score": "RPS", "endpoint_mode": "mode", "name": "", "target": "framework"},
         # hover_data=["stddev"],
         # color_discrete_map={target: COLOR_PALETTE[i] for i, target in enumerate(df["target"].unique())},
     )
@@ -152,7 +155,6 @@ def _draw_plot(
 def make_plots(
     *,
     percentiles: tuple[str, ...],
-    error_bars: bool,
     run_number: int | None,
     formats: tuple[str, ...] = ("png",),
     split_percentiles: bool,
@@ -180,7 +182,6 @@ def make_plots(
                         output_dir=output_dir,
                         benchmark_mode=benchmark_mode,
                         formats=formats,
-                        error_bars=error_bars,
                         category=category,
                         percentile=percentile,
                     )
@@ -190,6 +191,5 @@ def make_plots(
                     output_dir=output_dir,
                     benchmark_mode=benchmark_mode,
                     formats=formats,
-                    error_bars=error_bars,
                     category=category,
                 )

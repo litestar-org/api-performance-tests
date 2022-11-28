@@ -93,16 +93,8 @@ def run(
     "-p",
     "--percentile",
     type=click.Choice(["50", "75", "90", "95", "99"]),
-    default=("50", "75", "90", "95", "99"),
+    default=(),
     multiple=True,
-)
-@click.option(
-    "-E",
-    "--no-error-bars",
-    default=False,
-    is_flag=True,
-    help="include error bars",
-    show_default=True,
 )
 @click.option("-s", "--split-percentiles", is_flag=True, help="split percentile results into separate files")
 @click.option(
@@ -112,12 +104,11 @@ def run(
     default=0.1,
     help="threshold of error responses at which a test will be considered invalid",
 )
-@click.option("-f", "--framework", multiple=True, default=None)
+@click.option("-F", "--framework", multiple=True, default=None)
 def results_command(
     run_name: int | None,
     format: tuple[str, ...],
     percentile: tuple[str, ...],
-    no_error_bars: bool,
     split_percentiles: bool,
     tolerance: float,
     framework: tuple[str, ...] | None,
@@ -126,7 +117,6 @@ def results_command(
         formats=format,
         percentiles=percentile,
         run_number=run_name,
-        error_bars=not no_error_bars,
         split_percentiles=split_percentiles,
         tolerance=tolerance,
         frameworks=framework,
