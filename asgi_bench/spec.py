@@ -18,7 +18,19 @@ class Endpoint:
     path: str
     name: str
     exclude: list[Framework] = dataclasses.field(default_factory=list)
+    exclude_sync: list[Framework] = dataclasses.field(default_factory=list)
+    exclude_async: list[Framework] = dataclasses.field(default_factory=list)
     headers: list[tuple[str, str]] = dataclasses.field(default_factory=list)
+    body_file: str | None = None
+
+    def supports_framework(self, framework: str, mode: EndpointMode) -> bool:
+        # return True
+        # return framework not in self.exclude and (mode != "sync" or framework not in self.exclude_sync)
+        if framework in self.exclude:
+            return False
+        if mode == "async":
+            return framework not in self.exclude_async
+        return framework not in self.exclude_sync
 
 
 @dataclasses.dataclass
@@ -101,6 +113,46 @@ TEST_CATEGORIES: list[TestCategory] = [
             Endpoint(path="serialize-dataclasses-500", name="serialize dataclasses, 500 objects"),
         ],
     ),
+    TestCategory(
+        name="post-json",
+        endpoints=[
+            Endpoint(
+                path="post-json",
+                name="post json, 1kB",
+                headers=[("Content-Type", "application/json")],
+                body_file="1K.json",
+                exclude_sync=["starlette", "blacksheep"],
+            ),
+            Endpoint(
+                path="post-json",
+                name="post json, 10kB",
+                headers=[("Content-Type", "application/json")],
+                body_file="10K.json",
+                exclude_sync=["starlette", "blacksheep"],
+            ),
+            Endpoint(
+                path="post-json",
+                name="post json, 100kB",
+                headers=[("Content-Type", "application/json")],
+                body_file="100K.json",
+                exclude_sync=["starlette", "blacksheep"],
+            ),
+            Endpoint(
+                path="post-json",
+                name="post json, 500kB",
+                headers=[("Content-Type", "application/json")],
+                body_file="500K.json",
+                exclude_sync=["starlette", "blacksheep"],
+            ),
+            Endpoint(
+                path="post-json",
+                name="post json, 1M",
+                headers=[("Content-Type", "application/json")],
+                body_file="1M.json",
+                exclude_sync=["starlette", "blacksheep"],
+            ),
+        ],
+    ),
 ]
 
 CATEGORIES_BY_NAME: dict[EndpointCategory, TestCategory] = {c.name: c for c in TEST_CATEGORIES}
@@ -153,7 +205,9 @@ def make_spec(
                         request_limit=request_limit or 1000 if benchmark_mode == "latency" else None,
                         rate_limit=rate_limit or 20 if benchmark_mode == "latency" else None,
                         slug_name=f"{endpoint_mode}-{endpoint.path.split('?')[0]}",
-                        is_supported=framework_name in category.frameworks and framework_name not in endpoint.exclude,
+                        is_supported=framework_name in category.frameworks
+                        and endpoint.supports_framework(framework_name, endpoint_mode),
+                        body_file=endpoint.body_file,
                     )
                     for benchmark_mode in benchmark_modes
                     for endpoint_mode in endpoint_modes

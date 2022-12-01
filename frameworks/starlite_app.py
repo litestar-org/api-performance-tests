@@ -1,7 +1,16 @@
 import time
 
 import anyio
-from starlite import Cookie, File, MediaType, Provide, ResponseHeader, Starlite, get, post
+from starlite import (
+    Cookie,
+    File,
+    MediaType,
+    Provide,
+    ResponseHeader,
+    Starlite,
+    get,
+    post,
+)
 from starlite.status_codes import HTTP_204_NO_CONTENT
 
 import test_data
@@ -510,6 +519,16 @@ async def async_post_json(data: list) -> None:
     pass
 
 
+@post("/sync-post-plaintext", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
+def sync_post_plaintext(data: str) -> None:
+    pass
+
+
+@post("/async-post-plaintext", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
+async def async_post_plaintext(data: str) -> None:
+    pass
+
+
 app = Starlite(
     route_handlers=[
         # DI sync
@@ -598,6 +617,8 @@ app = Starlite(
         # request bodies
         sync_post_json,
         async_post_json,
+        sync_post_plaintext,
+        async_post_plaintext,
     ],
     openapi_config=None,
 )

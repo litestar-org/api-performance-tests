@@ -3,3 +3,5 @@ FROM alpine:3
 RUN apk add curl && \
     curl -sSL https://github.com/codesenberg/bombardier/releases/download/v1.2.5/bombardier-linux-amd64 -o bombardier && \
     chmod +x bombardier
+
+COPY test_data/ test_data/

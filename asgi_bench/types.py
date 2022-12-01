@@ -5,7 +5,7 @@ from urllib.parse import urlparse
 
 EndpointMode = Literal["sync", "async"]
 EndpointCategory = Literal[
-    "plaintext", "json", "params", "dynamic-response", "files", "dependency-injection", "serialization"
+    "plaintext", "json", "params", "dynamic-response", "files", "dependency-injection", "serialization", "post-json"
 ]
 BenchmarkMode = Literal["rps", "latency"]
 VersionPrefix = Literal["pip", "git", "docker", "file"]
@@ -26,6 +26,7 @@ class TestSpec:
     time_limit: int | None = None
     request_limit: int | None = None
     rate_limit: int | None = None
+    body_file: str | None = None
 
     @property
     def pretty_name(self) -> str:

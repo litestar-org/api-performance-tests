@@ -2,7 +2,6 @@ from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import FileResponse, JSONResponse, PlainTextResponse, Response
 from starlette.status import HTTP_204_NO_CONTENT
-import anyio
 
 import test_data
 

@@ -39,6 +39,9 @@ def _args_from_spec(test_spec: TestSpec) -> list[str]:
         args.append(f"--requests={request_limit}")
     if duration := test_spec.time_limit:
         args.append(f"--duration={duration}s")
+    if body_file := test_spec.body_file:
+        args.append(f"--body-file=test_data/{body_file}")
+        args.append("--method=POST")
     return args
 
 
