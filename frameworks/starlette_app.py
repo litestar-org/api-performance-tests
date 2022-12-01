@@ -2,6 +2,7 @@ from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import FileResponse, JSONResponse, PlainTextResponse, Response
 from starlette.status import HTTP_204_NO_CONTENT
+import anyio
 
 import test_data
 
@@ -306,3 +307,12 @@ def sync_file_response_1m(request: Request) -> FileResponse:
 @app.route("/sync-file-response-5M")
 def sync_file_response_5m(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_5M, filename="response_file")
+
+
+# request body json
+
+
+@app.route("/async-post-json", methods=["POST"])
+async def async_post_json(request: Request) -> Response:
+    data = await request.json()
+    return Response(status_code=HTTP_204_NO_CONTENT)

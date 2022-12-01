@@ -359,3 +359,12 @@ async def async_dependencies_sync(
     injected_sync_three: SyncDependencyThree,
 ) -> Response:
     return json(injected_sync_three.value)
+
+
+# request body json
+
+
+@app.router.post("/async-post-json")
+async def async_post_json(request: Request) -> Response:
+    data = await request.json()
+    return no_content()

@@ -1,7 +1,7 @@
 import time
 
 import anyio
-from starlite import Cookie, File, MediaType, Provide, ResponseHeader, Starlite, get
+from starlite import Cookie, File, MediaType, Provide, ResponseHeader, Starlite, get, post
 from starlite.status_codes import HTTP_204_NO_CONTENT
 
 import test_data
@@ -497,6 +497,19 @@ async def async_serialize_dataclasses_500() -> list[test_data.objects.PersonData
     return test_data.PERSONS_DATACLASSES_500
 
 
+# request body json
+
+
+@post("/sync-post-json", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
+def sync_post_json(data: list) -> None:
+    pass
+
+
+@post("/async-post-json", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
+async def async_post_json(data: list) -> None:
+    pass
+
+
 app = Starlite(
     route_handlers=[
         # DI sync
@@ -582,6 +595,9 @@ app = Starlite(
         async_serialize_dataclasses_50,
         async_serialize_dataclasses_500,
         sync_serialize_dataclasses_500,
+        # request bodies
+        sync_post_json,
+        async_post_json,
     ],
     openapi_config=None,
 )

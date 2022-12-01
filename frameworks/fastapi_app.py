@@ -474,3 +474,16 @@ async def async_serialize_dataclasses_100() -> list[test_data.objects.PersonData
 @app.get("/async-serialize-dataclasses-500", response_model=list[test_data.objects.PersonDataclass])
 async def async_serialize_dataclasses_500() -> list[test_data.objects.PersonDataclass]:
     return test_data.PERSONS_DATACLASSES_500
+
+
+# request body json
+
+
+@app.post("/sync-post-json")
+def sync_post_json(data: list) -> Response:
+    return Response(status_code=HTTP_204_NO_CONTENT)
+
+
+@app.post("/async-post-json")
+async def async_post_json(data: list) -> Response:
+    return Response(status_code=HTTP_204_NO_CONTENT)

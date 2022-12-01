@@ -351,3 +351,18 @@ async def async_dependencies_sync(
     injected_sync_three: SyncDependencyThree,
 ) -> HTTPResponse:
     return json(injected_sync_three.value)
+
+
+# request body json
+
+
+@app.post("/sync-post-json")
+def sync_post_json(request: Request) -> HTTPResponse:
+    data = request.json
+    return empty()
+
+
+@app.post("/async-post-json")
+async def async_post_json(request: Request) -> HTTPResponse:
+    data = request.json
+    return empty()
