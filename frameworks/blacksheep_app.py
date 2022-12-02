@@ -1,15 +1,7 @@
 import time
 
 import anyio
-from blacksheep import (
-    Application,
-    Cookie,
-    FromForm,
-    Request,
-    Response,
-    json,
-    text,
-)
+from blacksheep import Application, Cookie, FromForm, Request, Response, json, text
 from blacksheep.server.responses import file, no_content
 
 import test_data

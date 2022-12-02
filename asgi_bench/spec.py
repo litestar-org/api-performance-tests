@@ -3,6 +3,8 @@ from collections import defaultdict
 from pathlib import Path
 from typing import cast
 
+import test_data
+
 from .types import (
     BenchmarkMode,
     EndpointCategory,
@@ -151,6 +153,18 @@ TEST_CATEGORIES: list[TestCategory] = [
                 body_file="1M.json",
                 exclude_sync=["starlette", "blacksheep"],
             ),
+        ],
+    ),
+    TestCategory(
+        name="post-form-multipart",
+        endpoints=[
+            Endpoint(
+                path="post-multipart-form",
+                name="post form, multipart, 1K",
+                headers=list(test_data.MULTIPART_1K_HEADERS.items()),
+                body_file="MULTIPART_1K",
+                exclude_sync=["starlette", "fastapi", "blacksheep"],
+            )
         ],
     ),
 ]

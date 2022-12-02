@@ -5,7 +5,15 @@ from urllib.parse import urlparse
 
 EndpointMode = Literal["sync", "async"]
 EndpointCategory = Literal[
-    "plaintext", "json", "params", "dynamic-response", "files", "dependency-injection", "serialization", "post-json"
+    "plaintext",
+    "json",
+    "params",
+    "dynamic-response",
+    "files",
+    "dependency-injection",
+    "serialization",
+    "post-json",
+    "post-form-multipart",
 ]
 BenchmarkMode = Literal["rps", "latency"]
 VersionPrefix = Literal["pip", "git", "docker", "file"]

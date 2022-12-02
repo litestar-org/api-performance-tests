@@ -42,5 +42,5 @@ PERSONS_PYDANTIC_50, PERSONS_DATACLASSES_50 = objects.load(PERSON_DATA_50)
 PERSONS_PYDANTIC_100, PERSONS_DATACLASSES_100 = objects.load(PERSON_DATA_100)
 PERSONS_PYDANTIC_500, PERSONS_DATACLASSES_500 = objects.load(PERSON_DATA_500)
 
-MULTIPART_1K_HEADERS = json.loads((data_path / "MULTIPART_HEADERS.json").read_text())
-MULTIPART_1K = (data_path / "MULTIPART").read_bytes()
+MULTIPART_1K_HEADERS = json.loads((data_path / "MULTIPART_1K_HEADERS.json").read_text())
+MULTIPART_1K = (data_path / "MULTIPART_1K").read_bytes()
