@@ -315,3 +315,12 @@ def sync_file_response_5m(request: Request) -> FileResponse:
 async def async_post_json(request: Request) -> Response:
     data = await request.json()
     return Response(status_code=HTTP_204_NO_CONTENT)
+
+
+# request body multipart
+
+
+@app.route("/async-post-multipart-form", methods=["POST"])
+async def async_post_multipart_form(request: Request) -> Response:
+    data = await request.form()
+    return Response(status_code=HTTP_204_NO_CONTENT)

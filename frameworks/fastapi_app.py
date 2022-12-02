@@ -3,6 +3,7 @@ import time
 import anyio
 from fastapi import Depends, FastAPI, Response
 from fastapi.responses import FileResponse, PlainTextResponse
+from starlette.requests import Request
 from starlette.status import HTTP_204_NO_CONTENT
 
 import test_data
@@ -479,11 +480,20 @@ async def async_serialize_dataclasses_500() -> list[test_data.objects.PersonData
 # request body json
 
 
-@app.post("/sync-post-json")
+@app.post("/sync-post-json", status_code=HTTP_204_NO_CONTENT)
 def sync_post_json(data: list) -> Response:
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@app.post("/async-post-json")
+@app.post("/async-post-json", status_code=HTTP_204_NO_CONTENT)
 async def async_post_json(data: list) -> Response:
+    return Response(status_code=HTTP_204_NO_CONTENT)
+
+
+# request body multipart
+
+
+@app.post("/async-post-multipart-form", status_code=HTTP_204_NO_CONTENT)
+async def async_post_multipart_form(request: Request) -> Response:
+    data = await request.form()
     return Response(status_code=HTTP_204_NO_CONTENT)

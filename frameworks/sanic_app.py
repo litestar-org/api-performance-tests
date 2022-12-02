@@ -366,3 +366,18 @@ def sync_post_json(request: Request) -> HTTPResponse:
 async def async_post_json(request: Request) -> HTTPResponse:
     data = request.json
     return empty()
+
+
+# request body multipart
+
+
+@app.post("/sync-post-multipart-form")
+def sync_post_multipart_form(request: Request) -> HTTPResponse:
+    data = request.form
+    return empty()
+
+
+@app.post("/async-post-multipart-form")
+async def async_post_multipart_form(request: Request) -> HTTPResponse:
+    data = request.form
+    return empty()

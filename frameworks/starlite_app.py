@@ -2,10 +2,12 @@ import time
 
 import anyio
 from starlite import (
+    Body,
     Cookie,
     File,
     MediaType,
     Provide,
+    RequestEncodingType,
     ResponseHeader,
     Starlite,
     get,
@@ -519,13 +521,16 @@ async def async_post_json(data: list) -> None:
     pass
 
 
-@post("/sync-post-plaintext", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
-def sync_post_plaintext(data: str) -> None:
+# request body multipart
+
+
+@post("/sync-post-multipart-form", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
+def sync_post_multipart_form(data: dict = Body(media_type=RequestEncodingType.MULTI_PART)) -> None:
     pass
 
 
-@post("/async-post-plaintext", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
-async def async_post_plaintext(data: str) -> None:
+@post("/async-post-multipart-form", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
+async def async_post_multipart_form(data: dict = Body(media_type=RequestEncodingType.MULTI_PART)) -> None:
     pass
 
 
@@ -617,8 +622,8 @@ app = Starlite(
         # request bodies
         sync_post_json,
         async_post_json,
-        sync_post_plaintext,
-        async_post_plaintext,
+        sync_post_multipart_form,
+        async_post_multipart_form,
     ],
     openapi_config=None,
 )

@@ -1,7 +1,15 @@
 import time
 
 import anyio
-from blacksheep import Application, Cookie, Request, Response, json, text
+from blacksheep import (
+    Application,
+    Cookie,
+    FromForm,
+    Request,
+    Response,
+    json,
+    text,
+)
 from blacksheep.server.responses import file, no_content
 
 import test_data
@@ -367,4 +375,17 @@ async def async_dependencies_sync(
 @app.router.post("/async-post-json")
 async def async_post_json(request: Request) -> Response:
     data = await request.json()
+    return no_content()
+
+
+# request body multipart
+
+
+@app.router.post("/async-post-multipart-form")
+async def async_post_multipart_form(request: Request, data: FromForm) -> Response:
+    return no_content()
+
+
+@app.router.post("/sync-post-multipart-form")
+def sync_post_multipart_form(request: Request, data: FromForm) -> Response:
     return no_content()

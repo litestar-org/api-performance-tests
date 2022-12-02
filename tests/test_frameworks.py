@@ -124,10 +124,29 @@ ENDPOINT_SPEC = {
         "request": {},
         "skip": ["starlette", "sanic", "blacksheep"],
     },
+    "post-json": {
+        "result": {"status_code": 204},
+        "request": {"json": test_data.JSON_1K, "method": "POST"},
+        "skip-sync": ["starlette", "blacksheep"],
+    },
+    "post-multipart-form": {
+        "result": {"status_code": 204},
+        "request": {"content": test_data.MULTIPART_1K, "headers": test_data.MULTIPART_1K_HEADERS, "method": "POST"},
+        "skip-sync": ["starlette", "fastapi", "blacksheep"],
+    },
 }
 
 
-@pytest.fixture(params=["starlite", "starlette", "fastapi", "sanic", "blacksheep"], scope="session")
+@pytest.fixture(
+    params=[
+        "starlite",
+        "starlette",
+        "fastapi",
+        "sanic",
+        "blacksheep",
+    ],
+    scope="session",
+)
 def framework(request):
     framework_name = request.param
     module = getattr(frameworks, f"{framework_name}_app")
@@ -140,11 +159,18 @@ def framework(request):
 def test_framework(framework: str, path: str, endpoint_type: str) -> None:
     spec = ENDPOINT_SPEC[path]
 
-    if framework in spec.get("skip", []):
+    skip = spec.get("skip", [])
+    if endpoint_type == "async":
+        skip.extend(spec.get("skip-async", []))
+    else:
+        skip.extend(spec.get("skip-sync", []))
+
+    if framework in skip:
         pytest.skip()
 
     url = f"http://127.0.0.1:8181/{endpoint_type}-{path}"
-    res = httpx.get(url, **spec.get("request", {}))
+    request = {"url": url, "method": "GET", **spec.get("request", {})}
+    res = httpx.request(**request)
 
     assert res.status_code == spec["result"]["status_code"]
     if expect_bytes := spec["result"].get("bytes"):
