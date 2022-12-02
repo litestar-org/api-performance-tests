@@ -124,17 +124,17 @@ To select a framework, simply pass its name to the `run command`:
 
 #### Test Settings
 
-|                                                                                                                                         |                                                                 |
-| --------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
-| -r, --rebuild                                                                                                                           | rebuild docker images                                           |
-| -L, --latency                                                                                                                           | run latency tests                                               |
-| -R, --rps                                                                                                                               | run RPS tests                                                   |
-| -w, --warmup                                                                                                                            | duration of the warmup period (default: 5s)                     |
-| -e, --endpoint mode [sync&#124;async]                                                                                                   | endpoint types to select (default: sync, async)                 |
-| -c, --endpoint-category [plaintext&#124;json&#124;files&#124;params&#124;dynamic-response&#124;dependency-injection&#124;serialization] | test types to select (default: all)                             |
-| -d, --duration                                                                                                                          | duration of the rps benchmarks (default: 15s)                   |
-| -l, --limit                                                                                                                             | max requests per second for latency benchmarks (default: 20)    |
-| -r, --requests                                                                                                                          | total number of requests for latency benchmarks (default: 1000) |
+|                                                                                                                                                                       |                                                                 |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| -r, --rebuild                                                                                                                                                         | rebuild docker images                                           |
+| -L, --latency                                                                                                                                                         | run latency tests                                               |
+| -R, --rps                                                                                                                                                             | run RPS tests                                                   |
+| -w, --warmup                                                                                                                                                          | duration of the warmup period (default: 5s)                     |
+| -e, --endpoint mode [sync&#124;async]                                                                                                                                 | endpoint types to select (default: sync, async)                 |
+| -c, --endpoint-category [plaintext&#124;json&#124;files&#124;params&#124;dynamic-response&#124;dependency-injection&#124;serialization&#124;post-json&#124;post-body] | test types to select (default: all)                             |
+| -d, --duration                                                                                                                                                        | duration of the rps benchmarks (default: 15s)                   |
+| -l, --limit                                                                                                                                                           | max requests per second for latency benchmarks (default: 20)    |
+| -r, --requests                                                                                                                                                        | total number of requests for latency benchmarks (default: 1000) |
 
 ### Analyzing the results
 
