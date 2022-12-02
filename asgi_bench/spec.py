@@ -231,8 +231,10 @@ def make_spec(
                         request_limit=request_limit or 1000 if benchmark_mode == "latency" else None,
                         rate_limit=rate_limit or 20 if benchmark_mode == "latency" else None,
                         slug_name=f"{endpoint_mode}-{endpoint.path.split('?')[0]}",
-                        is_supported=framework_name in category.frameworks
-                        and endpoint.supports_framework(framework_name, endpoint_mode),
+                        is_supported=(
+                            framework_name in category.frameworks
+                            and endpoint.supports_framework(framework_name, endpoint_mode)  # noqa: W503
+                        ),
                         body_file=endpoint.body_file,
                     )
                     for benchmark_mode in benchmark_modes

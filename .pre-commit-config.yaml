@@ -33,12 +33,6 @@ repos:
     hooks:
       - id: prettier
         exclude: "test_data*"
-  - repo: https://github.com/pycqa/bandit
-    rev: 1.7.4
-    hooks:
-      - id: bandit
-        exclude: "test_*"
-        args: ["-iii", "-ll", "-s=B308,B703"]
   - repo: https://github.com/hadialqattan/pycln
     rev: v2.1.2
     hooks:
@@ -56,6 +50,7 @@ repos:
             "flake8-print",
             "flake8-simplify",
           ]
+        exclude: "frameworks*"
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: "v0.991"
     hooks:

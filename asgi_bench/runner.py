@@ -165,10 +165,7 @@ class Runner:
                 "--print=result",
                 *_args_from_spec(test_spec),
             )
-        try:
-            results = json.loads(res)
-        except:
-            breakpoint()
+        results = json.loads(res)
         error_percentage = get_error_percentage(results["result"])
         if error_percentage:
             self.console.print(f"    [red][Error][/red] {test_spec.pretty_name} with errors ({error_percentage}%)")

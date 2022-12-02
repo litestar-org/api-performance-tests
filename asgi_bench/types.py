@@ -12,6 +12,7 @@ EndpointCategory = Literal[
     "files",
     "dependency-injection",
     "serialization",
+    "post-json",
     "post-body",
 ]
 BenchmarkMode = Literal["rps", "latency"]
