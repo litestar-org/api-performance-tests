@@ -167,6 +167,18 @@ TEST_CATEGORIES: list[TestCategory] = [
             )
         ],
     ),
+    TestCategory(
+        name="post-form-urlencoded",
+        endpoints=[
+            Endpoint(
+                path="post-form-urlencoded",
+                name="post form, urlencoded, 1K",
+                headers=list(test_data.FORM_URLENCODED_1K_HEADERS.items()),
+                body_file="FORM_URLENCODED_1K",
+                exclude_sync=["starlette", "fastapi"],
+            )
+        ],
+    ),
 ]
 
 CATEGORIES_BY_NAME: dict[EndpointCategory, TestCategory] = {c.name: c for c in TEST_CATEGORIES}

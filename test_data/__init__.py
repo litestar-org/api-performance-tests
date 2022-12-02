@@ -44,3 +44,6 @@ PERSONS_PYDANTIC_500, PERSONS_DATACLASSES_500 = objects.load(PERSON_DATA_500)
 
 MULTIPART_1K_HEADERS = json.loads((data_path / "MULTIPART_1K_HEADERS.json").read_text())
 MULTIPART_1K = (data_path / "MULTIPART_1K").read_bytes()
+
+FORM_URLENCODED_1K = (data_path / "FORM_URLENCODED_1K").read_bytes()
+FORM_URLENCODED_1K_HEADERS = json.loads((data_path / "FORM_URLENCODED_1K_HEADERS.json").read_text())

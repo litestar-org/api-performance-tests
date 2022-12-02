@@ -381,3 +381,16 @@ async def async_post_multipart_form(request: Request, data: FromForm) -> Respons
 @app.router.post("/sync-post-multipart-form")
 def sync_post_multipart_form(request: Request, data: FromForm) -> Response:
     return no_content()
+
+
+# form urlencoded
+
+
+@app.router.post("/async-post-form-urlencoded")
+async def async_post_form_urlencoded(request: Request, data: FromForm) -> Response:
+    return no_content()
+
+
+@app.router.post("/sync-post-form-urlencoded")
+def sync_post_form_urlencoded(request: Request, data: FromForm) -> Response:
+    return no_content()

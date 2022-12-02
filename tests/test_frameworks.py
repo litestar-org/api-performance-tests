@@ -134,6 +134,15 @@ ENDPOINT_SPEC = {
         "request": {"content": test_data.MULTIPART_1K, "headers": test_data.MULTIPART_1K_HEADERS, "method": "POST"},
         "skip-sync": ["starlette", "fastapi", "blacksheep"],
     },
+    "post-form-urlencoded": {
+        "result": {"status_code": 204},
+        "request": {
+            "method": "POST",
+            "content": test_data.FORM_URLENCODED_1K,
+            "headers": test_data.FORM_URLENCODED_1K_HEADERS,
+        },
+        "skip-sync": ["starlette", "fastapi"],
+    },
 }
 
 

@@ -497,3 +497,18 @@ async def async_post_json(data: list) -> Response:
 async def async_post_multipart_form(request: Request) -> Response:
     data = await request.form()
     return Response(status_code=HTTP_204_NO_CONTENT)
+
+
+@app.post("/async-post-multipart-form", status_code=HTTP_204_NO_CONTENT)
+async def async_post_multipart_form(request: Request) -> Response:
+    data = await request.form()
+    return Response(status_code=HTTP_204_NO_CONTENT)
+
+
+# form urlencoded
+
+
+@app.post("/async-post-form-urlencoded", status_code=HTTP_204_NO_CONTENT)
+async def async_post_form_urlencoded(request: Request) -> Response:
+    data = await request.form()
+    return Response(status_code=HTTP_204_NO_CONTENT)

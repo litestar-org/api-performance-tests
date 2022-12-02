@@ -14,6 +14,7 @@ EndpointCategory = Literal[
     "serialization",
     "post-json",
     "post-form-multipart",
+    "post-form-urlencoded",
 ]
 BenchmarkMode = Literal["rps", "latency"]
 VersionPrefix = Literal["pip", "git", "docker", "file"]

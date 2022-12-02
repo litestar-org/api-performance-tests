@@ -534,6 +534,19 @@ async def async_post_multipart_form(data: dict = Body(media_type=RequestEncoding
     pass
 
 
+# form urlencoded
+
+
+@post("/sync-post-form-urlencoded", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
+def sync_post_form_urlencoded(data: dict = Body(media_type=RequestEncodingType.URL_ENCODED)) -> None:
+    pass
+
+
+@post("/async-post-form-urlencoded", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
+async def async_post_form_urlencoded(data: dict = Body(media_type=RequestEncodingType.URL_ENCODED)) -> None:
+    pass
+
+
 app = Starlite(
     route_handlers=[
         # DI sync
@@ -624,6 +637,8 @@ app = Starlite(
         async_post_json,
         sync_post_multipart_form,
         async_post_multipart_form,
+        sync_post_form_urlencoded,
+        async_post_form_urlencoded,
     ],
     openapi_config=None,
 )

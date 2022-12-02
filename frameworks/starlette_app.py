@@ -324,3 +324,12 @@ async def async_post_json(request: Request) -> Response:
 async def async_post_multipart_form(request: Request) -> Response:
     data = await request.form()
     return Response(status_code=HTTP_204_NO_CONTENT)
+
+
+# form urlencoded
+
+
+@app.route("/async-post-form-urlencoded", methods=["POST"])
+async def async_post_form_urlencoded(request: Request) -> Response:
+    data = await request.form()
+    return Response(status_code=HTTP_204_NO_CONTENT)

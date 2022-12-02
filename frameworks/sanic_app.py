@@ -381,3 +381,18 @@ def sync_post_multipart_form(request: Request) -> HTTPResponse:
 async def async_post_multipart_form(request: Request) -> HTTPResponse:
     data = request.form
     return empty()
+
+
+# form urlencoded
+
+
+@app.post("/sync-post-form-urlencoded")
+def sync_post_form_urlencoded(request: Request) -> HTTPResponse:
+    data = request.form
+    return empty()
+
+
+@app.post("/async-post-form-urlencoded")
+async def async_post_form_urlencoded(request: Request) -> HTTPResponse:
+    data = request.form
+    return empty()
