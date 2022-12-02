@@ -10,6 +10,7 @@ from starlite import (
     RequestEncodingType,
     ResponseHeader,
     Starlite,
+    UploadFile,
     get,
     post,
 )
@@ -547,6 +548,19 @@ async def async_post_form_urlencoded(data: dict = Body(media_type=RequestEncodin
     pass
 
 
+# upload files
+
+
+@post("/sync-post-file", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
+def sync_post_file(data: UploadFile = Body(media_type=RequestEncodingType.MULTI_PART)) -> None:
+    content = data.file.read()
+
+
+@post("/async-post-file", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
+async def async_post_file(data: UploadFile = Body(media_type=RequestEncodingType.MULTI_PART)) -> None:
+    content = await data.read()
+
+
 app = Starlite(
     route_handlers=[
         # DI sync
@@ -639,6 +653,8 @@ app = Starlite(
         async_post_multipart_form,
         sync_post_form_urlencoded,
         async_post_form_urlencoded,
+        sync_post_file,
+        async_post_file,
     ],
     openapi_config=None,
 )

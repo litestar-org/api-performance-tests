@@ -12,9 +12,7 @@ EndpointCategory = Literal[
     "files",
     "dependency-injection",
     "serialization",
-    "post-json",
-    "post-form-multipart",
-    "post-form-urlencoded",
+    "post-body",
 ]
 BenchmarkMode = Literal["rps", "latency"]
 VersionPrefix = Literal["pip", "git", "docker", "file"]

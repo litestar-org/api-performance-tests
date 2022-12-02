@@ -47,3 +47,5 @@ MULTIPART_1K = (data_path / "MULTIPART_1K").read_bytes()
 
 FORM_URLENCODED_1K = (data_path / "FORM_URLENCODED_1K").read_bytes()
 FORM_URLENCODED_1K_HEADERS = json.loads((data_path / "FORM_URLENCODED_1K_HEADERS.json").read_text())
+
+FILE_UPLOAD_1K_HEADERS = json.loads((data_path / "FILE_UPLOAD_1K_HEADERS.json").read_text())

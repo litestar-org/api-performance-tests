@@ -26,8 +26,6 @@ class Endpoint:
     body_file: str | None = None
 
     def supports_framework(self, framework: str, mode: EndpointMode) -> bool:
-        # return True
-        # return framework not in self.exclude and (mode != "sync" or framework not in self.exclude_sync)
         if framework in self.exclude:
             return False
         if mode == "async":
@@ -156,7 +154,7 @@ TEST_CATEGORIES: list[TestCategory] = [
         ],
     ),
     TestCategory(
-        name="post-form-multipart",
+        name="post-body",
         endpoints=[
             Endpoint(
                 path="post-multipart-form",
@@ -164,19 +162,21 @@ TEST_CATEGORIES: list[TestCategory] = [
                 headers=list(test_data.MULTIPART_1K_HEADERS.items()),
                 body_file="MULTIPART_1K",
                 exclude_sync=["starlette", "fastapi", "blacksheep"],
-            )
-        ],
-    ),
-    TestCategory(
-        name="post-form-urlencoded",
-        endpoints=[
+            ),
             Endpoint(
                 path="post-form-urlencoded",
                 name="post form, urlencoded, 1K",
                 headers=list(test_data.FORM_URLENCODED_1K_HEADERS.items()),
                 body_file="FORM_URLENCODED_1K",
                 exclude_sync=["starlette", "fastapi"],
-            )
+            ),
+            Endpoint(
+                path="post-file",
+                name="post file, 1K",
+                body_file="FILE_UPLOAD_1K",
+                headers=list(test_data.FILE_UPLOAD_1K_HEADERS.items()),
+                exclude_sync=["starlette"],
+            ),
         ],
     ),
 ]

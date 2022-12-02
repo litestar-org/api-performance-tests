@@ -333,3 +333,13 @@ async def async_post_multipart_form(request: Request) -> Response:
 async def async_post_form_urlencoded(request: Request) -> Response:
     data = await request.form()
     return Response(status_code=HTTP_204_NO_CONTENT)
+
+
+# upload files
+
+
+@app.route("/async-post-file", methods=["POST"])
+async def async_post_file(request: Request) -> Response:
+    form = await request.form()
+    content = await form["test_file"].read()
+    return Response(status_code=HTTP_204_NO_CONTENT)

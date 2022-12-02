@@ -1,7 +1,7 @@
 import time
 
 import anyio
-from fastapi import Depends, FastAPI, Response
+from fastapi import Depends, FastAPI, Response, UploadFile
 from fastapi.responses import FileResponse, PlainTextResponse
 from starlette.requests import Request
 from starlette.status import HTTP_204_NO_CONTENT
@@ -511,4 +511,19 @@ async def async_post_multipart_form(request: Request) -> Response:
 @app.post("/async-post-form-urlencoded", status_code=HTTP_204_NO_CONTENT)
 async def async_post_form_urlencoded(request: Request) -> Response:
     data = await request.form()
+    return Response(status_code=HTTP_204_NO_CONTENT)
+
+
+# upload files
+
+
+@app.post("/sync-post-file")
+def sync_post_file(test_file: UploadFile) -> Response:
+    content = test_file.file.read()
+    return Response(status_code=HTTP_204_NO_CONTENT)
+
+
+@app.post("/async-post-file")
+async def async_post_file(test_file: UploadFile) -> Response:
+    content = await test_file.read()
     return Response(status_code=HTTP_204_NO_CONTENT)

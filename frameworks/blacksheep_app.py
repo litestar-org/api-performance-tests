@@ -1,7 +1,16 @@
 import time
 
 import anyio
-from blacksheep import Application, Cookie, FromForm, Request, Response, json, text
+from blacksheep import (
+    Application,
+    Cookie,
+    FromFiles,
+    FromForm,
+    Request,
+    Response,
+    json,
+    text,
+)
 from blacksheep.server.responses import file, no_content
 
 import test_data
@@ -393,4 +402,19 @@ async def async_post_form_urlencoded(request: Request, data: FromForm) -> Respon
 
 @app.router.post("/sync-post-form-urlencoded")
 def sync_post_form_urlencoded(request: Request, data: FromForm) -> Response:
+    return no_content()
+
+
+# upload files
+
+
+@app.router.post("/sync-post-file")
+def sync_post_file(request: Request, data: FromFiles) -> Response:
+    content = data.value[0].data
+    return no_content()
+
+
+@app.router.post("/async-post-file")
+async def async_post_file(request: Request, data: FromFiles) -> Response:
+    content = data.value[0].data
     return no_content()

@@ -396,3 +396,18 @@ def sync_post_form_urlencoded(request: Request) -> HTTPResponse:
 async def async_post_form_urlencoded(request: Request) -> HTTPResponse:
     data = request.form
     return empty()
+
+
+# upload files
+
+
+@app.post("/sync-post-file")
+def sync_post_file(request: Request) -> HTTPResponse:
+    content = request.files.get("test_file").body
+    return empty()
+
+
+@app.post("/async-post-file")
+async def async_post_file(request: Request) -> HTTPResponse:
+    content = request.files.get("test_file").body
+    return empty()
