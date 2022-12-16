@@ -45,14 +45,14 @@ def _args_from_spec(test_spec: TestSpec) -> list[str]:
     return args
 
 
-def _wait_for_online(attempts: int = 5) -> bool:
+def _wait_for_online(attempts: int = 50) -> bool:
     for _ in range(attempts):
         try:
             res = httpx.get(f"http://127.0.0.1:{SERVER_PORT}/sync-no-params", timeout=1)
             if res.status_code == 204:
                 return True
         except httpx.HTTPError:
-            time.sleep(1)
+            time.sleep(0.5)
     return False
 
 
@@ -68,6 +68,7 @@ class Runner:
         request_limit: int | None = None,
         rate_limit: int | None = None,
         benchmark_modes: tuple[BenchmarkMode, ...] | BenchmarkMode,
+        test_name: str | None = None,
     ) -> None:
         self.docker_client = docker.from_env()
         self.console = Console()
@@ -91,6 +92,7 @@ class Runner:
             time_limit=time_limit,
             benchmark_modes=benchmark_modes,
             warmup_time=warmup_time,
+            test_name=test_name,
         )
         atexit.register(self._stop_all_containers)
 
@@ -129,7 +131,7 @@ class Runner:
     def _run_image(self, image: str) -> Container:
         for container in self.docker_client.containers.list(ignore_removed=True):
             if image in container.image.tags:
-                container.stop()
+                container.kill()
         return self.docker_client.containers.run(image=image, ports={SERVER_PORT: SERVER_PORT}, detach=True)
 
     def _run_bench_in_container(self, *args: str) -> str:
@@ -143,7 +145,7 @@ class Runner:
         with self.console.status("[yellow]Stopping running containers"):
             for container in self.docker_client.containers.list(ignore_removed=True):
                 if any(tag.startswith("starlite-api-bench:") for tag in container.image.tags):
-                    container.stop()
+                    container.kill()
 
     def run_benchmark(self, test_spec: TestSpec) -> dict[str, Any]:
         if test_spec.warmup_time:
@@ -182,13 +184,13 @@ class Runner:
             is_online = _wait_for_online()
         if not is_online:
             self.console.print("    [red]Server failed to come online")
-            container.stop()
+            container.kill()
             yield False
         else:
             yield True
 
             with self.console.status("  [yellow]Stopping container"):
-                container.stop()
+                container.kill()
 
     def run_benchmarks(self, framework_spec: FrameworkSpec) -> None:
         self.console.print("  [blue]Running benchmarks")
