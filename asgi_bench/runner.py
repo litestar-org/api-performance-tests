@@ -10,6 +10,7 @@ import docker
 import httpx
 from docker.models.containers import Container
 from rich.console import Console
+from rich.table import Table
 
 from .spec import make_spec
 from .types import (
@@ -97,16 +98,22 @@ class Runner:
         atexit.register(self._stop_all_containers)
 
     def print_suite_config(self) -> None:
-        self.console.print(f"Benchmark modes: [magenta]{','.join(self._benchmark_modes)}")
+        table = Table(show_header=False)
+        table.add_column("", style="cyan")
+        table.add_column("", style="magenta")
+
+        table.add_row("Benchmark modes", ",".join(self._benchmark_modes))
         if "rps" in self._benchmark_modes:
-            self.console.print(f"RPS benchmarks duration: {self._time_limit} seconds")
+            table.add_row("RPS benchmarks duration", f"{self._time_limit} seconds")
         if "latency" in self._benchmark_modes:
-            self.console.print(f"Latency benchmarks RPS limit: {self._rate_limit}")
-            self.console.print(f"Latency benchmarks requests limit: {self._request_limit}")
-        self.console.print(f"Warmup time: [magenta]{self._warmup_time} seconds")
-        self.console.print(f"Endpoint modes: [magenta]{', '.join(self._endpoint_modes)}")
-        self.console.print(f"Endpoint categories: [magenta]{', '.join(self._categories)}")
-        self.console.print(f"Frameworks: [magenta]{', '.join(f.version_name for f in self.specs)}")
+            table.add_row("Latency benchmarks RPS limit", self._rate_limit)
+            table.add_row("Latency benchmarks requests limit", self._request_limit)
+        table.add_row("Warmup time", f"{self._warmup_time} seconds")
+        table.add_row("Endpoint modes", ", ".join(self._endpoint_modes))
+        table.add_row("Endpoint categories", ", ".join(self._categories))
+        table.add_row("Frameworks", ", ".join(f.version_name for f in self.specs))
+
+        self.console.print(table)
 
     def _init_results_file(self) -> Path:
         self.results_dir.mkdir(exist_ok=True)
