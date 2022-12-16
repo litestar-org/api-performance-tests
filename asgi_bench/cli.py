@@ -40,6 +40,7 @@ def cli() -> None:
     show_default=True,
     help="endpoint category",
 )
+@click.option("-t", "--test", help="run a specific test", default=None)
 def run(
     frameworks: tuple[str, ...],
     rebuild: bool,
@@ -51,6 +52,7 @@ def run(
     duration: int,
     endpoint_mode: tuple[EndpointMode, ...],
     endpoint_category: tuple[EndpointCategory, ...],
+    test: str | None = None,
 ) -> None:
     if not frameworks:
         frameworks = FRAMEWORKS
@@ -59,6 +61,10 @@ def run(
         benchmark_modes = ("rps",)
     if latency:
         benchmark_modes = (*benchmark_modes, "latency")
+
+    if test and ":" in test:
+        category, test = test.split(":")
+        endpoint_category = (category,)  # type: ignore[assignment]
 
     runner = Runner(
         frameworks=frameworks,
@@ -69,6 +75,7 @@ def run(
         time_limit=duration,
         benchmark_modes=benchmark_modes,
         warmup_time=warmup,
+        test_name=test,
     )
 
     runner.print_suite_config()

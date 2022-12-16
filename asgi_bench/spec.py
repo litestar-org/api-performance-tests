@@ -195,6 +195,7 @@ def make_spec(
     request_limit: int | None = None,
     rate_limit: int | None = None,
     benchmark_modes: tuple[BenchmarkMode, ...] | BenchmarkMode,
+    test_name: str | None = None,
 ) -> list[FrameworkSpec]:
     if isinstance(endpoint_modes, str):
         endpoint_modes = (endpoint_modes,)
@@ -241,6 +242,7 @@ def make_spec(
                     for endpoint_mode in endpoint_modes
                     for category in selected_categories
                     for endpoint in category.endpoints
+                    if not test_name or endpoint.path == test_name
                 ]
                 framework_specs.append(
                     FrameworkSpec(

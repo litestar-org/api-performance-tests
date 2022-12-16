@@ -93,7 +93,7 @@ All responses return "No Content"
 - Setting response headers
 - Setting response cookies
 
-## Executing the Tests
+## Running the tests
 
 ### Prerequisites
 
@@ -121,6 +121,12 @@ To select a framework, simply pass its name to the `run command`:
 - A version from git: `bench run --rps starlite@git+branch_or_tag_name`
 - A version from a specific git repository: `bench run --rps starlite@git+https://github.com/starlite-api/starlite.git@branch_or_tag_name`
 - A local file: `bench run --rps starlite@file+/path/to/starlite`
+
+#### Running a specific test
+
+You can run a single test by specifying its full name and category:
+
+`bench run --rps starlite -t json:json-1K`
 
 #### Test Settings
 
