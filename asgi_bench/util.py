@@ -16,3 +16,7 @@ def get_error_percentage(test_result: TestResult) -> float:
     if not error_count:
         return 0
     return 100 * (error_count / total_count)
+
+
+def has_no_responses(test_result: TestResult) -> bool:
+    return not get_error_response_count(test_result) + get_success_response_count(test_result)

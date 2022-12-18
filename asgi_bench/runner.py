@@ -68,8 +68,9 @@ class Runner:
         time_limit: int | None = None,
         request_limit: int | None = None,
         rate_limit: int | None = None,
-        benchmark_modes: tuple[BenchmarkMode, ...] | BenchmarkMode,
+        benchmark_modes: tuple[BenchmarkMode, ...] | BenchmarkMode = ("rps",),
         test_name: str | None = None,
+        validate_only: bool = False,
     ) -> None:
         self.docker_client = docker.from_env()
         self.console = Console()
@@ -83,6 +84,7 @@ class Runner:
         self._rate_limit = rate_limit
         self._time_limit = time_limit
         self._warmup_time = warmup_time
+        self._validate_only = validate_only
 
         self.specs = make_spec(
             frameworks=frameworks,
@@ -148,6 +150,21 @@ class Runner:
         container.wait()
         return container.logs().decode()
 
+    def _validate_bench_endpoint(self, test_spec: TestSpec) -> bool:
+        with self.console.status("  [yellow]Validating[/yellow]"):
+            stdout = self._run_bench_in_container(
+                f"http://127.0.0.1:{SERVER_PORT}{test_spec.path}",
+                *_args_from_spec(test_spec),
+                "--requests=1",
+                "--format=json",
+                "--print=result",
+            )
+        try:
+            data = json.loads(stdout)
+        except json.JSONDecodeError:
+            return False
+        return bool(data["result"]["req2xx"])
+
     def _stop_all_containers(self) -> None:
         with self.console.status("[yellow]Stopping running containers"):
             for container in self.docker_client.containers.list(ignore_removed=True):
@@ -207,6 +224,15 @@ class Runner:
                 with self.provide_service(framework_spec) as container:
                     if not container:
                         continue
+
+                    if not self._validate_bench_endpoint(test_spec):
+                        self.console.print(f"    [red][Error][/red] Validation for {test_spec.pretty_name} failed")
+                        continue
+
+                    if self._validate_only:
+                        self.console.print(f"    [green][Completed][/] {test_spec.pretty_name}")
+                        continue
+
                     results = self.run_benchmark(test_spec)
                     self._write_results(
                         target=framework_spec.version_name,

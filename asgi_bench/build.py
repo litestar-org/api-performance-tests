@@ -30,7 +30,7 @@ def temporary_dockerfile(framework_spec: FrameworkSpec) -> Generator[Path, None,
     dockerfile = cwd / ".dockerfile.tmp"
     dockerfile.write_text(content)
     yield dockerfile
-    dockerfile.unlink()
+    # dockerfile.unlink()
 
 
 def build_docker_images(framework_specs: list[FrameworkSpec], rebuild: bool = False) -> None:

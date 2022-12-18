@@ -1,12 +1,23 @@
 import json
 from pathlib import Path
 
+import jinja2
 import pandas as pd
 import plotly.express as px
 
 from .spec import ENDPOINT_CATEGORIES
 from .types import BenchmarkMode, SuiteResults
-from .util import get_error_percentage
+from .util import get_error_percentage, get_error_response_count, has_no_responses
+
+template_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+html_template = template_env.get_template("results.html.jinja2")
+markdown_template = template_env.get_template("results.md.jinja2")
+
+TEMPLATES = {"html": html_template, "md": markdown_template}
+
+
+template_env.globals["get_error_percentage"] = get_error_percentage
+template_env.globals["get_error_response_count"] = get_error_response_count
 
 COLOR_PALETTE = [
     "#a78bfa",
@@ -194,3 +205,70 @@ def make_plots(
                     formats=formats,
                     category=category,
                 )
+
+
+def make_tables(
+    *,
+    run_number: int | None,
+    frameworks: tuple[str, ...] | None,
+    html: bool = True,
+    markdown: bool = True,
+):
+    cwd = Path.cwd()
+    run_number, results = collect_results(run_number)
+    output_dir = cwd / "plots" / f"run_{run_number}"
+    output_dir.mkdir(exist_ok=True, parents=True)
+
+    benchmark_modes: tuple[BenchmarkMode, ...] = ("rps", "latency")
+
+    accumulated_results = {}
+    formats = []
+    if html:
+        formats.append("html")
+    if markdown:
+        formats.append("md")
+
+    for benchmark_mode in benchmark_modes:
+        acc_bench_mode_results = accumulated_results.setdefault(benchmark_mode, {})
+        if not all(benchmark_mode in mode_results for mode_results in results.values()):
+            continue
+        for framework, framework_results in results.items():
+            if frameworks and framework not in frameworks:
+                continue
+            for endpoint_mode, endpoint_mode_results in framework_results[benchmark_mode].items():
+                acc_endpoint_mode_results = acc_bench_mode_results.setdefault(endpoint_mode, {})
+                for category, category_results in endpoint_mode_results.items():  # type: ignore[attr-defined]
+                    acc_category_results = acc_endpoint_mode_results.setdefault(category, {})
+                    for test_result in category_results:
+                        acc_test_results = acc_category_results.setdefault(test_result["name"], {})
+                        acc_test_results[framework] = test_result
+
+    for benchmark_mode, benchmark_mode_results in accumulated_results.items():
+        score_overview = {}
+        for endpoint_mode, endpoint_mode_results in benchmark_mode_results.items():
+            mode_overview = score_overview[endpoint_mode] = {}
+            for category, category_results in endpoint_mode_results.items():
+                category_scores = mode_overview.setdefault(category, {})
+                for endpoint_name, test_results in category_results.items():
+                    ranks = [
+                        r[0]
+                        for r in sorted(
+                            ((framework, results["req2xx"]) for framework, results in test_results.items()),
+                            key=lambda r: r[1],
+                            reverse=True,
+                        )
+                    ]
+                    category_scores[endpoint_name] = ranks[0]
+                    for framework, r in test_results.items():
+                        r["rank"] = ranks.index(framework) + 1
+
+        for format_ in formats:
+            template = TEMPLATES[format_]
+            output = template.render(
+                benchmark_mode_results=benchmark_mode_results,
+                has_no_responses=has_no_responses,
+                frameworks=results.keys(),
+                score_overview=score_overview,
+            )
+            output_file = output_dir / Path(f"run_{run_number}_{benchmark_mode}.{format_}")
+            output_file.write_text(output)

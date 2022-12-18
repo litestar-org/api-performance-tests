@@ -1,0 +1,142 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>ASGI framework benchmarks</title>
+    <style>
+		main {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 2rem;
+			font-family: sans-serif;
+			color: #1e293b;
+		}
+
+		main > section {
+			display: flex;
+			flex-direction: column;
+			gap: 2rem;
+		}
+
+		table {
+			vertical-align: baseline;
+			border: 0;
+			border-collapse: collapse;
+			border-spacing: 0;
+		}
+
+		thead {
+			font-size: larger;
+		}
+
+		th {
+			text-align: left;
+			padding: .2rem .5rem;
+			background-color: #cbd5e1;
+		}
+
+		tr:nth-child(even) {
+			background-color: #f0f0f0;
+		}
+
+		tr:not(.results-section-header):hover {
+			background-color: #c8c8c8;
+		}
+
+		td {
+			padding: .2rem;
+		}
+
+		.results-section-header {
+			border-right: none;
+			padding: .2rem;
+			background-color: transparent;
+			font-weight: bolder;
+			color: #475569;
+		}
+
+		tr.rank-1 {
+			background-color: #a3e4bb;
+		}
+
+		tr.rank-1:hover {
+			background-color: #6fe199;
+		}
+
+		tr.has-errors {
+			background-color: #f26f6f;
+		}
+
+		tr.has-errors:hover {
+			background-color: #dd4c4c;
+		}
+
+		tr.not-available {
+			background-color: #ffe58f;
+		}
+
+		tr.not-available:hover {
+			background-color: #ffe58fbd;
+		}
+
+        .endpoint-mode-header {
+            position: sticky;
+            top: 0;
+            background-color: white;
+        }
+
+    </style>
+</head>
+<body>
+<main>
+    {% for endpoint_mode, endpoint_mode_results in benchmark_mode_results.items() %}
+        <section class="endpoint-mode-results">
+            <h2 class="endpoint-mode-header">{{ endpoint_mode }}</h2>
+            {% for category, category_results in endpoint_mode_results.items() %}
+                <div class="category-header {{ endpoint_mode }}-category" id="{{ endpoint_mode }}-{{ category }}">
+                    <h3>{{ category }}</h3>
+                </div>
+                <table class="benchmark-results">
+                    <thead>
+                    <tr>
+                        <th>Framework</th>
+                        <th>Requests</th>
+                        <th>RPS (mean)</th>
+                        <th>Errors (total)</th>
+                        <th>Errors (%)</th>
+                        <th>Rank</th>
+                    </tr>
+                    </thead>
+                    {% for test_name, test_framework_results in category_results.items() %}
+                        <tbody>
+                        <tr class="results-section-header">
+                            <td>{{ test_name }}</td>
+                        </tr>
+                        {% for framework in frameworks %}
+                            {% set results =  test_framework_results.get(framework) %}
+                            {% if results %}
+                                {% set error_response_count = get_error_response_count(results) %}
+                                <tr class="rank-{{ results['rank'] }}{{ ' has-errors' if error_response_count else '' }}">
+                                    <td>{{ framework }}</td>
+                                    <td>{{ results["req2xx"] }}</td>
+                                    <td>{{ (results["req2xx"] / results["timeTakenSeconds"]) | round(2) }}</td>
+                                    <td>{{ error_response_count }}</td>
+                                    <td>{{ get_error_percentage(results)| round(2) }}</td>
+                                    <td>{{ results["rank"] }}</td>
+                                </tr>
+                            {% else %}
+                                <tr class="not-available">
+                                    <td>{{ framework }}</td>
+                                    <td colspan="5">Not available</td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                        </tbody>
+                    {% endfor %}
+                </table>
+            {% endfor %}
+        </section>
+    {% endfor %}
+</main>
+</body>
+</html>
