@@ -1,21 +1,26 @@
 {% if not build_stage %}
 FROM python:3.11-slim-bullseye as build
 
-RUN apt-get update && apt-get upgrade -y && apt-get install gcc git -y && \
+RUN apt-get update && apt-get upgrade -y && apt-get install gcc git curl -y && \
+    curl https://sh.rustup.rs -sSf | bash -s -- -y && \
     pip install --upgrade pip && \
     pip install uvicorn[standard] pydantic
 
 
 FROM build
+
+ENV PATH="/root/.cargo/bin:${PATH}"
+ARG RANDOM_STRING=1
+
 {% if is_local %}
 COPY {{ local_path }} /
 {% endif %}
+
 
 RUN pip install {{ pip_package }}
 {% else %}
 FROM {{ build_stage }}
 {% endif %}
-ARG RANDOM_STRING=1
 
 COPY frameworks/{{ framework }}_app.py /app.py
 COPY test_data/ /test_data/
