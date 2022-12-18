@@ -1,4 +1,5 @@
 from .types import TestResult
+import jinja2
 
 
 def get_error_response_count(test_result: TestResult) -> int:
@@ -20,3 +21,6 @@ def get_error_percentage(test_result: TestResult) -> float:
 
 def has_no_responses(test_result: TestResult) -> bool:
     return not get_error_response_count(test_result) + get_success_response_count(test_result)
+
+
+template_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))

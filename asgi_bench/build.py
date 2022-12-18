@@ -4,13 +4,12 @@ from pathlib import Path
 from secrets import token_hex
 
 import docker  # type: ignore
-import jinja2
 from rich.console import Console
 
 from .types import FrameworkSpec
+from .util import template_env
 
 console = Console()
-template_env = jinja2.Environment(loader=jinja2.FileSystemLoader("."))
 dockerfile_template = template_env.get_template("DockerfileFrameworks.jinja2")
 
 

@@ -1,15 +1,13 @@
 import json
 from pathlib import Path
 
-import jinja2
 import pandas as pd
 import plotly.express as px
 
 from .spec import ENDPOINT_CATEGORIES
-from .types import BenchmarkMode, SuiteResults
-from .util import get_error_percentage, get_error_response_count, has_no_responses
+from .types import BenchmarkMode, SuiteResults, TestResult
+from .util import get_error_percentage, get_error_response_count, has_no_responses, template_env
 
-template_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
 html_template = template_env.get_template("results.html.jinja2")
 markdown_template = template_env.get_template("results.md.jinja2")
 
@@ -207,26 +205,12 @@ def make_plots(
                 )
 
 
-def make_tables(
-    *,
-    run_number: int | None,
+def _data_for_tables(
+    benchmark_modes: tuple[BenchmarkMode, ...],
     frameworks: tuple[str, ...] | None,
-    html: bool = True,
-    markdown: bool = True,
+    results: dict[str, SuiteResults],
 ):
-    cwd = Path.cwd()
-    run_number, results = collect_results(run_number)
-    output_dir = cwd / "plots" / f"run_{run_number}"
-    output_dir.mkdir(exist_ok=True, parents=True)
-
-    benchmark_modes: tuple[BenchmarkMode, ...] = ("rps", "latency")
-
-    accumulated_results = {}
-    formats = []
-    if html:
-        formats.append("html")
-    if markdown:
-        formats.append("md")
+    accumulated_results: dict[str, dict[str, dict[str, dict[str, dict[str, TestResult]]]]] = {}
 
     for benchmark_mode in benchmark_modes:
         acc_bench_mode_results = accumulated_results.setdefault(benchmark_mode, {})
@@ -243,13 +227,35 @@ def make_tables(
                         acc_test_results = acc_category_results.setdefault(test_result["name"], {})
                         acc_test_results[framework] = test_result
 
+    return accumulated_results
+
+
+def make_tables(
+    *,
+    run_number: int | None,
+    frameworks: tuple[str, ...] | None,
+    html: bool = True,
+    markdown: bool = True,
+):
+    cwd = Path.cwd()
+    run_number, results = collect_results(run_number)
+    output_dir = cwd / "plots" / f"run_{run_number}"
+    output_dir.mkdir(exist_ok=True, parents=True)
+
+    benchmark_modes: tuple[BenchmarkMode, ...] = ("rps", "latency")
+
+    formats = []
+    if html:
+        formats.append("html")
+    if markdown:
+        formats.append("md")
+
+    accumulated_results = _data_for_tables(benchmark_modes=benchmark_modes, frameworks=frameworks, results=results)
+
     for benchmark_mode, benchmark_mode_results in accumulated_results.items():
-        score_overview = {}
-        for endpoint_mode, endpoint_mode_results in benchmark_mode_results.items():
-            mode_overview = score_overview[endpoint_mode] = {}
-            for category, category_results in endpoint_mode_results.items():
-                category_scores = mode_overview.setdefault(category, {})
-                for endpoint_name, test_results in category_results.items():
+        for endpoint_mode_results in benchmark_mode_results.values():
+            for category_results in endpoint_mode_results.values():
+                for test_results in category_results.values():
                     ranks = [
                         r[0]
                         for r in sorted(
@@ -258,7 +264,6 @@ def make_tables(
                             reverse=True,
                         )
                     ]
-                    category_scores[endpoint_name] = ranks[0]
                     for framework, r in test_results.items():
                         r["rank"] = ranks.index(framework) + 1
 
@@ -268,7 +273,6 @@ def make_tables(
                 benchmark_mode_results=benchmark_mode_results,
                 has_no_responses=has_no_responses,
                 frameworks=results.keys(),
-                score_overview=score_overview,
             )
             output_file = output_dir / Path(f"run_{run_number}_{benchmark_mode}.{format_}")
             output_file.write_text(output)
