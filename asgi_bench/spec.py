@@ -37,7 +37,7 @@ class Endpoint:
 class TestCategory:
     name: EndpointCategory
     endpoints: list[Endpoint]
-    frameworks: tuple[Framework, ...] = ("starlite", "starlette", "fastapi", "sanic", "blacksheep")
+    frameworks: tuple[Framework, ...] = ("starlite", "starlette", "fastapi", "sanic", "blacksheep", "quart")
 
 
 TEST_CATEGORIES: list[TestCategory] = [
@@ -67,12 +67,12 @@ TEST_CATEGORIES: list[TestCategory] = [
     TestCategory(
         name="files",
         endpoints=[
-            Endpoint(path="file-response-100B", name="file response 100 bytes", exclude_sync=["sanic"]),
-            Endpoint(path="file-response-1K", name="file response 1 kB", exclude_sync=["sanic"]),
-            Endpoint(path="file-response-10K", name="file response 10 kB", exclude_sync=["sanic"]),
-            Endpoint(path="file-response-100K", name="file response 100 kB", exclude_sync=["sanic"]),
-            Endpoint(path="file-response-500K", name="file response 500 kB", exclude_sync=["sanic"]),
-            Endpoint(path="file-response-1M", name="file response 1 MB", exclude_sync=["sanic"]),
+            Endpoint(path="file-response-100B", name="file response 100 bytes", exclude_sync=["sanic", "quart"]),
+            Endpoint(path="file-response-1K", name="file response 1 kB", exclude_sync=["sanic", "quart"]),
+            Endpoint(path="file-response-10K", name="file response 10 kB", exclude_sync=["sanic", "quart"]),
+            Endpoint(path="file-response-100K", name="file response 100 kB", exclude_sync=["sanic", "quart"]),
+            Endpoint(path="file-response-500K", name="file response 500 kB", exclude_sync=["sanic", "quart"]),
+            Endpoint(path="file-response-1M", name="file response 1 MB", exclude_sync=["sanic", "quart"]),
         ],
     ),
     TestCategory(
@@ -120,35 +120,35 @@ TEST_CATEGORIES: list[TestCategory] = [
                 name="post json, 1kB",
                 headers=[("Content-Type", "application/json")],
                 body_file="1K.json",
-                exclude_sync=["starlette", "blacksheep"],
+                exclude_sync=["starlette", "blacksheep", "quart"],
             ),
             Endpoint(
                 path="post-json",
                 name="post json, 10kB",
                 headers=[("Content-Type", "application/json")],
                 body_file="10K.json",
-                exclude_sync=["starlette", "blacksheep"],
+                exclude_sync=["starlette", "blacksheep", "quart"],
             ),
             Endpoint(
                 path="post-json",
                 name="post json, 100kB",
                 headers=[("Content-Type", "application/json")],
                 body_file="100K.json",
-                exclude_sync=["starlette", "blacksheep"],
+                exclude_sync=["starlette", "blacksheep", "quart"],
             ),
             Endpoint(
                 path="post-json",
                 name="post json, 500kB",
                 headers=[("Content-Type", "application/json")],
                 body_file="500K.json",
-                exclude_sync=["starlette", "blacksheep"],
+                exclude_sync=["starlette", "blacksheep", "quart"],
             ),
             Endpoint(
                 path="post-json",
                 name="post json, 1M",
                 headers=[("Content-Type", "application/json")],
                 body_file="1M.json",
-                exclude_sync=["starlette", "blacksheep"],
+                exclude_sync=["starlette", "blacksheep", "quart"],
             ),
         ],
     ),
@@ -160,21 +160,21 @@ TEST_CATEGORIES: list[TestCategory] = [
                 name="post form, multipart, 1K",
                 headers=list(test_data.MULTIPART_1K_HEADERS.items()),
                 body_file="MULTIPART_1K",
-                exclude_sync=["starlette", "fastapi", "blacksheep"],
+                exclude_sync=["starlette", "fastapi", "blacksheep", "quart"],
             ),
             Endpoint(
                 path="post-form-urlencoded",
                 name="post form, urlencoded, 1K",
                 headers=list(test_data.FORM_URLENCODED_1K_HEADERS.items()),
                 body_file="FORM_URLENCODED_1K",
-                exclude_sync=["starlette", "fastapi"],
+                exclude_sync=["starlette", "fastapi", "quart"],
             ),
             Endpoint(
                 path="post-file",
                 name="post file, 1K",
                 body_file="FILE_UPLOAD_1K",
                 headers=list(test_data.FILE_UPLOAD_1K_HEADERS.items()),
-                exclude_sync=["starlette"],
+                exclude_sync=["starlette", "quart"],
             ),
         ],
     ),

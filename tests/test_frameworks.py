@@ -49,7 +49,7 @@ ENDPOINT_SPEC = {
         f"file-response-{size}": {
             "result": {"status_code": 200, "bytes": getattr(test_data, f"FILE_{size}").read_bytes()},
             "request": {},
-            "skip-sync": ["sanic"],
+            "skip-sync": ["sanic", "quart"],
         }
         for size in ["1K", "10K", "100K", "500K", "1M", "5M"]
     },
@@ -74,7 +74,7 @@ ENDPOINT_SPEC = {
             "json": ["sync_dependency_one", "sync_dependency_two", "sync_dependency_three"],
         },
         "request": {},
-        "skip": ["starlette"],
+        "skip": ["starlette", "quart"],
     },
     "dependencies-async": {
         "result": {
@@ -82,7 +82,7 @@ ENDPOINT_SPEC = {
             "json": ["async_dependency_one", "async_dependency_two", "async_dependency_three"],
         },
         "request": {},
-        "skip": ["starlette", "sanic", "blacksheep"],
+        "skip": ["starlette", "sanic", "blacksheep", "quart"],
     },
     "dependencies-mixed": {
         "result": {
@@ -93,47 +93,47 @@ ENDPOINT_SPEC = {
             ],
         },
         "request": {},
-        "skip": ["starlette", "sanic", "blacksheep"],
+        "skip": ["starlette", "sanic", "blacksheep", "quart"],
     },
     "serialize-pydantic-50": {
         "result": {"status_code": 200, "json": test_data.PERSON_DATA_50},
         "request": {},
-        "skip": ["starlette", "sanic", "blacksheep"],
+        "skip": ["starlette", "sanic", "blacksheep", "quart"],
     },
     "serialize-pydantic-100": {
         "result": {"status_code": 200, "json": test_data.PERSON_DATA_100},
         "request": {},
-        "skip": ["starlette", "sanic", "blacksheep"],
+        "skip": ["starlette", "sanic", "blacksheep", "quart"],
     },
     "serialize-pydantic-500": {
         "result": {"status_code": 200, "json": test_data.PERSON_DATA_500},
         "request": {},
-        "skip": ["starlette", "sanic", "blacksheep"],
+        "skip": ["starlette", "sanic", "blacksheep", "quart"],
     },
     "serialize-dataclasses-50": {
         "result": {"status_code": 200, "json": test_data.PERSON_DATA_50},
         "request": {},
-        "skip": ["starlette", "sanic", "blacksheep"],
+        "skip": ["starlette", "sanic", "blacksheep", "quart"],
     },
     "serialize-dataclasses-100": {
         "result": {"status_code": 200, "json": test_data.PERSON_DATA_100},
         "request": {},
-        "skip": ["starlette", "sanic", "blacksheep"],
+        "skip": ["starlette", "sanic", "blacksheep", "quart"],
     },
     "serialize-dataclasses-500": {
         "result": {"status_code": 200, "json": test_data.PERSON_DATA_500},
         "request": {},
-        "skip": ["starlette", "sanic", "blacksheep"],
+        "skip": ["starlette", "sanic", "blacksheep", "quart"],
     },
     "post-json": {
         "result": {"status_code": 204},
         "request": {"json": test_data.JSON_1K, "method": "POST"},
-        "skip-sync": ["starlette", "blacksheep"],
+        "skip-sync": ["starlette", "blacksheep", "quart"],
     },
     "post-multipart-form": {
         "result": {"status_code": 204},
         "request": {"content": test_data.MULTIPART_1K, "headers": test_data.MULTIPART_1K_HEADERS, "method": "POST"},
-        "skip-sync": ["starlette", "fastapi", "blacksheep"],
+        "skip-sync": ["starlette", "fastapi", "blacksheep", "quart"],
     },
     "post-form-urlencoded": {
         "result": {"status_code": 204},
@@ -142,7 +142,7 @@ ENDPOINT_SPEC = {
             "content": test_data.FORM_URLENCODED_1K,
             "headers": test_data.FORM_URLENCODED_1K_HEADERS,
         },
-        "skip-sync": ["starlette", "fastapi"],
+        "skip-sync": ["starlette", "fastapi", "quart"],
     },
     "post-file": {
         "result": {"status_code": 204},
@@ -150,13 +150,20 @@ ENDPOINT_SPEC = {
             "method": "POST",
             "files": {"test_file": test_data.FILE_1K.read_bytes()},
         },
-        "skip-sync": ["starlette"],
+        "skip-sync": ["starlette", "quart"],
     },
 }
 
 
 @pytest.fixture(
-    params=["starlite", "starlette", "fastapi", "sanic", "blacksheep"],
+    params=[
+        "starlite",
+        "starlette",
+        "fastapi",
+        "sanic",
+        "blacksheep",
+        "quart",
+    ],
     scope="session",
 )
 def framework(request):

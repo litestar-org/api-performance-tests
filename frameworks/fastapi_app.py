@@ -495,11 +495,6 @@ async def async_post_multipart_form(request: Request) -> None:
     data = await request.form()
 
 
-@app.post("/async-post-multipart-form", status_code=HTTP_204_NO_CONTENT)
-async def async_post_multipart_form(request: Request) -> None:
-    data = await request.form()
-
-
 # form urlencoded
 
 
