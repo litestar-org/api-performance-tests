@@ -41,6 +41,7 @@ def cli() -> None:
     help="endpoint category",
 )
 @click.option("-t", "--test", help="run a specific test", default=None)
+@click.option("-v", "--validate-only", is_flag=True, default=False, help="only run endpoint validation")
 def run(
     frameworks: tuple[str, ...],
     rebuild: bool,
@@ -50,6 +51,7 @@ def run(
     limit: int,
     requests: int,
     duration: int,
+    validate_only: bool,
     endpoint_mode: tuple[EndpointMode, ...],
     endpoint_category: tuple[EndpointCategory, ...],
     test: str | None = None,
@@ -76,6 +78,7 @@ def run(
         benchmark_modes=benchmark_modes,
         warmup_time=warmup,
         test_name=test,
+        validate_only=validate_only,
     )
 
     runner.print_suite_config()
@@ -112,6 +115,9 @@ def run(
     help="threshold of error responses at which a test will be considered invalid",
 )
 @click.option("-F", "--framework", multiple=True, default=None)
+@click.option("-md", "--markdown", is_flag=True, help="output a markdown table")
+@click.option("-h", "--html", is_flag=True, help="output an HTML page")
+@click.option("-P", "--plots", is_flag=True, help="output plots")
 def results_command(
     run_name: int | None,
     format: tuple[str, ...],
@@ -119,15 +125,20 @@ def results_command(
     split_percentiles: bool,
     tolerance: float,
     framework: tuple[str, ...] | None,
+    markdown: bool,
+    html: bool,
+    plots: bool,
 ) -> None:
-    results.make_plots(
-        formats=format,
-        percentiles=percentile,
-        run_number=run_name,
-        split_percentiles=split_percentiles,
-        tolerance=tolerance,
-        frameworks=framework,
-    )
+    if plots:
+        results.make_plots(
+            formats=format,
+            percentiles=percentile,
+            run_number=run_name,
+            split_percentiles=split_percentiles,
+            tolerance=tolerance,
+            frameworks=framework,
+        )
+    results.make_tables(run_number=run_name, frameworks=framework, markdown=markdown, html=html)
 
 
 @cli.command(help="remove all benchmark docker images built")

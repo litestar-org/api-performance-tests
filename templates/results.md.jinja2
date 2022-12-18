@@ -1,0 +1,23 @@
+{% for endpoint_mode, endpoint_mode_results in benchmark_mode_results.items() %}
+# {{ endpoint_mode }}
+{% for category, category_results in endpoint_mode_results.items() %}
+## {{ category }}
+{% for test_name, test_framework_results in category_results.items()%}
+### {{ test_name }}
+
+| Framework | Requests | RPS (mean) | Errors (total) | Errors (%) | Rank |
+|-----------|----------|------------|----------------|------------|------|
+{%- for framework in frameworks -%}
+    {%- set results =  test_framework_results.get(framework) -%}
+    {%- if results %}
+        {%- set error_response_count = get_error_response_count(results) %}
+        {%- set rps = (results["req2xx"] / results["timeTakenSeconds"]) | round(2) %}
+        {%- set is_first = results["rank"] == 1  %}
+|{{ "**" if is_first else '' }}{{ framework }}{{ "**" if is_first else '' }}|{{ results["req2xx"] }}|{{ rps }}|{{ error_response_count }}|{{ get_error_percentage(results)| round(2) }}|{{ results["rank"] }}|
+    {%- else %}
+|{{ framework }}|N/A|N/A|N/A|N/A|N/A|
+    {%- endif %}
+{%- endfor %}
+{% endfor %}
+{% endfor %}
+{% endfor %}
