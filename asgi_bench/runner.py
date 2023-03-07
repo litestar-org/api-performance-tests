@@ -8,6 +8,7 @@ from typing import Any
 
 import docker
 import httpx
+from docker.errors import APIError
 from docker.models.containers import Container
 from rich.console import Console
 from rich.table import Table
@@ -208,7 +209,12 @@ class Runner:
             is_online = _wait_for_online()
         if not is_online:
             self.console.print("    [red]Server failed to come online")
-            container.kill()
+            try:
+                container.kill()
+            except APIError as error:
+                if not (error.status_code == 409 and "not running" in error.explanation):
+                    # the container stopped for reasons
+                    raise error
             yield False
         else:
             yield True
