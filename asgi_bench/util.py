@@ -1,5 +1,6 @@
-from .types import TestResult
 import jinja2
+
+from .types import TestResult
 
 
 def get_error_response_count(test_result: TestResult) -> int:

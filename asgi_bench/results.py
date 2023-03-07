@@ -6,7 +6,12 @@ import plotly.express as px
 
 from .spec import ENDPOINT_CATEGORIES
 from .types import BenchmarkMode, SuiteResults, TestResult
-from .util import get_error_percentage, get_error_response_count, has_no_responses, template_env
+from .util import (
+    get_error_percentage,
+    get_error_response_count,
+    has_no_responses,
+    template_env,
+)
 
 html_template = template_env.get_template("results.html.jinja2")
 markdown_template = template_env.get_template("results.md.jinja2")
@@ -116,7 +121,6 @@ def _draw_plot(
     category: str | None = None,
     percentile: str | None = None,
 ):
-
     if benchmark_mode == "rps":
         title = "Requests per second (higher is better)"
     else:
