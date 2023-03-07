@@ -1,9 +1,10 @@
 import time
+from typing import Any
 
 import anyio
 from fastapi import Depends, FastAPI, Response, UploadFile
+from fastapi.requests import Request
 from fastapi.responses import FileResponse, PlainTextResponse
-from starlette.requests import Request
 from starlette.status import HTTP_204_NO_CONTENT
 
 import test_data
@@ -14,109 +15,109 @@ app = FastAPI()
 # plaintext async
 
 
-@app.get("/async-plaintext-100B")
-async def async_plaintext_100b() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_100B)
+@app.get("/async-plaintext-100B", response_class=PlainTextResponse)
+async def async_plaintext_100b() -> str:
+    return test_data.TEXT_100B
 
 
-@app.get("/async-plaintext-1K")
-async def async_plaintext_1k() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_1K)
+@app.get("/async-plaintext-1K", response_class=PlainTextResponse)
+async def async_plaintext_1k() -> str:
+    return test_data.TEXT_1K
 
 
-@app.get("/async-plaintext-10K")
-async def async_plaintext_10k() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_10K)
+@app.get("/async-plaintext-10K", response_class=PlainTextResponse)
+async def async_plaintext_10k() -> str:
+    return test_data.TEXT_10K
 
 
-@app.get("/async-plaintext-100K")
-async def async_plaintext_100k() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_100K)
+@app.get("/async-plaintext-100K", response_class=PlainTextResponse)
+async def async_plaintext_100k() -> str:
+    return test_data.TEXT_100K
 
 
-@app.get("/async-plaintext-500K")
-async def async_plaintext_500k() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_500K)
+@app.get("/async-plaintext-500K", response_class=PlainTextResponse)
+async def async_plaintext_500k() -> str:
+    return test_data.TEXT_500K
 
 
-@app.get("/async-plaintext-1M")
-async def async_plaintext_1m() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_1M)
+@app.get("/async-plaintext-1M", response_class=PlainTextResponse)
+async def async_plaintext_1m() -> str:
+    return test_data.TEXT_1M
 
 
-@app.get("/async-plaintext-5M")
-async def async_plaintext_5m() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_5M)
+@app.get("/async-plaintext-5M", response_class=PlainTextResponse)
+async def async_plaintext_5m() -> str:
+    return test_data.TEXT_5M
 
 
 # plaintext sync
 
 
-@app.get("/sync-plaintext-100B")
-def sync_plaintext_100b() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_100B)
+@app.get("/sync-plaintext-100B", response_class=PlainTextResponse)
+def sync_plaintext_100b() -> str:
+    return test_data.TEXT_100B
 
 
-@app.get("/sync-plaintext-1K")
-def sync_plaintext_1k() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_1K)
+@app.get("/sync-plaintext-1K", response_class=PlainTextResponse)
+def sync_plaintext_1k() -> str:
+    return test_data.TEXT_1K
 
 
-@app.get("/sync-plaintext-10K")
-def sync_plaintext_10k() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_10K)
+@app.get("/sync-plaintext-10K", response_class=PlainTextResponse)
+def sync_plaintext_10k() -> str:
+    return test_data.TEXT_10K
 
 
-@app.get("/sync-plaintext-100K")
-def sync_plaintext_100k() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_100K)
+@app.get("/sync-plaintext-100K", response_class=PlainTextResponse)
+def sync_plaintext_100k() -> str:
+    return test_data.TEXT_100K
 
 
-@app.get("/sync-plaintext-500K")
-def sync_plaintext_500k() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_500K)
+@app.get("/sync-plaintext-500K", response_class=PlainTextResponse)
+def sync_plaintext_500k() -> str:
+    return test_data.TEXT_500K
 
 
-@app.get("/sync-plaintext-1M")
-def sync_plaintext_1m() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_1M)
+@app.get("/sync-plaintext-1M", response_class=PlainTextResponse)
+def sync_plaintext_1m() -> str:
+    return test_data.TEXT_1M
 
 
-@app.get("/sync-plaintext-5M")
-def sync_plaintext_5m() -> PlainTextResponse:
-    return PlainTextResponse(test_data.TEXT_5M)
+@app.get("/sync-plaintext-5M", response_class=PlainTextResponse)
+def sync_plaintext_5m() -> str:
+    return test_data.TEXT_5M
 
 
 # JSON response
 
 
 @app.get("/async-json-1K")
-async def async_json_1k() -> dict:
+async def async_json_1k() -> list[dict[str, Any]]:
     return test_data.JSON_1K
 
 
 @app.get("/async-json-10K")
-async def async_json_10k() -> dict:
+async def async_json_10k() -> list[dict[str, Any]]:
     return test_data.JSON_10K
 
 
 @app.get("/async-json-100K")
-async def async_json_100k() -> dict:
+async def async_json_100k() -> list[dict[str, Any]]:
     return test_data.JSON_100K
 
 
 @app.get("/async-json-500K")
-async def async_json_500k() -> dict:
+async def async_json_500k() -> list[dict[str, Any]]:
     return test_data.JSON_500K
 
 
 @app.get("/async-json-1M")
-async def async_json_1m() -> dict:
+async def async_json_1m() -> list[dict[str, Any]]:
     return test_data.JSON_1M
 
 
 @app.get("/async-json-5M")
-async def async_json_5m() -> dict:
+async def async_json_5m() -> list[dict[str, Any]]:
     return test_data.JSON_5M
 
 
@@ -124,32 +125,32 @@ async def async_json_5m() -> dict:
 
 
 @app.get("/sync-json-1K")
-def sync_json_1k() -> dict:
+def sync_json_1k() -> list[dict[str, Any]]:
     return test_data.JSON_1K
 
 
 @app.get("/sync-json-10K")
-def sync_json_10k() -> dict:
+def sync_json_10k() -> list[dict[str, Any]]:
     return test_data.JSON_10K
 
 
 @app.get("/sync-json-100K")
-def sync_json_100k() -> dict:
+def sync_json_100k() -> list[dict[str, Any]]:
     return test_data.JSON_100K
 
 
 @app.get("/sync-json-500K")
-def sync_json_500k() -> dict:
+def sync_json_500k() -> list[dict[str, Any]]:
     return test_data.JSON_500K
 
 
 @app.get("/sync-json-1M")
-def sync_json_1m() -> dict:
+def sync_json_1m() -> list[dict[str, Any]]:
     return test_data.JSON_1M
 
 
 @app.get("/sync-json-5M")
-def sync_json_5m() -> dict:
+def sync_json_5m() -> list[dict[str, Any]]:
     return test_data.JSON_5M
 
 
@@ -157,112 +158,108 @@ def sync_json_5m() -> dict:
 
 
 @app.get("/async-no-params", status_code=HTTP_204_NO_CONTENT)
-async def async_no_params() -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT)
+async def async_no_params() -> None:
+    pass
 
 
 @app.get("/sync-no-params", status_code=HTTP_204_NO_CONTENT)
-def sync_no_params() -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT)
+def sync_no_params() -> None:
+    pass
 
 
 @app.get("/async-path-params/{first:int}", status_code=HTTP_204_NO_CONTENT)
-async def async_path_params(first: int) -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT)
+async def async_path_params(first: int) -> None:
+    pass
 
 
 @app.get("/sync-path-params/{first:int}", status_code=HTTP_204_NO_CONTENT)
-def sync_path_params(first: int) -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT)
+def sync_path_params(first: int) -> None:
+    pass
 
 
 @app.get("/async-query-param", status_code=HTTP_204_NO_CONTENT)
-async def async_query_params(first: int) -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT)
+async def async_query_params(first: int) -> None:
+    pass
 
 
 @app.get("/sync-query-param", status_code=HTTP_204_NO_CONTENT)
-def sync_query_params(first: int) -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT)
+def sync_query_params(first: int) -> None:
+    pass
 
 
 @app.get("/async-mixed-params/{second:int}", status_code=HTTP_204_NO_CONTENT)
-async def async_mixed_params(first: int, second: int) -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT)
+async def async_mixed_params(first: int, second: int) -> None:
+    pass
 
 
 @app.get("/sync-mixed-params/{second:int}", status_code=HTTP_204_NO_CONTENT)
-def sync_mixed_params(first: int, second: int) -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT)
+def sync_mixed_params(first: int, second: int) -> None:
+    pass
 
 
 # headers
 
 
-@app.get("/async-response-headers")
-async def async_response_headers() -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT, headers=test_data.RESPONSE_HEADERS)
+@app.get("/async-response-headers", status_code=HTTP_204_NO_CONTENT)
+async def async_response_headers(response: Response) -> None:
+    response.headers.update(test_data.RESPONSE_HEADERS)
 
 
-@app.get("/sync-response-headers")
-def sync_response_headers() -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT, headers=test_data.RESPONSE_HEADERS)
+@app.get("/sync-response-headers", status_code=HTTP_204_NO_CONTENT)
+def sync_response_headers(response: Response) -> None:
+    response.headers.update(test_data.RESPONSE_HEADERS)
 
 
 # cookies
 
 
-@app.get("/async-response-cookies")
-async def async_response_cookies() -> Response:
-    res = Response(status_code=HTTP_204_NO_CONTENT)
+@app.get("/async-response-cookies", status_code=HTTP_204_NO_CONTENT)
+async def async_response_cookies(response: Response) -> None:
     for key, value in test_data.RESPONSE_COOKIES.items():
-        res.set_cookie(key, value)
-    return res
+        response.set_cookie(key, value)
 
 
-@app.get("/sync-response-cookies")
-def sync_response_cookies() -> Response:
-    res = Response(status_code=HTTP_204_NO_CONTENT)
+@app.get("/sync-response-cookies", status_code=HTTP_204_NO_CONTENT)
+def sync_response_cookies(response: Response) -> None:
     for key, value in test_data.RESPONSE_COOKIES.items():
-        res.set_cookie(key, value)
-    return res
+        response.set_cookie(key, value)
 
 
 # files async
 
 
 @app.get("/async-file-response-100B")
-async def async_file_response_100b() -> FileResponse:
+async def async_file_response_100b():
     return FileResponse(path=test_data.FILE_100B, filename="response_file")
 
 
 @app.get("/async-file-response-1K")
-async def async_file_response_1k() -> FileResponse:
+async def async_file_response_1k():
     return FileResponse(path=test_data.FILE_1K, filename="response_file")
 
 
 @app.get("/async-file-response-10K")
-async def async_file_response_10k() -> FileResponse:
+async def async_file_response_10k():
     return FileResponse(path=test_data.FILE_10K, filename="response_file")
 
 
 @app.get("/async-file-response-100K")
-async def async_file_response_100k() -> FileResponse:
+async def async_file_response_100k():
     return FileResponse(path=test_data.FILE_100K, filename="response_file")
 
 
 @app.get("/async-file-response-500K")
-async def async_file_response_500k() -> FileResponse:
+async def async_file_response_500k():
     return FileResponse(path=test_data.FILE_500K, filename="response_file")
 
 
 @app.get("/async-file-response-1M")
-async def async_file_response_1m() -> FileResponse:
+async def async_file_response_1m():
     return FileResponse(path=test_data.FILE_1M, filename="response_file")
 
 
 @app.get("/async-file-response-5M")
-async def async_file_response_5m() -> FileResponse:
+async def async_file_response_5m():
     return FileResponse(path=test_data.FILE_5M, filename="response_file")
 
 
@@ -270,37 +267,37 @@ async def async_file_response_5m() -> FileResponse:
 
 
 @app.get("/sync-file-response-100B")
-def sync_file_response_100b() -> FileResponse:
+def sync_file_response_100b():
     return FileResponse(path=test_data.FILE_100B, filename="response_file")
 
 
 @app.get("/sync-file-response-1K")
-def sync_file_response_1k() -> FileResponse:
+def sync_file_response_1k():
     return FileResponse(path=test_data.FILE_1K, filename="response_file")
 
 
 @app.get("/sync-file-response-10K")
-def sync_file_response_10k() -> FileResponse:
+def sync_file_response_10k():
     return FileResponse(path=test_data.FILE_10K, filename="response_file")
 
 
 @app.get("/sync-file-response-100K")
-def sync_file_response_100k() -> FileResponse:
+def sync_file_response_100k():
     return FileResponse(path=test_data.FILE_100K, filename="response_file")
 
 
 @app.get("/sync-file-response-500K")
-def sync_file_response_500k() -> FileResponse:
+def sync_file_response_500k():
     return FileResponse(path=test_data.FILE_500K, filename="response_file")
 
 
 @app.get("/sync-file-response-1M")
-def sync_file_response_1m() -> FileResponse:
+def sync_file_response_1m():
     return FileResponse(path=test_data.FILE_1M, filename="response_file")
 
 
 @app.get("/sync-file-response-5M")
-def sync_file_response_5m() -> FileResponse:
+def sync_file_response_5m():
     return FileResponse(path=test_data.FILE_5M, filename="response_file")
 
 
@@ -481,49 +478,44 @@ async def async_serialize_dataclasses_500() -> list[test_data.objects.PersonData
 
 
 @app.post("/sync-post-json", status_code=HTTP_204_NO_CONTENT)
-def sync_post_json(data: list) -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT)
+def sync_post_json(data: list) -> None:
+    pass
 
 
 @app.post("/async-post-json", status_code=HTTP_204_NO_CONTENT)
-async def async_post_json(data: list) -> Response:
-    return Response(status_code=HTTP_204_NO_CONTENT)
+async def async_post_json(data: list) -> None:
+    pass
 
 
 # request body multipart
 
 
 @app.post("/async-post-multipart-form", status_code=HTTP_204_NO_CONTENT)
-async def async_post_multipart_form(request: Request) -> Response:
+async def async_post_multipart_form(request: Request) -> None:
     data = await request.form()
-    return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 @app.post("/async-post-multipart-form", status_code=HTTP_204_NO_CONTENT)
-async def async_post_multipart_form(request: Request) -> Response:
+async def async_post_multipart_form(request: Request) -> None:
     data = await request.form()
-    return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 # form urlencoded
 
 
 @app.post("/async-post-form-urlencoded", status_code=HTTP_204_NO_CONTENT)
-async def async_post_form_urlencoded(request: Request) -> Response:
+async def async_post_form_urlencoded(request: Request) -> None:
     data = await request.form()
-    return Response(status_code=HTTP_204_NO_CONTENT)
 
 
 # upload files
 
 
-@app.post("/sync-post-file")
-def sync_post_file(test_file: UploadFile) -> Response:
+@app.post("/sync-post-file", status_code=HTTP_204_NO_CONTENT)
+def sync_post_file(test_file: UploadFile) -> None:
     content = test_file.file.read()
-    return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@app.post("/async-post-file")
-async def async_post_file(test_file: UploadFile) -> Response:
+@app.post("/async-post-file", status_code=HTTP_204_NO_CONTENT)
+async def async_post_file(test_file: UploadFile) -> None:
     content = await test_file.read()
-    return Response(status_code=HTTP_204_NO_CONTENT)

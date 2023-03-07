@@ -1,4 +1,5 @@
 import time
+from typing import Any
 
 import anyio
 from starlite import (
@@ -99,32 +100,32 @@ def sync_plaintext_5m() -> str:
 
 
 @get("/async-json-1K", media_type=MediaType.JSON)
-async def async_json_1k() -> dict:
+async def async_json_1k() -> list[dict[str, Any]]:
     return test_data.JSON_1K
 
 
 @get("/async-json-10K", media_type=MediaType.JSON)
-async def async_json_10k() -> dict:
+async def async_json_10k() -> list[dict[str, Any]]:
     return test_data.JSON_10K
 
 
 @get("/async-json-100K", media_type=MediaType.JSON)
-async def async_json_100k() -> dict:
+async def async_json_100k() -> list[dict[str, Any]]:
     return test_data.JSON_100K
 
 
 @get("/async-json-500K", media_type=MediaType.JSON)
-async def async_json_500k() -> dict:
+async def async_json_500k() -> list[dict[str, Any]]:
     return test_data.JSON_500K
 
 
 @get("/async-json-1M", media_type=MediaType.JSON)
-async def async_json_1m() -> dict:
+async def async_json_1m() -> list[dict[str, Any]]:
     return test_data.JSON_1M
 
 
 @get("/async-json-5M", media_type=MediaType.JSON)
-async def async_json_5m() -> dict:
+async def async_json_5m() -> list[dict[str, Any]]:
     return test_data.JSON_5M
 
 
@@ -132,32 +133,32 @@ async def async_json_5m() -> dict:
 
 
 @get("/sync-json-1K", media_type=MediaType.JSON)
-def sync_json_1k() -> dict:
+def sync_json_1k() -> list[dict[str, Any]]:
     return test_data.JSON_1K
 
 
 @get("/sync-json-10K", media_type=MediaType.JSON)
-def sync_json_10k() -> dict:
+def sync_json_10k() -> list[dict[str, Any]]:
     return test_data.JSON_10K
 
 
 @get("/sync-json-100K", media_type=MediaType.JSON)
-def sync_json_100k() -> dict:
+def sync_json_100k() -> list[dict[str, Any]]:
     return test_data.JSON_100K
 
 
 @get("/sync-json-500K", media_type=MediaType.JSON)
-def sync_json_500k() -> dict:
+def sync_json_500k() -> list[dict[str, Any]]:
     return test_data.JSON_500K
 
 
 @get("/sync-json-1M", media_type=MediaType.JSON)
-def sync_json_1m() -> dict:
+def sync_json_1m() -> list[dict[str, Any]]:
     return test_data.JSON_1M
 
 
 @get("/sync-json-5M", media_type=MediaType.JSON)
-def sync_json_5m() -> dict:
+def sync_json_5m() -> list[dict[str, Any]]:
     return test_data.JSON_5M
 
 

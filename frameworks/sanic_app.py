@@ -1,6 +1,5 @@
 import time
 
-import anyio
 from sanic import HTTPResponse, Request, Sanic
 from sanic.response import ResponseStream, empty, file, file_stream, json, text
 
@@ -266,48 +265,6 @@ async def async_file_response_5m(request: Request) -> ResponseStream:
 
 
 # files sync
-
-
-@app.get("/sync-file-response-100B")
-def sync_file_response_100b(request: Request) -> HTTPResponse:
-    with anyio.start_blocking_portal() as portal:
-        return portal.call(file, test_data.FILE_100B)
-
-
-@app.get("/sync-file-response-1K")
-def sync_file_response_1k(request: Request) -> HTTPResponse:
-    with anyio.start_blocking_portal() as portal:
-        return portal.call(file, test_data.FILE_1K)
-
-
-@app.get("/sync-file-response-10K")
-def sync_file_response_10k(request: Request) -> HTTPResponse:
-    with anyio.start_blocking_portal() as portal:
-        return portal.call(file, test_data.FILE_10K)
-
-
-@app.get("/sync-file-response-100K")
-def sync_file_response_100k(request: Request) -> HTTPResponse:
-    with anyio.start_blocking_portal() as portal:
-        return portal.call(file, test_data.FILE_100K)
-
-
-@app.get("/sync-file-response-500K")
-def sync_file_response_500k(request: Request) -> HTTPResponse:
-    with anyio.start_blocking_portal() as portal:
-        return portal.call(file, test_data.FILE_500K)
-
-
-@app.get("/sync-file-response-1M")
-def sync_file_response_1m(request: Request) -> HTTPResponse:
-    with anyio.start_blocking_portal() as portal:
-        return portal.call(file, test_data.FILE_1M)
-
-
-@app.get("/sync-file-response-5M")
-def sync_file_response_5m(request: Request) -> HTTPResponse:
-    with anyio.start_blocking_portal() as portal:
-        return portal.call(file, test_data.FILE_5M)
 
 
 class SyncDependencyOne:

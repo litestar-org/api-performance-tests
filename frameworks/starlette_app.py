@@ -1,46 +1,38 @@
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import FileResponse, JSONResponse, PlainTextResponse, Response
+from starlette.routing import Route
 from starlette.status import HTTP_204_NO_CONTENT
 
 import test_data
 
-app = Starlette()
-
 # plaintext async
 
 
-@app.route("/async-plaintext-100B")
 async def async_plaintext_100b(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_100B)
 
 
-@app.route("/async-plaintext-1K")
 async def async_plaintext_1k(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_1K)
 
 
-@app.route("/async-plaintext-10K")
 async def async_plaintext_10k(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_10K)
 
 
-@app.route("/async-plaintext-100K")
 async def async_plaintext_100k(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_100K)
 
 
-@app.route("/async-plaintext-500K")
 async def async_plaintext_500k(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_500K)
 
 
-@app.route("/async-plaintext-1M")
 async def async_plaintext_1m(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_1M)
 
 
-@app.route("/async-plaintext-5M")
 async def async_plaintext_5m(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_5M)
 
@@ -48,37 +40,30 @@ async def async_plaintext_5m(request: Request) -> PlainTextResponse:
 # plaintext sync
 
 
-@app.route("/sync-plaintext-100B")
 def sync_plaintext_100b(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_100B)
 
 
-@app.route("/sync-plaintext-1K")
 def sync_plaintext_1k(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_1K)
 
 
-@app.route("/sync-plaintext-10K")
 def sync_plaintext_10k(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_10K)
 
 
-@app.route("/sync-plaintext-100K")
 def sync_plaintext_100k(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_100K)
 
 
-@app.route("/sync-plaintext-500K")
 def sync_plaintext_500k(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_500K)
 
 
-@app.route("/sync-plaintext-1M")
 def sync_plaintext_1m(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_1M)
 
 
-@app.route("/sync-plaintext-5M")
 def sync_plaintext_5m(request: Request) -> PlainTextResponse:
     return PlainTextResponse(test_data.TEXT_5M)
 
@@ -86,32 +71,26 @@ def sync_plaintext_5m(request: Request) -> PlainTextResponse:
 # JSON response
 
 
-@app.route("/async-json-1K")
 async def async_json_1k(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_1K)
 
 
-@app.route("/async-json-10K")
 async def async_json_10k(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_10K)
 
 
-@app.route("/async-json-100K")
 async def async_json_100k(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_100K)
 
 
-@app.route("/async-json-500K")
 async def async_json_500k(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_500K)
 
 
-@app.route("/async-json-1M")
 async def async_json_1m(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_1M)
 
 
-@app.route("/async-json-5M")
 async def async_json_5m(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_5M)
 
@@ -119,32 +98,26 @@ async def async_json_5m(request: Request) -> JSONResponse:
 # JSON sync
 
 
-@app.route("/sync-json-1K")
 def sync_json_1k(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_1K)
 
 
-@app.route("/sync-json-10K")
 def sync_json_10k(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_10K)
 
 
-@app.route("/sync-json-100K")
 def sync_json_100k(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_100K)
 
 
-@app.route("/sync-json-500K")
 def sync_json_500k(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_500K)
 
 
-@app.route("/sync-json-1M")
 def sync_json_1m(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_1M)
 
 
-@app.route("/sync-json-5M")
 def sync_json_5m(request: Request) -> JSONResponse:
     return JSONResponse(test_data.JSON_5M)
 
@@ -152,48 +125,40 @@ def sync_json_5m(request: Request) -> JSONResponse:
 # params
 
 
-@app.route("/async-no-params")
 async def async_no_params(request: Request) -> Response:
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@app.route("/sync-no-params")
 def sync_no_params(request: Request) -> Response:
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@app.route("/async-path-params/{first:int}")
 async def async_path_params(request: Request) -> Response:
     int(request.path_params["first"])
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@app.route("/sync-path-params/{first:int}")
 def sync_path_params(request: Request) -> Response:
     int(request.path_params["first"])
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@app.route("/async-query-param")
 async def async_query_params(request: Request) -> Response:
     int(request.query_params["first"])
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@app.route("/sync-query-param")
 def sync_query_params(request: Request) -> Response:
     int(request.query_params["first"])
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@app.route("/async-mixed-params/{second:int}")
 async def async_mixed_params(request: Request) -> Response:
     int(request.query_params["first"])
     request.path_params["second"]
     return Response(status_code=HTTP_204_NO_CONTENT)
 
 
-@app.route("/sync-mixed-params/{second:int}")
 def sync_mixed_params(request: Request) -> Response:
     int(request.query_params["first"])
     request.path_params["second"]
@@ -203,12 +168,10 @@ def sync_mixed_params(request: Request) -> Response:
 # headers
 
 
-@app.route("/async-response-headers")
 async def async_response_headers(request: Request) -> Response:
     return Response(status_code=HTTP_204_NO_CONTENT, headers=test_data.RESPONSE_HEADERS)
 
 
-@app.route("/sync-response-headers")
 def sync_response_headers(request: Request) -> Response:
     return Response(status_code=HTTP_204_NO_CONTENT, headers=test_data.RESPONSE_HEADERS)
 
@@ -216,7 +179,6 @@ def sync_response_headers(request: Request) -> Response:
 # cookies
 
 
-@app.route("/async-response-cookies")
 async def async_response_cookies(request: Request) -> Response:
     res = Response(status_code=HTTP_204_NO_CONTENT)
     for key, value in test_data.RESPONSE_COOKIES.items():
@@ -224,7 +186,6 @@ async def async_response_cookies(request: Request) -> Response:
     return res
 
 
-@app.route("/sync-response-cookies")
 def sync_response_cookies(request: Request) -> Response:
     res = Response(status_code=HTTP_204_NO_CONTENT)
     for key, value in test_data.RESPONSE_COOKIES.items():
@@ -235,37 +196,30 @@ def sync_response_cookies(request: Request) -> Response:
 # files
 
 
-@app.route("/async-file-response-100B")
 async def async_file_response_100b(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_100B, filename="response_file")
 
 
-@app.route("/async-file-response-1K")
 async def async_file_response_1k(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_1K, filename="response_file")
 
 
-@app.route("/async-file-response-10K")
 async def async_file_response_10k(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_10K, filename="response_file")
 
 
-@app.route("/async-file-response-100K")
 async def async_file_response_100k(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_100K, filename="response_file")
 
 
-@app.route("/async-file-response-500K")
 async def async_file_response_500k(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_500K, filename="response_file")
 
 
-@app.route("/async-file-response-1M")
 async def async_file_response_1m(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_1M, filename="response_file")
 
 
-@app.route("/async-file-response-5M")
 async def async_file_response_5m(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_5M, filename="response_file")
 
@@ -273,37 +227,30 @@ async def async_file_response_5m(request: Request) -> FileResponse:
 # files sync
 
 
-@app.route("/sync-file-response-100B")
 def sync_file_response_100b(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_100B, filename="response_file")
 
 
-@app.route("/sync-file-response-1K")
 def sync_file_response_1k(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_1K, filename="response_file")
 
 
-@app.route("/sync-file-response-10K")
 def sync_file_response_10k(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_10K, filename="response_file")
 
 
-@app.route("/sync-file-response-100K")
 def sync_file_response_100k(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_100K, filename="response_file")
 
 
-@app.route("/sync-file-response-500K")
 def sync_file_response_500k(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_500K, filename="response_file")
 
 
-@app.route("/sync-file-response-1M")
 def sync_file_response_1m(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_1M, filename="response_file")
 
 
-@app.route("/sync-file-response-5M")
 def sync_file_response_5m(request: Request) -> FileResponse:
     return FileResponse(path=test_data.FILE_5M, filename="response_file")
 
@@ -311,7 +258,6 @@ def sync_file_response_5m(request: Request) -> FileResponse:
 # request body json
 
 
-@app.route("/async-post-json", methods=["POST"])
 async def async_post_json(request: Request) -> Response:
     data = await request.json()
     return Response(status_code=HTTP_204_NO_CONTENT)
@@ -320,7 +266,6 @@ async def async_post_json(request: Request) -> Response:
 # request body multipart
 
 
-@app.route("/async-post-multipart-form", methods=["POST"])
 async def async_post_multipart_form(request: Request) -> Response:
     data = await request.form()
     return Response(status_code=HTTP_204_NO_CONTENT)
@@ -329,7 +274,6 @@ async def async_post_multipart_form(request: Request) -> Response:
 # form urlencoded
 
 
-@app.route("/async-post-form-urlencoded", methods=["POST"])
 async def async_post_form_urlencoded(request: Request) -> Response:
     data = await request.form()
     return Response(status_code=HTTP_204_NO_CONTENT)
@@ -338,8 +282,69 @@ async def async_post_form_urlencoded(request: Request) -> Response:
 # upload files
 
 
-@app.route("/async-post-file", methods=["POST"])
 async def async_post_file(request: Request) -> Response:
     form = await request.form()
     content = await form["test_file"].read()
     return Response(status_code=HTTP_204_NO_CONTENT)
+
+
+app = Starlette(
+    routes=[
+        Route(path="/async-plaintext-100B", endpoint=async_plaintext_100b, methods=["GET"]),
+        Route(path="/async-plaintext-1K", endpoint=async_plaintext_1k, methods=["GET"]),
+        Route(path="/async-plaintext-10K", endpoint=async_plaintext_10k, methods=["GET"]),
+        Route(path="/async-plaintext-100K", endpoint=async_plaintext_100k, methods=["GET"]),
+        Route(path="/async-plaintext-500K", endpoint=async_plaintext_500k, methods=["GET"]),
+        Route(path="/async-plaintext-1M", endpoint=async_plaintext_1m, methods=["GET"]),
+        Route(path="/async-plaintext-5M", endpoint=async_plaintext_5m, methods=["GET"]),
+        Route(path="/sync-plaintext-100B", endpoint=sync_plaintext_100b, methods=["GET"]),
+        Route(path="/sync-plaintext-1K", endpoint=sync_plaintext_1k, methods=["GET"]),
+        Route(path="/sync-plaintext-10K", endpoint=sync_plaintext_10k, methods=["GET"]),
+        Route(path="/sync-plaintext-100K", endpoint=sync_plaintext_100k, methods=["GET"]),
+        Route(path="/sync-plaintext-500K", endpoint=sync_plaintext_500k, methods=["GET"]),
+        Route(path="/sync-plaintext-1M", endpoint=sync_plaintext_1m, methods=["GET"]),
+        Route(path="/sync-plaintext-5M", endpoint=sync_plaintext_5m, methods=["GET"]),
+        Route(path="/async-json-1K", endpoint=async_json_1k, methods=["GET"]),
+        Route(path="/async-json-10K", endpoint=async_json_10k, methods=["GET"]),
+        Route(path="/async-json-100K", endpoint=async_json_100k, methods=["GET"]),
+        Route(path="/async-json-500K", endpoint=async_json_500k, methods=["GET"]),
+        Route(path="/async-json-1M", endpoint=async_json_1m, methods=["GET"]),
+        Route(path="/async-json-5M", endpoint=async_json_5m, methods=["GET"]),
+        Route(path="/sync-json-1K", endpoint=sync_json_1k, methods=["GET"]),
+        Route(path="/sync-json-10K", endpoint=sync_json_10k, methods=["GET"]),
+        Route(path="/sync-json-100K", endpoint=sync_json_100k, methods=["GET"]),
+        Route(path="/sync-json-500K", endpoint=sync_json_500k, methods=["GET"]),
+        Route(path="/sync-json-1M", endpoint=sync_json_1m, methods=["GET"]),
+        Route(path="/sync-json-5M", endpoint=sync_json_5m, methods=["GET"]),
+        Route(path="/async-no-params", endpoint=async_no_params, methods=["GET"]),
+        Route(path="/sync-no-params", endpoint=sync_no_params, methods=["GET"]),
+        Route(path="/async-path-params/{first:int}", endpoint=async_path_params, methods=["GET"]),
+        Route(path="/sync-path-params/{first:int}", endpoint=sync_path_params, methods=["GET"]),
+        Route(path="/async-query-param", endpoint=async_query_params, methods=["GET"]),
+        Route(path="/sync-query-param", endpoint=sync_query_params, methods=["GET"]),
+        Route(path="/async-mixed-params/{second:int}", endpoint=async_mixed_params, methods=["GET"]),
+        Route(path="/sync-mixed-params/{second:int}", endpoint=sync_mixed_params, methods=["GET"]),
+        Route(path="/async-response-headers", endpoint=async_response_headers, methods=["GET"]),
+        Route(path="/sync-response-headers", endpoint=sync_response_headers, methods=["GET"]),
+        Route(path="/async-response-cookies", endpoint=async_response_cookies, methods=["GET"]),
+        Route(path="/sync-response-cookies", endpoint=sync_response_cookies, methods=["GET"]),
+        Route(path="/async-file-response-100B", endpoint=async_file_response_100b, methods=["GET"]),
+        Route(path="/async-file-response-1K", endpoint=async_file_response_1k, methods=["GET"]),
+        Route(path="/async-file-response-10K", endpoint=async_file_response_10k, methods=["GET"]),
+        Route(path="/async-file-response-100K", endpoint=async_file_response_100k, methods=["GET"]),
+        Route(path="/async-file-response-500K", endpoint=async_file_response_500k, methods=["GET"]),
+        Route(path="/async-file-response-1M", endpoint=async_file_response_1m, methods=["GET"]),
+        Route(path="/async-file-response-5M", endpoint=async_file_response_5m, methods=["GET"]),
+        Route(path="/sync-file-response-100B", endpoint=sync_file_response_100b, methods=["GET"]),
+        Route(path="/sync-file-response-1K", endpoint=sync_file_response_1k, methods=["GET"]),
+        Route(path="/sync-file-response-10K", endpoint=sync_file_response_10k, methods=["GET"]),
+        Route(path="/sync-file-response-100K", endpoint=sync_file_response_100k, methods=["GET"]),
+        Route(path="/sync-file-response-500K", endpoint=sync_file_response_500k, methods=["GET"]),
+        Route(path="/sync-file-response-1M", endpoint=sync_file_response_1m, methods=["GET"]),
+        Route(path="/sync-file-response-5M", endpoint=sync_file_response_5m, methods=["GET"]),
+        Route(path="/async-post-json", endpoint=async_post_json, methods=["POST"]),
+        Route(path="/async-post-multipart-form", endpoint=async_post_multipart_form, methods=["POST"]),
+        Route(path="/async-post-form-urlencoded", endpoint=async_post_form_urlencoded, methods=["POST"]),
+        Route(path="/async-post-file", endpoint=async_post_file, methods=["POST"]),
+    ]
+)

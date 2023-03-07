@@ -67,13 +67,12 @@ TEST_CATEGORIES: list[TestCategory] = [
     TestCategory(
         name="files",
         endpoints=[
-            Endpoint(path="file-response-100B", name="file response 100 bytes"),
-            Endpoint(path="file-response-1K", name="file response 1 kB"),
-            Endpoint(path="file-response-10K", name="file response 10 kB"),
-            Endpoint(path="file-response-100K", name="file response 100 kB"),
-            Endpoint(path="file-response-500K", name="file response 500 kB"),
-            Endpoint(path="file-response-1M", name="file response 1 MB"),
-            # Endpoint(path="file-response-5M", name="file response 5 MB"),
+            Endpoint(path="file-response-100B", name="file response 100 bytes", exclude_sync=["sanic"]),
+            Endpoint(path="file-response-1K", name="file response 1 kB", exclude_sync=["sanic"]),
+            Endpoint(path="file-response-10K", name="file response 10 kB", exclude_sync=["sanic"]),
+            Endpoint(path="file-response-100K", name="file response 100 kB", exclude_sync=["sanic"]),
+            Endpoint(path="file-response-500K", name="file response 500 kB", exclude_sync=["sanic"]),
+            Endpoint(path="file-response-1M", name="file response 1 MB", exclude_sync=["sanic"]),
         ],
     ),
     TestCategory(

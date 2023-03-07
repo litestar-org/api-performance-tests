@@ -31,118 +31,119 @@ def run_app(app):
 
 
 ENDPOINT_SPEC = {
-    # **{
-    #     f"plaintext-{size}": {
-    #         "result": {"status_code": 200, "text": getattr(test_data, f"TEXT_{size}")},
-    #         "request": {},
-    #     }
-    #     for size in ["100B", "1K", "10K", "100K", "500K", "1M", "5M"]
-    # },
-    # **{
-    #     f"json-{size}": {
-    #         "result": {"status_code": 200, "json": getattr(test_data, f"JSON_{size}")},
-    #         "request": {},
-    #     }
-    #     for size in ["1K", "10K", "100K", "500K", "1M", "5M"]
-    # },
-    # **{
-    #     f"file-response-{size}": {
-    #         "result": {"status_code": 200, "bytes": getattr(test_data, f"FILE_{size}").read_bytes()},
-    #         "request": {},
-    #     }
-    #     for size in ["1K", "10K", "100K", "500K", "1M", "5M"]
-    # },
-    # # params
-    # "no-params": {"result": {"status_code": 204, "content": None}, "request": {}},
-    # "path-params/42": {"result": {"status_code": 204, "content": None}, "request": {}},
-    # "query-param": {
-    #     "result": {"status_code": 204, "content": None},
-    #     "request": {"params": {"first": "42"}},
-    # },
-    # "mixed-params/11": {
-    #     "result": {"status_code": 204, "content": None},
-    #     "request": {"params": {"first": "42"}},
-    # },
-    # # headers
-    # "response-headers": {"result": {"status_code": 204, "content": None}, "request": {}},
-    # # cookies
-    # "response-cookies": {"result": {"status_code": 204, "content": None}, "request": {}},
-    # "dependencies-sync": {
-    #     "result": {
-    #         "status_code": 200,
-    #         "json": ["sync_dependency_one", "sync_dependency_two", "sync_dependency_three"],
-    #     },
-    #     "request": {},
-    #     "skip": ["starlette"],
-    # },
-    # "dependencies-async": {
-    #     "result": {
-    #         "status_code": 200,
-    #         "json": ["async_dependency_one", "async_dependency_two", "async_dependency_three"],
-    #     },
-    #     "request": {},
-    #     "skip": ["starlette", "sanic", "blacksheep"],
-    # },
-    # "dependencies-mixed": {
-    #     "result": {
-    #         "status_code": 200,
-    #         "json": [
-    #             ["sync_dependency_one", "sync_dependency_two", "sync_dependency_three"],
-    #             ["async_dependency_one", "async_dependency_two", "async_dependency_three"],
-    #         ],
-    #     },
-    #     "request": {},
-    #     "skip": ["starlette", "sanic", "blacksheep"],
-    # },
-    # "serialize-pydantic-50": {
-    #     "result": {"status_code": 200, "json": test_data.PERSON_DATA_50},
-    #     "request": {},
-    #     "skip": ["starlette", "sanic", "blacksheep"],
-    # },
-    # "serialize-pydantic-100": {
-    #     "result": {"status_code": 200, "json": test_data.PERSON_DATA_100},
-    #     "request": {},
-    #     "skip": ["starlette", "sanic", "blacksheep"],
-    # },
-    # "serialize-pydantic-500": {
-    #     "result": {"status_code": 200, "json": test_data.PERSON_DATA_500},
-    #     "request": {},
-    #     "skip": ["starlette", "sanic", "blacksheep"],
-    # },
-    # "serialize-dataclasses-50": {
-    #     "result": {"status_code": 200, "json": test_data.PERSON_DATA_50},
-    #     "request": {},
-    #     "skip": ["starlette", "sanic", "blacksheep"],
-    # },
-    # "serialize-dataclasses-100": {
-    #     "result": {"status_code": 200, "json": test_data.PERSON_DATA_100},
-    #     "request": {},
-    #     "skip": ["starlette", "sanic", "blacksheep"],
-    # },
-    # "serialize-dataclasses-500": {
-    #     "result": {"status_code": 200, "json": test_data.PERSON_DATA_500},
-    #     "request": {},
-    #     "skip": ["starlette", "sanic", "blacksheep"],
-    # },
-    # "post-json": {
-    #     "result": {"status_code": 204},
-    #     "request": {"json": test_data.JSON_1K, "method": "POST"},
-    #     "skip-sync": ["starlette", "blacksheep"],
-    # },
-    # "post-multipart-form": {
-    #     "result": {"status_code": 204},
-    #     "request": {"content": test_data.MULTIPART_1K, "headers": test_data.MULTIPART_1K_HEADERS, "method": "POST"},
-    #     "skip-sync": ["starlette", "fastapi", "blacksheep"],
-    # },
-    # "post-form-urlencoded": {
-    #     "result": {"status_code": 204},
-    #     "request": {
-    #         "method": "POST",
-    #         "content": test_data.FORM_URLENCODED_1K,
-    #         "headers": test_data.FORM_URLENCODED_1K_HEADERS,
-    #     },
-    #     "skip-sync": ["starlette", "fastapi"],
-    # },
+    **{
+        f"plaintext-{size}": {
+            "result": {"status_code": 200, "text": getattr(test_data, f"TEXT_{size}")},
+            "request": {},
+        }
+        for size in ["100B", "1K", "10K", "100K", "500K", "1M", "5M"]
+    },
+    **{
+        f"json-{size}": {
+            "result": {"status_code": 200, "json": getattr(test_data, f"JSON_{size}")},
+            "request": {},
+        }
+        for size in ["1K", "10K", "100K", "500K", "1M", "5M"]
+    },
+    **{
+        f"file-response-{size}": {
+            "result": {"status_code": 200, "bytes": getattr(test_data, f"FILE_{size}").read_bytes()},
+            "request": {},
+            "skip-sync": ["sanic"],
+        }
+        for size in ["1K", "10K", "100K", "500K", "1M", "5M"]
+    },
+    # params
+    "no-params": {"result": {"status_code": 204, "content": None}, "request": {}},
+    "path-params/42": {"result": {"status_code": 204, "content": None}, "request": {}},
+    "query-param": {
+        "result": {"status_code": 204, "content": None},
+        "request": {"params": {"first": "42"}},
+    },
+    "mixed-params/11": {
+        "result": {"status_code": 204, "content": None},
+        "request": {"params": {"first": "42"}},
+    },
+    # headers
+    "response-headers": {"result": {"status_code": 204, "content": None}, "request": {}},
+    # cookies
+    "response-cookies": {"result": {"status_code": 204, "content": None}, "request": {}},
+    "dependencies-sync": {
+        "result": {
+            "status_code": 200,
+            "json": ["sync_dependency_one", "sync_dependency_two", "sync_dependency_three"],
+        },
+        "request": {},
+        "skip": ["starlette"],
+    },
+    "dependencies-async": {
+        "result": {
+            "status_code": 200,
+            "json": ["async_dependency_one", "async_dependency_two", "async_dependency_three"],
+        },
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "dependencies-mixed": {
+        "result": {
+            "status_code": 200,
+            "json": [
+                ["sync_dependency_one", "sync_dependency_two", "sync_dependency_three"],
+                ["async_dependency_one", "async_dependency_two", "async_dependency_three"],
+            ],
+        },
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-pydantic-50": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_50},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-pydantic-100": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_100},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-pydantic-500": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_500},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-dataclasses-50": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_50},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-dataclasses-100": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_100},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "serialize-dataclasses-500": {
+        "result": {"status_code": 200, "json": test_data.PERSON_DATA_500},
+        "request": {},
+        "skip": ["starlette", "sanic", "blacksheep"],
+    },
+    "post-json": {
+        "result": {"status_code": 204},
+        "request": {"json": test_data.JSON_1K, "method": "POST"},
+        "skip-sync": ["starlette", "blacksheep"],
+    },
+    "post-multipart-form": {
+        "result": {"status_code": 204},
+        "request": {"content": test_data.MULTIPART_1K, "headers": test_data.MULTIPART_1K_HEADERS, "method": "POST"},
+        "skip-sync": ["starlette", "fastapi", "blacksheep"],
+    },
+    "post-form-urlencoded": {
+        "result": {"status_code": 204},
+        "request": {
+            "method": "POST",
+            "content": test_data.FORM_URLENCODED_1K,
+            "headers": test_data.FORM_URLENCODED_1K_HEADERS,
+        },
+        "skip-sync": ["starlette", "fastapi"],
+    },
     "post-file": {
         "result": {"status_code": 204},
         "request": {
@@ -150,18 +151,12 @@ ENDPOINT_SPEC = {
             "files": {"test_file": test_data.FILE_1K.read_bytes()},
         },
         "skip-sync": ["starlette"],
-    }
+    },
 }
 
 
 @pytest.fixture(
-    params=[
-        # "starlite",
-        # "starlette",
-        # "fastapi",
-        # "sanic",
-        "blacksheep",
-    ],
+    params=["starlite", "starlette", "fastapi", "sanic", "blacksheep"],
     scope="session",
 )
 def framework(request):
