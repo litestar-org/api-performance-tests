@@ -2,24 +2,17 @@ import time
 from typing import Any
 
 import anyio
-from starlite import (
-    Body,
-    Cookie,
-    File,
-    MediaType,
-    Provide,
-    RequestEncodingType,
-    ResponseHeader,
-    Starlite,
-    UploadFile,
-    get,
-    post,
-)
+from starlite import MediaType, Starlite, get, post
+from starlite.datastructures import Cookie, UploadFile, ResponseHeader
+from starlite.di import Provide
+from starlite.enums import RequestEncodingType
+from starlite.params import Body
+from starlite.response_containers import File
 from starlite.status_codes import HTTP_204_NO_CONTENT
 
 import test_data
 
-response_headers = {name: ResponseHeader(value=value) for name, value in test_data.RESPONSE_HEADERS.items()}
+response_headers = [ResponseHeader(name=name, value=value) for name, value in test_data.RESPONSE_HEADERS.items()]
 response_cookies = [Cookie(key=key, value=value) for key, value in test_data.RESPONSE_COOKIES.items()]
 
 

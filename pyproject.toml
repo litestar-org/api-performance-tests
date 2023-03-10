@@ -24,7 +24,7 @@ sanic = {extras = ["ext"], version = "^22.12.0", optional = true}
 blacksheep = {version = "^1.2.10", optional = true}
 starlette = {version = "^0.25.0", optional = true}
 fastapi = {version = "^0.92.0", optional = true}
-starlite = {version = "^1.51.6", optional = true}
+starlite = { version = ">=2.0.0alpha1", optional = true }
 python-multipart = {version = "^0.0.6", optional = true}
 quart = {version = "^0.18.3", optional = true}
 
