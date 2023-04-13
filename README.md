@@ -32,15 +32,6 @@ This is an API performance test comparing:
 
 Using the [bombardier](https://github.com/codesenberg/bombardier) HTTP benchmarking tool.
 
-## Last Run Results
-
-![Plain Text Results](result.png)
-
-You can view the last run results under the `/results` folder - it contains json files with the output.
-The plotting is done using pandas - script is under `/analysis`.
-
-Note: PRs improving the analysis script are welcome.
-
 ## Test Setup
 
 Setup is identical for all frameworks.
