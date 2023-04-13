@@ -37,7 +37,15 @@ class Endpoint:
 class TestCategory:
     name: EndpointCategory
     endpoints: list[Endpoint]
-    frameworks: tuple[Framework, ...] = ("litestar", "starlette", "fastapi", "sanic", "blacksheep", "quart")
+    frameworks: tuple[Framework, ...] = (
+        "litestar",
+        "starlite",
+        "starlette",
+        "fastapi",
+        "sanic",
+        "blacksheep",
+        "quart",
+    )
 
 
 TEST_CATEGORIES: list[TestCategory] = [

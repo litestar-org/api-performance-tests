@@ -17,7 +17,7 @@ EndpointCategory = Literal[
 ]
 BenchmarkMode = Literal["rps", "latency"]
 VersionPrefix = Literal["pip", "git", "docker", "file"]
-Framework = Literal["litestar", "starlette", "fastapi", "sanic", "blacksheep", "quart"]
+Framework = Literal["litestar", "starlite", "starlette", "fastapi", "sanic", "blacksheep", "quart"]
 
 
 @dataclass
