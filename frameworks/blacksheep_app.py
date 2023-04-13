@@ -1,6 +1,7 @@
 import time
 
 import anyio
+import test_data
 from blacksheep import (
     Application,
     Cookie,
@@ -12,8 +13,6 @@ from blacksheep import (
     text,
 )
 from blacksheep.server.responses import file, no_content
-
-import test_data
 
 RESPONSE_COOKIES = [Cookie(name=name, value=value) for name, value in test_data.RESPONSE_COOKIES.items()]
 
@@ -375,7 +374,7 @@ async def async_dependencies_sync(
 
 @app.router.post("/async-post-json")
 async def async_post_json(request: Request) -> Response:
-    data = await request.json()
+    await request.json()
     return no_content()
 
 
@@ -410,11 +409,11 @@ def sync_post_form_urlencoded(request: Request, data: FromForm) -> Response:
 
 @app.router.post("/sync-post-file")
 def sync_post_file(request: Request, data: FromFiles) -> Response:
-    content = data.value[0].data
+    data.value[0].data
     return no_content()
 
 
 @app.router.post("/async-post-file")
 async def async_post_file(request: Request, data: FromFiles) -> Response:
-    content = data.value[0].data
+    data.value[0].data
     return no_content()
