@@ -17,7 +17,7 @@ EndpointCategory = Literal[
 ]
 BenchmarkMode = Literal["rps", "latency"]
 VersionPrefix = Literal["pip", "git", "docker", "file"]
-Framework = Literal["starlite", "starlette", "fastapi", "sanic", "blacksheep", "quart", "litestar"]
+Framework = Literal["litestar", "starlette", "fastapi", "sanic", "blacksheep", "quart"]
 
 
 @dataclass
@@ -85,7 +85,7 @@ class FrameworkSpec:
     @property
     def image_tag(self) -> str:
         versioned_name = self.version_name.replace(":", "_").replace("/", "_").replace(".git", "")
-        return f"starlite-api-bench:{versioned_name}"
+        return f"litestar-bench:{versioned_name}"
 
     @property
     def build_stage_image(self) -> str | None:
@@ -116,7 +116,9 @@ class FrameworkSpec:
             from .spec import FRAMEWORK_REPOS
 
             return f"git+{FRAMEWORK_REPOS[self.name]}@{version}"
-        return version if prefix == "file" else f"{self.name}=={self.version}"
+        if prefix == "file":
+            return version
+        return f"{self.name}=={self.version}"
 
     @property
     def extra_requirements(self) -> list[str]:
@@ -141,7 +143,7 @@ class TestResultStats(TypedDict):
 
 class TestResult(TypedDict):
     name: str
-    timeTakenSeconds: int
+    timeTakenSeconds: int  # noqa: N815
     req1xx: int
     req2xx: int
     req3xx: int

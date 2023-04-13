@@ -37,7 +37,7 @@ class Endpoint:
 class TestCategory:
     name: EndpointCategory
     endpoints: list[Endpoint]
-    frameworks: tuple[Framework, ...] = ("starlite", "starlette", "fastapi", "sanic", "blacksheep", "quart")
+    frameworks: tuple[Framework, ...] = ("litestar", "starlette", "fastapi", "sanic", "blacksheep", "quart")
 
 
 TEST_CATEGORIES: list[TestCategory] = [
@@ -91,7 +91,7 @@ TEST_CATEGORIES: list[TestCategory] = [
     ),
     TestCategory(
         name="dependency-injection",
-        frameworks=("starlite", "fastapi", "sanic", "blacksheep"),
+        frameworks=("litestar", "fastapi", "sanic", "blacksheep"),
         endpoints=[
             Endpoint(path="dependencies-sync", name="dependencies sync"),
             Endpoint(path="dependencies-async", name="dependencies async", exclude=["sanic", "blacksheep"]),
@@ -100,7 +100,7 @@ TEST_CATEGORIES: list[TestCategory] = [
     ),
     TestCategory(
         name="serialization",
-        frameworks=("starlite", "fastapi"),
+        frameworks=("litestar", "fastapi"),
         endpoints=[
             Endpoint(path="serialize-pydantic-50", name="serialize pydantic, 50 objects"),
             Endpoint(path="serialize-pydantic-100", name="serialize pydantic, 100 objects"),
@@ -254,7 +254,7 @@ def make_spec(
 
 
 FRAMEWORK_REPOS: dict[Framework, str] = {
-    "starlite": "https://github.com/starlite-api/starlite.git",
+    "litestar": "https://github.com/litestar-org/litestar.git",
     "starlette": "https://github.com/encode/starlette.git",
     "fastapi": "https://github.com/tiangolo/fastapi.git",
     "sanic": "https://github.com/sanic-org/sanic.git",

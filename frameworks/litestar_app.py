@@ -2,15 +2,14 @@ import time
 from typing import Any
 
 import anyio
-from starlite import MediaType, Starlite, get, post
-from starlite.datastructures import Cookie, UploadFile, ResponseHeader
-from starlite.di import Provide
-from starlite.enums import RequestEncodingType
-from starlite.params import Body
-from starlite.response_containers import File
-from starlite.status_codes import HTTP_204_NO_CONTENT
-
 import test_data
+from litestar import Litestar, MediaType, get, post
+from litestar.datastructures import Cookie, ResponseHeader, UploadFile
+from litestar.di import Provide
+from litestar.enums import RequestEncodingType
+from litestar.params import Body
+from litestar.response_containers import File
+from litestar.status_codes import HTTP_204_NO_CONTENT
 
 response_headers = [ResponseHeader(name=name, value=value) for name, value in test_data.RESPONSE_HEADERS.items()]
 response_cookies = [Cookie(key=key, value=value) for key, value in test_data.RESPONSE_COOKIES.items()]
@@ -547,15 +546,15 @@ async def async_post_form_urlencoded(data: dict = Body(media_type=RequestEncodin
 
 @post("/sync-post-file", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 def sync_post_file(data: UploadFile = Body(media_type=RequestEncodingType.MULTI_PART)) -> None:
-    content = data.file.read()
+    data.file.read()
 
 
 @post("/async-post-file", status_code=HTTP_204_NO_CONTENT, media_type=MediaType.TEXT)
 async def async_post_file(data: UploadFile = Body(media_type=RequestEncodingType.MULTI_PART)) -> None:
-    content = await data.read()
+    await data.read()
 
 
-app = Starlite(
+app = Litestar(
     route_handlers=[
         # DI sync
         sync_dependencies_sync,

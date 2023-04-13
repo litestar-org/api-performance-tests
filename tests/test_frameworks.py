@@ -2,12 +2,11 @@ import multiprocessing
 import time
 from contextlib import contextmanager
 
+import frameworks
 import httpx
 import pytest
-import uvicorn
-
-import frameworks
 import test_data
+import uvicorn
 
 
 @contextmanager
@@ -157,7 +156,7 @@ ENDPOINT_SPEC = {
 
 @pytest.fixture(
     params=[
-        "starlite",
+        "litestar",
         "starlette",
         "fastapi",
         "sanic",
