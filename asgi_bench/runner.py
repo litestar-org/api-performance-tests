@@ -121,10 +121,7 @@ class Runner:
         return self.results_dir / f"run_{run_number}.json"
 
     def _write_results(self, target: str, spec: TestSpec, results: dict[str, Any]) -> None:
-        if not self.results_file.exists():
-            current_results = {}
-        else:
-            current_results = json.loads(self.results_file.read_text())
+        current_results = json.loads(self.results_file.read_text()) if self.results_file.exists() else {}
         current_results.setdefault(target, {})
         current_results[target].setdefault(spec.benchmark_mode, {})
         current_results[target][spec.benchmark_mode].setdefault(spec.endpoint_mode, {})

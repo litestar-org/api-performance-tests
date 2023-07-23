@@ -106,8 +106,7 @@ def _data_for_plot(
 
     if ret:
         data = sorted(ret, key=lambda r: r["target"])
-        df = pd.DataFrame(data)
-        return df
+        return pd.DataFrame(data)
 
     return None
 
@@ -121,10 +120,7 @@ def _draw_plot(
     category: str | None = None,
     percentile: str | None = None,
 ):
-    if benchmark_mode == "rps":
-        title = "Requests per second (higher is better)"
-    else:
-        title = "Latency (lower is better)"
+    title = "Requests per second (higher is better)" if benchmark_mode == "rps" else "Latency (lower is better)"
 
     df = df.query(f"category == '{category}'")
 
@@ -149,8 +145,6 @@ def _draw_plot(
         height=280 * percentile_count if percentile_count > 1 else None,
         width=600 if percentile_count > 1 else None,
         labels={"score": "RPS", "endpoint_mode": "mode", "name": "", "target": "framework"},
-        # hover_data=["stddev"],
-        # color_discrete_map={target: COLOR_PALETTE[i] for i, target in enumerate(df["target"].unique())},
     )
 
     for format_ in formats:
@@ -183,7 +177,7 @@ def make_plots(
     benchmark_modes: tuple[BenchmarkMode, ...] = ("rps", "latency")
 
     for benchmark_mode in benchmark_modes:
-        if not all(benchmark_mode in mode_results for mode_results in results.values()):
+        if any(benchmark_mode not in mode_results for mode_results in results.values()):
             continue
         df = _data_for_plot(
             results, benchmark_mode, tolerance=tolerance, percentiles=percentiles, frameworks=frameworks
@@ -218,7 +212,7 @@ def _data_for_tables(
 
     for benchmark_mode in benchmark_modes:
         acc_bench_mode_results = accumulated_results.setdefault(benchmark_mode, {})
-        if not all(benchmark_mode in mode_results for mode_results in results.values()):
+        if any(benchmark_mode not in mode_results for mode_results in results.values()):
             continue
         for framework, framework_results in results.items():
             if frameworks and framework not in frameworks:

@@ -89,9 +89,7 @@ class FrameworkSpec:
 
     @property
     def build_stage_image(self) -> str | None:
-        if self.is_docker_target:
-            return self.typed_version[1]
-        return None
+        return self.typed_version[1] if self.is_docker_target else None
 
     @property
     def version_name(self) -> str:
@@ -118,9 +116,7 @@ class FrameworkSpec:
             from .spec import FRAMEWORK_REPOS
 
             return f"git+{FRAMEWORK_REPOS[self.name]}@{version}"
-        if prefix == "file":
-            return version
-        return f"{self.name}=={self.version}"
+        return version if prefix == "file" else f"{self.name}=={self.version}"
 
     @property
     def extra_requirements(self) -> list[str]:
