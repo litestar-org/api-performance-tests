@@ -27,10 +27,7 @@ SERVER_PORT = 8081
 
 
 def _header_args_from_spec(test_spec: TestSpec) -> list[str]:
-    params = []
-    for header, value in test_spec.headers:
-        params.append(f'--header="{header}: {value}"')
-    return params
+    return [f'--header="{header}: {value}"' for header, value in test_spec.headers]
 
 
 def _args_from_spec(test_spec: TestSpec) -> list[str]:
@@ -42,8 +39,7 @@ def _args_from_spec(test_spec: TestSpec) -> list[str]:
     if duration := test_spec.time_limit:
         args.append(f"--duration={duration}s")
     if body_file := test_spec.body_file:
-        args.append(f"--body-file=test_data/{body_file}")
-        args.append("--method=POST")
+        args.extend((f"--body-file=test_data/{body_file}", "--method=POST"))
     return args
 
 
@@ -109,8 +105,8 @@ class Runner:
         if "rps" in self._benchmark_modes:
             table.add_row("RPS benchmarks duration", f"{self._time_limit} seconds")
         if "latency" in self._benchmark_modes:
-            table.add_row("Latency benchmarks RPS limit", self._rate_limit)
-            table.add_row("Latency benchmarks requests limit", self._request_limit)
+            table.add_row("Latency benchmarks RPS limit", str(self._rate_limit))
+            table.add_row("Latency benchmarks requests limit", str(self._request_limit))
         table.add_row("Warmup time", f"{self._warmup_time} seconds")
         table.add_row("Endpoint modes", ", ".join(self._endpoint_modes))
         table.add_row("Endpoint categories", ", ".join(self._categories))
@@ -193,8 +189,7 @@ class Runner:
                 *_args_from_spec(test_spec),
             )
         results = json.loads(res)
-        error_percentage = get_error_percentage(results["result"])
-        if error_percentage:
+        if error_percentage := get_error_percentage(results["result"]):
             self.console.print(f"    [red][Error][/red] {test_spec.pretty_name} with errors ({error_percentage}%)")
         else:
             self.console.print(f"    [green][Completed][/green] {test_spec.pretty_name}")
@@ -212,7 +207,10 @@ class Runner:
             try:
                 container.kill()
             except APIError as error:
-                if not (error.status_code == 409 and "not running" in error.explanation):
+                if (
+                    error.status_code != 409
+                    or "not running" not in error.explanation
+                ):
                     # the container stopped for reasons
                     raise error
             yield False
