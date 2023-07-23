@@ -1501,6 +1501,24 @@ pygments = ">=2.13.0,<3.0.0"
 jupyter = ["ipywidgets (>=7.5.1,<9)"]
 
 [[package]]
+name = "rich-click"
+version = "1.6.1"
+description = "Format click help output nicely with rich"
+optional = false
+python-versions = ">=3.7"
+files = [
+    {file = "rich-click-1.6.1.tar.gz", hash = "sha256:f8ff96693ec6e261d1544e9f7d9a5811c5ef5d74c8adb4978430fc0dac16777e"},
+    {file = "rich_click-1.6.1-py3-none-any.whl", hash = "sha256:0fcf4d1a09029d79322dd814ab0b2e66ac183633037561881d45abae8a161d95"},
+]
+
+[package.dependencies]
+click = ">=7"
+rich = ">=10.7.0"
+
+[package.extras]
+dev = ["pre-commit"]
+
+[[package]]
 name = "rodi"
 version = "1.1.3"
 description = "Implementation of dependency injection for Python 3"
@@ -1838,13 +1856,13 @@ zstd = ["zstandard (>=0.18.0)"]
 
 [[package]]
 name = "uvicorn"
-version = "0.20.0"
+version = "0.23.1"
 description = "The lightning-fast ASGI server."
 optional = false
-python-versions = ">=3.7"
+python-versions = ">=3.8"
 files = [
-    {file = "uvicorn-0.20.0-py3-none-any.whl", hash = "sha256:c3ed1598a5668208723f2bb49336f4509424ad198d6ab2615b7783db58d919fd"},
-    {file = "uvicorn-0.20.0.tar.gz", hash = "sha256:a4e12017b940247f836bc90b72e725d7dfd0c8ed1c51eb365f5ba30d9f5127d8"},
+    {file = "uvicorn-0.23.1-py3-none-any.whl", hash = "sha256:1d55d46b83ee4ce82b4e82f621f2050adb3eb7b5481c13f9af1744951cae2f1f"},
+    {file = "uvicorn-0.23.1.tar.gz", hash = "sha256:da9b0c8443b2d7ee9db00a345f1eee6db7317432c9d4400f5049cc8d358383be"},
 ]
 
 [package.dependencies]
@@ -2045,9 +2063,9 @@ files = [
 h11 = ">=0.9.0,<1"
 
 [extras]
-test = ["blacksheep", "fastapi", "python-multipart", "quart", "sanic", "starlette", "starlite"]
+test = ["blacksheep", "fastapi", "litestar", "python-multipart", "quart", "sanic", "starlette", "starlite"]
 
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.11"
-content-hash = "1e256fa9deaeb69724b576d3e9b5477a1af74e454ac184e47427db4850b0c54b"
+content-hash = "e74e593408d8f9fd95a21fd8e334161e762316b72f80ee39111ee5d570e21864"
