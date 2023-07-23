@@ -1,19 +1,34 @@
+<!-- markdownlint-disable -->
+<p align="center">
+  <img src="https://github.com/litestar-org/branding/blob/473f54621e55cde9acbb6fcab7fc03036173eb3d/assets/Branding%20-%20SVG%20-%20Transparent/Logo%20-%20Banner%20-%20Inline%20-%20Light.svg#gh-light-mode-only" alt="Litestar Logo - Light" width="100%" height="auto" />
+  <img src="https://github.com/litestar-org/branding/blob/473f54621e55cde9acbb6fcab7fc03036173eb3d/assets/Branding%20-%20SVG%20-%20Transparent/Logo%20-%20Banner%20-%20Inline%20-%20Dark.svg#gh-dark-mode-only" alt="Litestar Logo - Dark" width="100%" height="auto" />
+</p>
+<!-- markdownlint-restore -->
+
+<div align="center">
+
+<!-- prettier-ignore-start -->
+
+| Project   |     | Status                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+|-----------|:----|--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Community |     | [![Reddit](https://img.shields.io/reddit/subreddit-subscribers/litestarapi?label=r%2FLitestar&logo=reddit&labelColor=202235&color=edb641&logoColor=edb641)](https://reddit.com/r/litestarapi) [![Discord](https://img.shields.io/discord/919193495116337154?labelColor=202235&color=edb641&label=chat%20on%20discord&logo=discord&logoColor=edb641)](https://discord.gg/X3FJqy8d2j) [![Matrix](https://img.shields.io/badge/chat%20on%20Matrix-bridged-202235?labelColor=202235&color=edb641&logo=matrix&logoColor=edb641)](https://matrix.to/#/#litestar:matrix.org) [![Medium](https://img.shields.io/badge/Medium-202235?labelColor=202235&color=edb641&logo=medium&logoColor=edb641)](https://blog.litestar.dev) [![Twitter](https://img.shields.io/twitter/follow/LitestarAPI?labelColor=202235&color=edb641&logo=twitter&logoColor=edb641&style=flat)](https://twitter.com/LitestarAPI) [![Blog](https://img.shields.io/badge/Blog-litestar.dev-202235?logo=blogger&labelColor=202235&color=edb641&logoColor=edb641)](https://blog.litestar.dev) |
+| Meta      |     | [![Litestar Project](https://img.shields.io/badge/Litestar%20Org-%E2%AD%90%20API%20Perf%20Tests-202235.svg?logo=python&labelColor=202235&color=edb641&logoColor=edb641)](https://github.com/litestar-org/litestar) [![License - MIT](https://img.shields.io/badge/license-MIT-202235.svg?logo=python&labelColor=202235&color=edb641&logoColor=edb641)](https://spdx.org/licenses/) [![Litestar Sponsors](https://img.shields.io/badge/Sponsor-%E2%9D%A4-%23edb641.svg?&logo=github&logoColor=edb641&labelColor=202235)](https://github.com/sponsors/litestar-org) [![linting - Ruff](https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/charliermarsh/ruff/main/assets/badge/v2.json&labelColor=202235)](https://github.com/astral-sh/ruff) [![code style - Black](https://img.shields.io/badge/code%20style-black-000000.svg?logo=python&labelColor=202235&logoColor=edb641)](https://github.com/psf/black)                                                                                                                        |
+
+<!-- prettier-ignore-end -->
+</div>
+
 # api-performance-tests
 
+> **Note**
+> [**_Starlite has been renamed to Litestar_**](https://litestar.dev/about/organization.html#litestar-and-starlite)
+
 This is an API performance test comparing:
-
-<p align="center">
-  <img src="https://github.com/starlite-api/branding/blob/9ab099a2089219c07727baaa29f67e9474ff93c8/assets/Starlite%20Branding%20-%20SVG%20-%20Transparent/Logo%20-%20Banner%20-%20Inline%20-%20Light.svg#gh-light-mode-only" alt="Starlite Logo - Light" width="100%" height="auto" />
-  <img src="https://github.com/starlite-api/branding/blob/9ab099a2089219c07727baaa29f67e9474ff93c8/assets/Starlite%20Branding%20-%20SVG%20-%20Transparent/Logo%20-%20Banner%20-%20Inline%20-%20Dark.svg#gh-dark-mode-only" alt="Starlite Logo - Dark" width="100%" height="auto" />
-</p>
-
-[![Discord](https://img.shields.io/discord/919193495116337154?color=202235&label=%20Discord&logo=discord)](https://discord.gg/X3FJqy8d2j)                            [![Matrix](https://img.shields.io/badge/%5Bm%5D%20Matrix-bridged-blue?color=202235)](https://matrix.to/#/#starlitespace:matrix.org)                                  [![Reddit](https://img.shields.io/reddit/subreddit-subscribers/starlite?label=r%2FStarlite&logo=reddit)](https://reddit.com/r/starlite)
-
-1. [Starlite](https://github.com/starlite-api/starlite)
-2. [Starlette](https://github.com/encode/starlette)
-3. [FastAPI](https://github.com/tiangolo/fastapi)
-4. [Sanic](https://github.com/sanic-org/sanic)
-5. [BlackSheep](https://github.com/Neoteroi/BlackSheep)
+1. [Litestar](https://github.com/litestar-org/litestar)
+2. [Starlite v1.5x](https://github.com/litestar-org/litestar/tree/v1.51)
+3. [Starlette](https://github.com/encode/starlette)
+4. [FastAPI](https://github.com/tiangolo/fastapi)
+5. [Sanic](https://github.com/sanic-org/sanic)
+6. [BlackSheep](https://github.com/Neoteroi/BlackSheep)
 
 Using the [bombardier](https://github.com/codesenberg/bombardier) HTTP benchmarking tool.
 
@@ -60,7 +75,7 @@ Serializing a dictionary into JSON
 
 ##### Serialization
 
-(only supported by `Starlite` and `FastAPI`)
+(only supported by `Litestar` and `FastAPI`)
 
 - Serializing 50 dataclass objects each referencing 2 more dataclass objects
 - Serializing 100 dataclass objects each referencing 5 more dataclass objects
@@ -90,8 +105,8 @@ All responses return "No Content"
 (not supported by `Starlette`)
 
 - Resolving 3 nested synchronous dependencies
-- Resolving 3 nested asynchronous dependencies (only supported by `Starlite` and `FastAPI`)
-- Resolving 3 nested synchronous, and 3 nested asynchronous dependencies (only supported by `Starlite` and `FastAPI`)
+- Resolving 3 nested asynchronous dependencies (only supported by `Litestar` and `FastAPI`)
+- Resolving 3 nested synchronous, and 3 nested asynchronous dependencies (only supported by `Litestar` and `FastAPI`)
 
 #### Modifying responses
 
@@ -120,25 +135,25 @@ After the run, the results will be stored in `results/run_<run_mumber>.json`
 
 To select a framework, simply pass its name to the `run command`:
 
-`bench run --rps starlite starlette fastapi`
+`bench run --rps litestar starlette fastapi`
 
 ##### Selecting a framework version
 
-- A version available on PyPi: `bench run --rps starlite@v1.40.0`
-- A version from git: `bench run --rps starlite@git+branch_or_tag_name`
-- A version from a specific git repository: `bench run --rps starlite@git+https://github.com/starlite-api/starlite.git@branch_or_tag_name`
-- A local file: `bench run --rps starlite@file+/path/to/starlite`
+- A version available on PyPi: `bench run --rps litestar@v1.40.0`
+- A version from git: `bench run --rps litestar@git+branch_or_tag_name`
+- A version from a specific git repository: `bench run --rps litestar@git+https://github.com/litestar-org/litestar.git@branch_or_tag_name`
+- A local file: `bench run --rps litestar@file+/path/to/litestar`
 
 #### Running a specific test
 
 You can run a single test by specifying its full name and category:
 
-`bench run --rps starlite -t json:json-1K`
+`bench run --rps litestar -t json:json-1K`
 
 #### Test Settings
 
 |                                                                                                                                                                       |                                                                 |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
 | -r, --rebuild                                                                                                                                                         | rebuild docker images                                           |
 | -L, --latency                                                                                                                                                         | run latency tests                                               |
 | -R, --rps                                                                                                                                                             | run RPS tests                                                   |
