@@ -1,4 +1,4 @@
-import click
+import rich_click as click
 
 from asgi_bench import results
 from asgi_bench.build import build_docker_images, remove_docker_images
