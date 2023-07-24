@@ -67,7 +67,7 @@ Serializing a dictionary into JSON
 
 ##### Serialization
 
-(only supported by `Litestar` and `FastAPI`)
+(only supported by `Litestar`, `Starlite`, and `FastAPI`)
 
 - Serializing 50 dataclass objects each referencing 2 more dataclass objects
 - Serializing 100 dataclass objects each referencing 5 more dataclass objects
@@ -97,8 +97,8 @@ All responses return "No Content"
 (not supported by `Starlette`)
 
 - Resolving 3 nested synchronous dependencies
-- Resolving 3 nested asynchronous dependencies (only supported by `Litestar` and `FastAPI`)
-- Resolving 3 nested synchronous, and 3 nested asynchronous dependencies (only supported by `Litestar` and `FastAPI`)
+- Resolving 3 nested asynchronous dependencies (only supported by `Litestar`, `Starlite`, and `FastAPI`)
+- Resolving 3 nested synchronous, and 3 nested asynchronous dependencies (only supported by `Litestar`, `Starlite`, and `FastAPI`)
 
 #### Modifying responses
 
@@ -127,11 +127,11 @@ After the run, the results will be stored in `results/run_<run_mumber>.json`
 
 To select a framework, simply pass its name to the `run command`:
 
-`bench run --rps litestar starlette fastapi`
+`bench run --rps litestar starlite starlette fastapi`
 
 ##### Selecting a framework version
 
-- A version available on PyPi: `bench run --rps litestar@v1.40.0`
+- A version available on PyPi: `bench run --rps litestar@v2.0.0`
 - A version from git: `bench run --rps litestar@git+branch_or_tag_name`
 - A version from a specific git repository: `bench run --rps litestar@git+https://github.com/litestar-org/litestar.git@branch_or_tag_name`
 - A local file: `bench run --rps litestar@file+/path/to/litestar`

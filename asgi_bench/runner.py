@@ -204,7 +204,7 @@ class Runner:
             try:
                 container.kill()
             except APIError as error:
-                if not (error.status_code == 409 and "not running" in error.explanation):
+                if error.status_code != 409 or "not running" not in error.explanation:
                     # the container stopped for reasons
                     raise error
             yield False

@@ -37,7 +37,7 @@ def test_spec_targets(
     version_name: str,
 ):
     spec = FrameworkSpec(name="litestar", version=version, path=Path(), tests=[])
-    if pip_package:
+    if pip_package:  # sourcery skip: no-conditionals-in-tests
         assert spec.pip_package == pip_package
     assert spec.typed_version == (type_, clean_version)
     assert spec.image_tag == f"litestar-bench:{image_tag}"

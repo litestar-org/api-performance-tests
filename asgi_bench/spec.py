@@ -201,7 +201,7 @@ def make_spec(
     rate_limit: int | None = None,
     benchmark_modes: tuple[BenchmarkMode, ...] | BenchmarkMode,
     test_name: str | None = None,
-) -> list[FrameworkSpec]:
+) -> list[FrameworkSpec]:  # sourcery skip: low-code-quality
     if isinstance(endpoint_modes, str):
         endpoint_modes = (endpoint_modes,)
     if isinstance(categories, str):

@@ -116,9 +116,7 @@ class FrameworkSpec:
             from .spec import FRAMEWORK_REPOS
 
             return f"git+{FRAMEWORK_REPOS[self.name]}@{version}"
-        if prefix == "file":
-            return version
-        return f"{self.name}=={self.version}"
+        return version if prefix == "file" else f"{self.name}=={self.version}"
 
     @property
     def extra_requirements(self) -> list[str]:
