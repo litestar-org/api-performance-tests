@@ -7,12 +7,12 @@ from asgi_bench.spec import ENDPOINT_CATEGORIES, FRAMEWORKS
 from asgi_bench.types import BenchmarkMode, EndpointCategory, EndpointMode
 
 
-@click.group()
+@click.group(help="ASGI benchmarking tool", context_settings={"help_option_names": ["-h", "--help"]})
 def cli() -> None:
     pass
 
 
-@cli.command()
+@cli.command(help="run benchmarks")
 @click.argument("frameworks", nargs=-1)
 @click.option("--rebuild", is_flag=True, show_default=True, help="rebuild images")
 @click.option("-w", "--warmup", default=5, show_default=True)
@@ -86,7 +86,7 @@ def run(
     runner.run()
 
 
-@cli.command("results")
+@cli.command("results", help="generate result tables and plots")
 @click.option("-r", "--run", "run_name", type=int, help="run to analyze (defaults to latest run)")
 @click.option(
     "-f",
