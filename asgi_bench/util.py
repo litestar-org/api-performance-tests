@@ -15,13 +15,11 @@ def get_error_percentage(test_result: TestResult) -> float:
     success_count = get_success_response_count(test_result)
     error_count = get_error_response_count(test_result)
     total_count = success_count + error_count
-    if not error_count:
-        return 0
-    return 100 * (error_count / total_count)
+    return 100 * (error_count / total_count) if error_count else 0
 
 
 def has_no_responses(test_result: TestResult) -> bool:
     return not get_error_response_count(test_result) + get_success_response_count(test_result)
 
 
-template_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"))
+template_env = jinja2.Environment(loader=jinja2.FileSystemLoader("templates"), autoescape=True)

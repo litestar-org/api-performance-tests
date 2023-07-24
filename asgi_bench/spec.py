@@ -50,7 +50,6 @@ TEST_CATEGORIES: list[TestCategory] = [
             Endpoint(path="plaintext-100K", name="plaintext 100 kB"),
             Endpoint(path="plaintext-500K", name="plaintext 500 kB"),
             Endpoint(path="plaintext-1M", name="plaintext 1 MB"),
-            # Endpoint(path="plaintext-5M", name="plaintext 5 MB"),
         ],
     ),
     TestCategory(
@@ -61,7 +60,6 @@ TEST_CATEGORIES: list[TestCategory] = [
             Endpoint(path="json-100K", name="json 100 kB"),
             Endpoint(path="json-500K", name="json 500 kB"),
             Endpoint(path="json-1M", name="json 1 MB"),
-            # Endpoint(path="json-5M", name="json 5 MB"),
         ],
     ),
     TestCategory(
@@ -233,7 +231,7 @@ def make_spec(
                         slug_name=f"{endpoint_mode}-{endpoint.path.split('?')[0]}",
                         is_supported=(
                             framework_name in category.frameworks
-                            and endpoint.supports_framework(framework_name, endpoint_mode)  # noqa: W503
+                            and endpoint.supports_framework(framework_name, endpoint_mode)
                         ),
                         body_file=endpoint.body_file,
                     )

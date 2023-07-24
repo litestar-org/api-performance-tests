@@ -58,9 +58,7 @@ def run(
 ) -> None:
     if not frameworks:
         frameworks = FRAMEWORKS
-    benchmark_modes: tuple[BenchmarkMode, ...] = ()
-    if rps:
-        benchmark_modes = ("rps",)
+    benchmark_modes: tuple[BenchmarkMode, ...] = ("rps",) if rps else ()
     if latency:
         benchmark_modes = (*benchmark_modes, "latency")
 
@@ -120,7 +118,7 @@ def run(
 @click.option("-P", "--plots", is_flag=True, help="output plots")
 def results_command(
     run_name: int | None,
-    format: tuple[str, ...],
+    format: tuple[str, ...],  # noqa: A002
     percentile: tuple[str, ...],
     split_percentiles: bool,
     tolerance: float,
