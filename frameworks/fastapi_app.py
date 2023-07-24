@@ -307,14 +307,14 @@ def sync_dependency_one() -> str:
 
 
 def sync_dependency_two(
-    injected_sync_one: str = Depends(sync_dependency_one),  # noqa: B008
+    injected_sync_one: str = Depends(sync_dependency_one),
 ) -> list[str]:
     time.sleep(0.00000001)
     return [injected_sync_one, "sync_dependency_two"]
 
 
 def sync_dependency_three(
-    injected_sync_two: list[str] = Depends(sync_dependency_two),  # noqa: B008
+    injected_sync_two: list[str] = Depends(sync_dependency_two),
 ) -> list[str]:
     time.sleep(0.00000001)
     return [*injected_sync_two, "sync_dependency_three"]
@@ -326,84 +326,84 @@ async def async_dependency_one() -> str:
 
 
 async def async_dependency_two(
-    injected_async_one: str = Depends(async_dependency_one),  # noqa: B008
+    injected_async_one: str = Depends(async_dependency_one),
 ) -> list[str]:
     await anyio.sleep(0.00000001)
     return [injected_async_one, "async_dependency_two"]
 
 
 async def async_dependency_three(
-    injected_async_two: list[str] = Depends(async_dependency_two),  # noqa: B008
+    injected_async_two: list[str] = Depends(async_dependency_two),
 ) -> list[str]:
     await anyio.sleep(0.00000001)
     return [*injected_async_two, "async_dependency_three"]
 
 
 async def dependencies_mixed(
-    injected_sync_three: list[str] = Depends(sync_dependency_three),  # noqa: B008
-    injected_async_three: list[str] = Depends(async_dependency_three),  # noqa: B008
+    injected_sync_three: list[str] = Depends(sync_dependency_three),
+    injected_async_three: list[str] = Depends(async_dependency_three),
 ) -> tuple[list[str], list[str]]:
     return injected_sync_three, injected_async_three
 
 
 @app.get("/sync-dependencies-sync")
 def sync_dependencies_sync(
-    injected_sync_one: str = Depends(sync_dependency_one),  # noqa: B008
-    injected_sync_two: list[str] = Depends(sync_dependency_two),  # noqa: B008
-    injected_sync_three: list[str] = Depends(sync_dependency_three),  # noqa: B008
+    injected_sync_one: str = Depends(sync_dependency_one),
+    injected_sync_two: list[str] = Depends(sync_dependency_two),
+    injected_sync_three: list[str] = Depends(sync_dependency_three),
 ) -> list[str]:
     return injected_sync_three
 
 
 @app.get("/sync-dependencies-async")
 def sync_dependencies_async(
-    injected_async_one: str = Depends(async_dependency_one),  # noqa: B008
-    injected_async_two: list[str] = Depends(async_dependency_two),  # noqa: B008
-    injected_async_three: list[str] = Depends(async_dependency_three),  # noqa: B008
+    injected_async_one: str = Depends(async_dependency_one),
+    injected_async_two: list[str] = Depends(async_dependency_two),
+    injected_async_three: list[str] = Depends(async_dependency_three),
 ) -> list[str]:
     return injected_async_three
 
 
 @app.get("/sync-dependencies-mixed")
 def sync_dependencies_mixed(
-    injected_sync_one: str = Depends(sync_dependency_one),  # noqa: B008
-    injected_sync_two: list[str] = Depends(sync_dependency_two),  # noqa: B008
-    injected_sync_three: list[str] = Depends(sync_dependency_three),  # noqa: B008
-    injected_async_one: str = Depends(async_dependency_one),  # noqa: B008
-    injected_async_two: list[str] = Depends(async_dependency_two),  # noqa: B008
-    injected_async_three: list[str] = Depends(async_dependency_three),  # noqa: B008
-    injected_mixed: tuple[list[str], list[str]] = Depends(dependencies_mixed),  # noqa: B008
+    injected_sync_one: str = Depends(sync_dependency_one),
+    injected_sync_two: list[str] = Depends(sync_dependency_two),
+    injected_sync_three: list[str] = Depends(sync_dependency_three),
+    injected_async_one: str = Depends(async_dependency_one),
+    injected_async_two: list[str] = Depends(async_dependency_two),
+    injected_async_three: list[str] = Depends(async_dependency_three),
+    injected_mixed: tuple[list[str], list[str]] = Depends(dependencies_mixed),
 ) -> tuple[list[str], list[str]]:
     return injected_mixed
 
 
 @app.get("/async-dependencies-sync")
 async def async_dependencies_sync(
-    injected_sync_one: str = Depends(sync_dependency_one),  # noqa: B008
-    injected_sync_two: list[str] = Depends(sync_dependency_two),  # noqa: B008
-    injected_sync_three: list[str] = Depends(sync_dependency_three),  # noqa: B008
+    injected_sync_one: str = Depends(sync_dependency_one),
+    injected_sync_two: list[str] = Depends(sync_dependency_two),
+    injected_sync_three: list[str] = Depends(sync_dependency_three),
 ) -> list[str]:
     return injected_sync_three
 
 
 @app.get("/async-dependencies-async")
 async def async_dependencies_async(
-    injected_async_one: str = Depends(async_dependency_one),  # noqa: B008
-    injected_async_two: list[str] = Depends(async_dependency_two),  # noqa: B008
-    injected_async_three: list[str] = Depends(async_dependency_three),  # noqa: B008
+    injected_async_one: str = Depends(async_dependency_one),
+    injected_async_two: list[str] = Depends(async_dependency_two),
+    injected_async_three: list[str] = Depends(async_dependency_three),
 ) -> list[str]:
     return injected_async_three
 
 
 @app.get("/async-dependencies-mixed")
 async def async_dependencies_mixed(
-    injected_sync_one: str = Depends(sync_dependency_one),  # noqa: B008
-    injected_sync_two: list[str] = Depends(sync_dependency_two),  # noqa: B008
-    injected_sync_three: list[str] = Depends(sync_dependency_three),  # noqa: B008
-    injected_async_one: str = Depends(async_dependency_one),  # noqa: B008
-    injected_async_two: list[str] = Depends(async_dependency_two),  # noqa: B008
-    injected_async_three: list[str] = Depends(async_dependency_three),  # noqa: B008
-    injected_mixed: tuple[list[str], list[str]] = Depends(dependencies_mixed),  # noqa: B008
+    injected_sync_one: str = Depends(sync_dependency_one),
+    injected_sync_two: list[str] = Depends(sync_dependency_two),
+    injected_sync_three: list[str] = Depends(sync_dependency_three),
+    injected_async_one: str = Depends(async_dependency_one),
+    injected_async_two: list[str] = Depends(async_dependency_two),
+    injected_async_three: list[str] = Depends(async_dependency_three),
+    injected_mixed: tuple[list[str], list[str]] = Depends(dependencies_mixed),
 ) -> tuple[list[str], list[str]]:
     return injected_mixed
 
@@ -492,7 +492,7 @@ async def async_post_json(data: list) -> None:
 
 @app.post("/async-post-multipart-form", status_code=HTTP_204_NO_CONTENT)
 async def async_post_multipart_form(request: Request) -> None:
-    data = await request.form()
+    await request.form()
 
 
 # form urlencoded
@@ -500,7 +500,7 @@ async def async_post_multipart_form(request: Request) -> None:
 
 @app.post("/async-post-form-urlencoded", status_code=HTTP_204_NO_CONTENT)
 async def async_post_form_urlencoded(request: Request) -> None:
-    data = await request.form()
+    await request.form()
 
 
 # upload files
@@ -508,9 +508,9 @@ async def async_post_form_urlencoded(request: Request) -> None:
 
 @app.post("/sync-post-file", status_code=HTTP_204_NO_CONTENT)
 def sync_post_file(test_file: UploadFile) -> None:
-    content = test_file.file.read()
+    test_file.file.read()
 
 
 @app.post("/async-post-file", status_code=HTTP_204_NO_CONTENT)
 async def async_post_file(test_file: UploadFile) -> None:
-    content = await test_file.read()
+    await test_file.read()

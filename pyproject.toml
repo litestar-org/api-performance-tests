@@ -156,3 +156,5 @@ known-first-party = ["asgi_bench", "tests", "frameworks", "test_data"]
     "TCH",
     "TRY",
 ]
+
+"frameworks/**/*.*" = ["B008", "B018"]

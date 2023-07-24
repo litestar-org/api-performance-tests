@@ -1,7 +1,6 @@
-from quart import Quart, send_file, request, Response
+from quart import Quart, Response, request, send_file
 
 import test_data
-
 
 app = Quart(__name__)
 
@@ -169,25 +168,25 @@ def sync_path_params(first: int) -> Response:
 
 @app.get("/async-query-param")
 async def async_query_params() -> Response:
-    first = request.args.get("first", type=int)
+    request.args.get("first", type=int)
     return Response(status=204)
 
 
 @app.get("/sync-query-param")
 def sync_query_params() -> Response:
-    first = request.args.get("first", type=int)
+    request.args.get("first", type=int)
     return Response(status=204)
 
 
 @app.get("/async-mixed-params/<int:second>")
 async def async_mixed_params(second: int) -> Response:
-    first = request.args.get("first", type=int)
+    request.args.get("first", type=int)
     return Response(status=204)
 
 
 @app.get("/sync-mixed-params/<int:second>")
 def sync_mixed_params(second: int) -> Response:
-    first = request.args.get("first", type=int)
+    request.args.get("first", type=int)
     return Response(status=204)
 
 
@@ -266,7 +265,7 @@ async def async_file_response_5m() -> Response:
 
 @app.post("/async-post-json")
 async def async_post_json() -> Response:
-    data = await request.get_json()
+    await request.get_json()
     return Response(status=204)
 
 
@@ -275,13 +274,13 @@ async def async_post_json() -> Response:
 
 @app.post("/async-post-multipart-form")
 async def async_post_multipart_form() -> Response:
-    data = await request.get_data(parse_form_data=True)
+    await request.get_data(parse_form_data=True)
     return Response(status=204)
 
 
 @app.post("/async-post-form-urlencoded")
 async def async_post_form_urlencoded() -> Response:
-    data = await request.get_data(parse_form_data=True)
+    await request.get_data(parse_form_data=True)
     return Response(status=204)
 
 
@@ -290,5 +289,5 @@ async def async_post_form_urlencoded() -> Response:
 
 @app.post("/async-post-file")
 async def async_post_file() -> Response:
-    content = await request.files
+    await request.files
     return Response(status=204)

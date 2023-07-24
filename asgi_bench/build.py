@@ -37,7 +37,7 @@ def build_docker_images(framework_specs: list[FrameworkSpec], rebuild: bool = Fa
     client = docker.from_env()
 
     with console.status("[yellow]Building runner image"):
-        client.images.build(path=".", dockerfile="DockerfileBench", tag="starlite-api-bench:runner")
+        client.images.build(path=".", dockerfile="DockerfileBench", tag="litestar-bench:runner")
     console.print("[green]  Runner image built successfully")
 
     for framework in framework_specs:
@@ -68,5 +68,5 @@ def remove_docker_images(client: docker.DockerClient | None = None, force: bool 
         client = docker.from_env()
     with console.status("[yellow]Removing all images"):
         for image in client.images.list():
-            if any(tag.startswith("starlite-api-bench:") for tag in image.tags):
+            if any(tag.startswith("litestar-bench:") for tag in image.tags):
                 image.remove(force=force)

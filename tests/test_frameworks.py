@@ -157,6 +157,7 @@ ENDPOINT_SPEC = {
 
 @pytest.fixture(
     params=[
+        "litestar",
         "starlite",
         "starlette",
         "fastapi",

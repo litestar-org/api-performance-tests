@@ -315,13 +315,11 @@ async def async_dependencies_sync(
 
 @app.post("/sync-post-json")
 def sync_post_json(request: Request) -> HTTPResponse:
-    data = request.json
     return empty()
 
 
 @app.post("/async-post-json")
 async def async_post_json(request: Request) -> HTTPResponse:
-    data = request.json
     return empty()
 
 
@@ -330,13 +328,11 @@ async def async_post_json(request: Request) -> HTTPResponse:
 
 @app.post("/sync-post-multipart-form")
 def sync_post_multipart_form(request: Request) -> HTTPResponse:
-    data = request.form
     return empty()
 
 
 @app.post("/async-post-multipart-form")
 async def async_post_multipart_form(request: Request) -> HTTPResponse:
-    data = request.form
     return empty()
 
 
@@ -345,13 +341,11 @@ async def async_post_multipart_form(request: Request) -> HTTPResponse:
 
 @app.post("/sync-post-form-urlencoded")
 def sync_post_form_urlencoded(request: Request) -> HTTPResponse:
-    data = request.form
     return empty()
 
 
 @app.post("/async-post-form-urlencoded")
 async def async_post_form_urlencoded(request: Request) -> HTTPResponse:
-    data = request.form
     return empty()
 
 
@@ -360,11 +354,11 @@ async def async_post_form_urlencoded(request: Request) -> HTTPResponse:
 
 @app.post("/sync-post-file")
 def sync_post_file(request: Request) -> HTTPResponse:
-    content = request.files.get("test_file").body
+    request.files.get("test_file").body
     return empty()
 
 
 @app.post("/async-post-file")
 async def async_post_file(request: Request) -> HTTPResponse:
-    content = request.files.get("test_file").body
+    request.files.get("test_file").body
     return empty()

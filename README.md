@@ -23,6 +23,7 @@
 > [**_Starlite has been renamed to Litestar_**](https://litestar.dev/about/organization.html#litestar-and-starlite)
 
 This is an API performance test comparing:
+
 1. [Litestar](https://github.com/litestar-org/litestar)
 2. [Starlite v1.5x](https://github.com/litestar-org/litestar/tree/v1.51)
 3. [Starlette](https://github.com/encode/starlette)
@@ -31,15 +32,6 @@ This is an API performance test comparing:
 6. [BlackSheep](https://github.com/Neoteroi/BlackSheep)
 
 Using the [bombardier](https://github.com/codesenberg/bombardier) HTTP benchmarking tool.
-
-## Last Run Results
-
-![Plain Text Results](result.png)
-
-You can view the last run results under the `/results` folder - it contains json files with the output.
-The plotting is done using pandas - script is under `/analysis`.
-
-Note: PRs improving the analysis script are welcome.
 
 ## Test Setup
 
@@ -153,7 +145,7 @@ You can run a single test by specifying its full name and category:
 #### Test Settings
 
 |                                                                                                                                                                       |                                                                 |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
 | -r, --rebuild                                                                                                                                                         | rebuild docker images                                           |
 | -L, --latency                                                                                                                                                         | run latency tests                                               |
 | -R, --rps                                                                                                                                                             | run RPS tests                                                   |

@@ -139,7 +139,7 @@ class Runner:
 
     def _run_bench_in_container(self, *args: str) -> str:
         container = self.docker_client.containers.run(
-            "starlite-api-bench:runner", "./bombardier " + " ".join(args), network_mode="host", detach=True
+            "litestar-bench:runner", "./bombardier " + " ".join(args), network_mode="host", detach=True
         )
         container.wait()
         return container.logs().decode()
@@ -162,7 +162,7 @@ class Runner:
     def _stop_all_containers(self) -> None:
         with self.console.status("[yellow]Stopping running containers"):
             for container in self.docker_client.containers.list(ignore_removed=True):
-                if any(tag.startswith("starlite-api-bench:") for tag in container.image.tags):
+                if any(tag.startswith("litestar-bench:") for tag in container.image.tags):
                     container.kill()
 
     def run_benchmark(self, test_spec: TestSpec) -> dict[str, Any]:
@@ -204,10 +204,7 @@ class Runner:
             try:
                 container.kill()
             except APIError as error:
-                if (
-                    error.status_code != 409
-                    or "not running" not in error.explanation
-                ):
+                if not (error.status_code == 409 and "not running" in error.explanation):
                     # the container stopped for reasons
                     raise error
             yield False
