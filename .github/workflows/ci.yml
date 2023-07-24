@@ -52,11 +52,6 @@ jobs:
         run: poetry install --no-interaction
       - name: Set pythonpath
         run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
-      - name: Test with Coverage
+      - name: Test
         if: matrix.python-version == '3.11'
-        run: poetry run pytest --cov=. --cov-report=xml
-      - uses: actions/upload-artifact@v3
-        if: matrix.python-version == '3.11'
-        with:
-          name: coverage-xml
-          path: coverage.xml
+        run: poetry run pytest
