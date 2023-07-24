@@ -19,7 +19,7 @@
 
 # api-performance-tests
 
-> **Note**
+> [!IMPORTANT]\
 > [**_Starlite has been renamed to Litestar_**](https://litestar.dev/about/organization.html#litestar-and-starlite)
 
 This is an API performance test comparing:
