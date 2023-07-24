@@ -2,14 +2,15 @@ import time
 from typing import Any
 
 import anyio
-import test_data
 from litestar import Litestar, MediaType, get, post
 from litestar.datastructures import Cookie, ResponseHeader, UploadFile
 from litestar.di import Provide
 from litestar.enums import RequestEncodingType
 from litestar.params import Body
-from litestar.response_containers import File
+from litestar.response import File
 from litestar.status_codes import HTTP_204_NO_CONTENT
+
+import test_data
 
 response_headers = [ResponseHeader(name=name, value=value) for name, value in test_data.RESPONSE_HEADERS.items()]
 response_cookies = [Cookie(key=key, value=value) for key, value in test_data.RESPONSE_COOKIES.items()]

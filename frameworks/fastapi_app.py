@@ -2,11 +2,12 @@ import time
 from typing import Any
 
 import anyio
-import test_data
 from fastapi import Depends, FastAPI, Response, UploadFile
 from fastapi.requests import Request
 from fastapi.responses import FileResponse, PlainTextResponse
 from starlette.status import HTTP_204_NO_CONTENT
+
+import test_data
 
 app = FastAPI()
 

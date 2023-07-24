@@ -1,9 +1,10 @@
-import test_data
 from starlette.applications import Starlette
 from starlette.requests import Request
 from starlette.responses import FileResponse, JSONResponse, PlainTextResponse, Response
 from starlette.routing import Route
 from starlette.status import HTTP_204_NO_CONTENT
+
+import test_data
 
 # plaintext async
 

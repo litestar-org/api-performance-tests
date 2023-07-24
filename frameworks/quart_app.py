@@ -1,5 +1,6 @@
-import test_data
 from quart import Quart, Response, request, send_file
+
+import test_data
 
 app = Quart(__name__)
 

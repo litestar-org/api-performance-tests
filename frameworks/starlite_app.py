@@ -2,7 +2,6 @@ import time
 from typing import Any
 
 import anyio
-import test_data
 from starlite import (
     Body,
     Cookie,
@@ -17,6 +16,8 @@ from starlite import (
     post,
 )
 from starlite.status_codes import HTTP_204_NO_CONTENT
+
+import test_data
 
 response_headers = {name: ResponseHeader(value=value) for name, value in test_data.RESPONSE_HEADERS.items()}
 response_cookies = [Cookie(key=key, value=value) for key, value in test_data.RESPONSE_COOKIES.items()]

@@ -2,11 +2,12 @@ import multiprocessing
 import time
 from contextlib import contextmanager
 
-import frameworks
 import httpx
 import pytest
-import test_data
 import uvicorn
+
+import frameworks
+import test_data
 
 
 @contextmanager

@@ -23,6 +23,7 @@
 > [**_Starlite has been renamed to Litestar_**](https://litestar.dev/about/organization.html#litestar-and-starlite)
 
 This is an API performance test comparing:
+
 1. [Litestar](https://github.com/litestar-org/litestar)
 2. [Starlite v1.5x](https://github.com/litestar-org/litestar/tree/v1.51)
 3. [Starlette](https://github.com/encode/starlette)
@@ -144,7 +145,7 @@ You can run a single test by specifying its full name and category:
 #### Test Settings
 
 |                                                                                                                                                                       |                                                                 |
-|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------------------------------------|
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------- |
 | -r, --rebuild                                                                                                                                                         | rebuild docker images                                           |
 | -L, --latency                                                                                                                                                         | run latency tests                                               |
 | -R, --rps                                                                                                                                                             | run RPS tests                                                   |

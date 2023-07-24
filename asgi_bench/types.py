@@ -143,7 +143,7 @@ class TestResultStats(TypedDict):
 
 class TestResult(TypedDict):
     name: str
-    timeTakenSeconds: int  # noqa: N815
+    timeTakenSeconds: int
     req1xx: int
     req2xx: int
     req3xx: int

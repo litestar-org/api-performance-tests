@@ -1,8 +1,9 @@
 import time
 
-import test_data
 from sanic import HTTPResponse, Request, Sanic
 from sanic.response import ResponseStream, empty, file, file_stream, json, text
+
+import test_data
 
 app = Sanic("MyApp")
 

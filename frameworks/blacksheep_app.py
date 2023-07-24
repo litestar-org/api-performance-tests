@@ -1,7 +1,6 @@
 import time
 
 import anyio
-import test_data
 from blacksheep import (
     Application,
     Cookie,
@@ -13,6 +12,8 @@ from blacksheep import (
     text,
 )
 from blacksheep.server.responses import file, no_content
+
+import test_data
 
 RESPONSE_COOKIES = [Cookie(name=name, value=value) for name, value in test_data.RESPONSE_COOKIES.items()]
 
