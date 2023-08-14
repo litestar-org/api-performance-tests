@@ -5,6 +5,8 @@ import anyio
 from fastapi import Depends, FastAPI, Response, UploadFile
 from fastapi.requests import Request
 from fastapi.responses import FileResponse, PlainTextResponse
+from fastapi.responses import ORJSONResponse
+
 from starlette.status import HTTP_204_NO_CONTENT
 
 import test_data
@@ -91,67 +93,67 @@ def sync_plaintext_5m() -> str:
 # JSON response
 
 
-@app.get("/async-json-1K")
+@app.get("/async-json-1K", response_class=ORJSONResponse)
 async def async_json_1k() -> list[dict[str, Any]]:
-    return test_data.JSON_1K
+    return ORJSONResponse(test_data.JSON_1K)
 
 
-@app.get("/async-json-10K")
+@app.get("/async-json-10K", response_class=ORJSONResponse)
 async def async_json_10k() -> list[dict[str, Any]]:
-    return test_data.JSON_10K
+    return ORJSONResponse(test_data.JSON_10K)
 
 
-@app.get("/async-json-100K")
+@app.get("/async-json-100K", response_class=ORJSONResponse)
 async def async_json_100k() -> list[dict[str, Any]]:
-    return test_data.JSON_100K
+    return ORJSONResponse(test_data.JSON_100K)
 
 
-@app.get("/async-json-500K")
+@app.get("/async-json-500K", response_class=ORJSONResponse)
 async def async_json_500k() -> list[dict[str, Any]]:
-    return test_data.JSON_500K
+    return ORJSONResponse(test_data.JSON_500K)
 
 
-@app.get("/async-json-1M")
+@app.get("/async-json-1M", response_class=ORJSONResponse)
 async def async_json_1m() -> list[dict[str, Any]]:
-    return test_data.JSON_1M
+    return ORJSONResponse(test_data.JSON_1M)
 
 
-@app.get("/async-json-5M")
+@app.get("/async-json-5M", response_class=ORJSONResponse)
 async def async_json_5m() -> list[dict[str, Any]]:
-    return test_data.JSON_5M
+    return ORJSONResponse(test_data.JSON_5M)
 
 
 # JSON sync
 
 
-@app.get("/sync-json-1K")
+@app.get("/sync-json-1K", response_class=ORJSONResponse)
 def sync_json_1k() -> list[dict[str, Any]]:
-    return test_data.JSON_1K
+    return ORJSONResponse(test_data.JSON_1K)
 
 
-@app.get("/sync-json-10K")
+@app.get("/sync-json-10K", response_class=ORJSONResponse)
 def sync_json_10k() -> list[dict[str, Any]]:
-    return test_data.JSON_10K
+    return ORJSONResponse(test_data.JSON_10K)
 
 
-@app.get("/sync-json-100K")
+@app.get("/sync-json-100K", response_class=ORJSONResponse)
 def sync_json_100k() -> list[dict[str, Any]]:
-    return test_data.JSON_100K
+    return ORJSONResponse(test_data.JSON_100K)
 
 
-@app.get("/sync-json-500K")
+@app.get("/sync-json-500K", response_class=ORJSONResponse)
 def sync_json_500k() -> list[dict[str, Any]]:
-    return test_data.JSON_500K
+    return ORJSONResponse(test_data.JSON_500K)
 
 
-@app.get("/sync-json-1M")
+@app.get("/sync-json-1M", response_class=ORJSONResponse)
 def sync_json_1m() -> list[dict[str, Any]]:
-    return test_data.JSON_1M
+    return ORJSONResponse(test_data.JSON_1M)
 
 
-@app.get("/sync-json-5M")
+@app.get("/sync-json-5M", response_class=ORJSONResponse)
 def sync_json_5m() -> list[dict[str, Any]]:
-    return test_data.JSON_5M
+    return ORJSONResponse(test_data.JSON_5M)
 
 
 # params

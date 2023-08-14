@@ -3,7 +3,7 @@ FROM python:3.11-slim-bullseye as build
 
 RUN apt-get update && apt-get upgrade -y && apt-get install gcc git curl -y && \
     pip install --upgrade pip && \
-    pip install uvicorn[standard] pydantic
+    pip install uvicorn[standard] pydantic==1.10.12
 
 
 FROM build

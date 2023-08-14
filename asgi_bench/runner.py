@@ -135,11 +135,13 @@ class Runner:
         for container in self.docker_client.containers.list(ignore_removed=True):
             if image in container.image.tags:
                 container.kill()
-        return self.docker_client.containers.run(image=image, ports={SERVER_PORT: SERVER_PORT}, detach=True)
+        return self.docker_client.containers.run(image=image, ports={SERVER_PORT: SERVER_PORT}, detach=True,
+                                                 nano_cpus=1000000000)
 
     def _run_bench_in_container(self, *args: str) -> str:
         container = self.docker_client.containers.run(
-            "litestar-bench:runner", "./bombardier " + " ".join(args), network_mode="host", detach=True
+            "litestar-bench:runner", "./bombardier " + " ".join(args), network_mode="host", detach=True,
+            nano_cpus=1000000000,
         )
         container.wait()
         return container.logs().decode()
