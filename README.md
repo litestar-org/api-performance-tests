@@ -121,7 +121,7 @@ All responses return "No Content"
 
 1. Clone this repo
 2. Run `poetry install`
-3. Run tests with `bench run --rps --latency`
+3. Run tests with `poetry run bench run --rps --latency`
 
 After the run, the results will be stored in `results/run_<run_mumber>.json`
 
