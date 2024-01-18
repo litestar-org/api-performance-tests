@@ -16,7 +16,7 @@ jobs:
         run: python -m pip install pre-commit && pre-commit install
       - name: Load cached Pre-Commit Dependencies
         id: cached-pre-commit-dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ~/.cache/pre-commit/
           key: pre-commit|${{ env.pythonLocation }}|${{ hashFiles('.pre-commit-config.yaml') }}
@@ -43,7 +43,7 @@ jobs:
           installer-parallel: true
       - name: Load cached venv
         id: cached-poetry-dependencies
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: .venv
           key: v1-venv-${{ runner.os }}-${{ matrix.python-version }}-${{ hashFiles('**/poetry.lock') }}
