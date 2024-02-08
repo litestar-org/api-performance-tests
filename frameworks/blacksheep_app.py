@@ -347,9 +347,9 @@ class SyncDependencyThree:
         self.value = [*two.value, "sync_dependency_three"]
 
 
-app.services.add_exact_scoped(SyncDependencyOne)
-app.services.add_exact_scoped(SyncDependencyTwo)
-app.services.add_exact_scoped(SyncDependencyThree)
+app.services._add_exact_scoped(SyncDependencyOne)
+app.services._add_exact_scoped(SyncDependencyTwo)
+app.services._add_exact_scoped(SyncDependencyThree)
 
 
 @app.router.get("/sync-dependencies-sync")
